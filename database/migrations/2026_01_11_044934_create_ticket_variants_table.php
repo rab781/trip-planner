@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ticket_variants', function (Blueprint $table) {
             $table->id();
-            $table->id('destination_id');
+            $table->foreignId('destination_id')->constrained('destinations')->onDelete('cascade');
             $table->string('name');
             $table->decimal('price', 8, 2);
             $table->boolean('is_mandatory')->default(false);

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('destinations', function (Blueprint $table) {
             $table->id();
-            $table->id('zone_id');
-            $table->id('category_id');
+            $table->foreignId('zone_id')->constrained('zones')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('image_url')->nullable();

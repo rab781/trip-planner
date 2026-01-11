@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('iternararies', function (Blueprint $table) {
             $table->id();
-            $table->id('user_id');
-            $table->id('city_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('city_id')->constrained('cities')->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
             $table->date('start_date');
@@ -22,12 +22,12 @@ return new class extends Migration
             $table->integer('total_pax_count')->default(1);
             $table->string('transportation_preference')->nullable();
             $table->decimal('estimated_budget', 10, 2)->nullable();
-            $table->timestamps('created_at');
+            $table->timestamps();
         });
 
         Schema::create('internary_lodgings', function( Blueprint $table) {
             $table->id();
-            $table->id('iternarary_id');
+            $table->foreignId('iternarary_id')->constrained('iternararies')->onDelete('cascade');
             $table->string('name');
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
@@ -39,8 +39,8 @@ return new class extends Migration
 
         Schema::create('internary_items', function( Blueprint $table) {
             $table->id();
-            $table->id('iternarary_id');
-            $table->id('destination_id');
+            $table->foreignId('iternarary_id')->constrained('iternararies')->onDelete('cascade');
+            $table->foreignId('destination_id')->constrained('destinations')->onDelete('cascade');
             $table->integer('day_number');
             $table->integer('sequence_order');
             $table->time('est_start_time')->nullable();
@@ -53,8 +53,8 @@ return new class extends Migration
 
         Schema::create('internary_item_details', function (Blueprint $table){
             $table->id();
-            $table->id('internary_item_id');
-            $table->id('ticket_variant_id')->nullable();
+            $table->foreignId('internary_item_id')->constrained('internary_items')->onDelete('cascade');
+            $table->foreignId('ticket_variant_id')->constrained('ticket_variants')->onDelete('cascade');
             $table->integer('quantity')->default(1);
             $table->decimal('sub_total', 8, 2)->nullable();
             $table->timestamps();
