@@ -8,18 +8,24 @@ class Destination extends Model
 {
     //
     protected $fillable = [
+        'zone_id',
+        'category_id',
         'name',
         'description',
         'image_url',
         'latitude',
         'longitude',
         'rating',
-        'category_id',
-        'zone_id',
-        'best_time_to_visit',
+        'best_visit_time',
         'opening_time',
         'closing_time',
         'avg_visit_duration_minutes',
+    ];
+
+    protected $casts = [
+        'latitude' => 'decimal:8',
+        'longitude' => 'decimal:8',
+        'rating' => 'decimal:2',
     ];
 
     public function zone()
@@ -37,7 +43,7 @@ class Destination extends Model
         return $this->hasMany(TicketVariant::class);
     }
 
-    public function itenararyItems()
+    public function itineraryItems()
     {
         return $this->hasMany(ItineraryItem::class);
     }

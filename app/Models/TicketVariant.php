@@ -11,7 +11,13 @@ class TicketVariant extends Model
     [
         'name',
         'price',
-        'is_mandatory'
+        'is_mandatory',
+        'destination_id',
+    ];
+
+    protected $casts = [
+        'price' => 'decimal:2',
+        'is_mandatory' => 'boolean',
     ];
 
     public function destination()
@@ -19,7 +25,7 @@ class TicketVariant extends Model
         return $this->belongsTo(Destination::class);
     }
 
-    public function itenararyItemsDetail()
+    public function itineraryItemDetails()
     {
         return $this->hasMany(ItineraryItemDetail::class);
     }

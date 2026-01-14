@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class city extends Model
+class City extends Model
 {
     //
-    protected $fillable = ['name',' image_url'];
+    protected $fillable = ['name', 'image_url'];
 
-    public function iternerary()
+    public function itineraries()
     {
         return $this->hasMany(Itinerary::class);
     }
@@ -18,5 +18,5 @@ class city extends Model
     {
         return $this->hasMany(Zone::class);
     }
-    
+
 }

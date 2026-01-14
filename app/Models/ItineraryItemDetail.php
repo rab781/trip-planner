@@ -14,6 +14,10 @@ class ItineraryItemDetail extends Model
         'sub_total'
     ];
 
+    protected $casts = [
+        'sub_total' => 'decimal:2',
+    ];
+
     public function itineraryItem()
     {
         return $this->belongsTo(ItineraryItem::class);

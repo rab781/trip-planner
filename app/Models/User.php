@@ -46,7 +46,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function iternarys()
+    public function itineraries()
     {
         return $this->hasMany(Itinerary::class);
     }

@@ -8,7 +8,7 @@ class ItineraryItem extends Model
 {
     //
     protected $fillable = [
-        'iternarary_id',
+        'itinerary_id',
         'destination_id',
         'day_number',
         'sequence_order',
@@ -19,9 +19,14 @@ class ItineraryItem extends Model
         'est_transport_cost'
     ];
 
+    protected $casts = [
+        'est_transport_cost' => 'decimal:2',
+        'dist_from_prev_km' => 'float',
+    ];
+
     public function itinerary()
     {
-        return $this->belongsTo(Itinerary::class, 'iternarary_id');
+        return $this->belongsTo(Itinerary::class);
     }
     public function destination()
     {
@@ -30,6 +35,6 @@ class ItineraryItem extends Model
 
     public function itineraryItemDetails()
     {
-        return $this->hasMany(ItineraryItemDetail::class, 'internary_item_id');
+        return $this->hasMany(ItineraryItemDetail::class);
     }
 }

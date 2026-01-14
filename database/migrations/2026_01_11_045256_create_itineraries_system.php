@@ -19,16 +19,14 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->integer('total_days');
             $table->integer('total_pax_count')->default(1);
             $table->string('transportation_preference')->nullable();
-            $table->decimal('estimated_budget', 10, 2)->nullable();
             $table->timestamps();
         });
 
         Schema::create('itinerary_lodgings', function( Blueprint $table) {
             $table->id();
-            $table->foreignId('itinerary_id')->constrained('iternararies')->onDelete('cascade');
+            $table->foreignId('itinerary_id')->constrained('itineraries')->onDelete('cascade');
             $table->string('name');
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
@@ -41,10 +39,10 @@ return new class extends Migration
 
         Schema::create('itinerary_items', function( Blueprint $table) {
             $table->id();
-            $table->foreignId('itinerary_id')->constrained('iternararies')->onDelete('cascade');
+            $table->foreignId('itinerary_id')->constrained('itineraries')->onDelete('cascade');
             $table->foreignId('destination_id')->constrained('destinations')->onDelete('cascade');
-            $table->integer('day_number');
-            $table->integer('sequence_order');
+            $table->integer('day_number')->index();
+            $table->integer('sequence_order')->index();
             $table->time('est_start_time')->nullable();
             $table->time('est_end_time')->nullable();
             $table->float('dist_from_prev_km')->nullable();
@@ -55,7 +53,7 @@ return new class extends Migration
 
         Schema::create('itinerary_item_details', function (Blueprint $table){
             $table->id();
-            $table->foreignId('itinerary_item_id')->constrained('internary_items')->onDelete('cascade');
+            $table->foreignId('itinerary_item_id')->constrained('itinerary_items')->onDelete('cascade');
             $table->foreignId('ticket_variant_id')->constrained('ticket_variants')->onDelete('cascade');
             $table->integer('quantity')->default(1);
             $table->decimal('sub_total', 8, 2)->nullable();
@@ -68,9 +66,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('iternararies');
-        Schema::dropIfExists('internary_lodgings');
-        Schema::dropIfExists('internary_items');
-        Schema::dropIfExists('internary_item_details');
+        Schema::dropIfExists('itinerary_item_details');
+        Schema::dropIfExists('itinerary_items');
+        Schema::dropIfExists('itinerary_lodgings');
+        Schema::dropIfExists('itineraries');
     }
 };
