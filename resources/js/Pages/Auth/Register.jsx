@@ -23,31 +23,31 @@ export default function Register() {
 
     return (
         <>
-            <Head title="Daftar - Smart Trip Planner" />
+            <Head title="Daftar - Serute" />
             
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-serute-light flex items-center justify-center p-4">
                 <div className="w-full max-w-md">
                     <div className="text-center mb-8">
                         <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-                            <MapPinIcon className="h-10 w-10 text-blue-600" />
+                            <img src="/images/logo.png" alt="Serute Logo" className="h-12 w-12" />
                             <div className="text-left">
-                                <h1 className="text-2xl font-bold text-gray-900">Smart Trip Planner</h1>
-                                <p className="text-xs text-gray-500">Bandung Tourism</p>
+                                <h1 className="text-2xl font-bold text-serute-dark">Serute</h1>
+                                <p className="text-xs text-serute-body">Smart Trip Planner</p>
                             </div>
                         </Link>
-                        <h2 className="text-2xl font-bold text-gray-900 mt-6">Buat Akun Baru</h2>
-                        <p className="text-gray-600 mt-2">Mulai rencanakan liburan Anda ke Bandung</p>
+                        <h2 className="text-2xl font-bold text-serute-dark mt-6">Buat Akun Baru</h2>
+                        <p className="text-serute-body mt-2">Daftar untuk mulai merencanakan perjalanan Anda</p>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                    <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-serute-border">
                         <form onSubmit={submit} className="space-y-5">
                             <div>
-                                <InputLabel htmlFor="name" value="Nama Lengkap" className="text-gray-700 font-medium" />
+                                <InputLabel htmlFor="name" value="Nama Lengkap" className="text-serute-dark font-medium" />
                                 <TextInput
                                     id="name"
                                     name="name"
                                     value={data.name}
-                                    className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="mt-2 block w-full px-4 py-3 border-2 border-serute-border rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple"
                                     autoComplete="name"
                                     isFocused={true}
                                     placeholder="Masukkan nama lengkap Anda"
@@ -58,13 +58,13 @@ export default function Register() {
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="email" value="Alamat Email" className="text-gray-700 font-medium" />
+                                <InputLabel htmlFor="email" value="Alamat Email" className="text-serute-dark font-medium" />
                                 <TextInput
                                     id="email"
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="mt-2 block w-full px-4 py-3 border-2 border-serute-border rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple"
                                     autoComplete="username"
                                     placeholder="nama@email.com"
                                     onChange={(e) => setData('email', e.target.value)}
@@ -74,13 +74,13 @@ export default function Register() {
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="password" value="Password" className="text-gray-700 font-medium" />
+                                <InputLabel htmlFor="password" value="Password" className="text-serute-dark font-medium" />
                                 <TextInput
                                     id="password"
                                     type="password"
                                     name="password"
                                     value={data.password}
-                                    className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="mt-2 block w-full px-4 py-3 border-2 border-serute-border rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple"
                                     autoComplete="new-password"
                                     placeholder="Minimal 8 karakter"
                                     onChange={(e) => setData('password', e.target.value)}
@@ -90,13 +90,13 @@ export default function Register() {
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="password_confirmation" value="Konfirmasi Password" className="text-gray-700 font-medium" />
+                                <InputLabel htmlFor="password_confirmation" value="Konfirmasi Password" className="text-serute-dark font-medium" />
                                 <TextInput
                                     id="password_confirmation"
                                     type="password"
                                     name="password_confirmation"
                                     value={data.password_confirmation}
-                                    className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="mt-2 block w-full px-4 py-3 border-2 border-serute-border rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple"
                                     autoComplete="new-password"
                                     placeholder="Ulangi password Anda"
                                     onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -106,7 +106,7 @@ export default function Register() {
                             </div>
 
                             <PrimaryButton
-                                className="w-full justify-center py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition mt-6"
+                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition" 
                                 disabled={processing}
                             >
                                 {processing ? 'Memproses...' : 'Daftar Sekarang'}
@@ -114,20 +114,20 @@ export default function Register() {
                         </form>
 
                         <div className="mt-6 text-center">
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-serute-body">
                                 Sudah punya akun?{' '}
-                                <Link href={route('login')} className="text-blue-600 hover:text-blue-700 font-semibold">
+                                <Link href={route('login')} className="text-serute-purple hover:text-serute-blue font-semibold">
                                     Masuk Sekarang
                                 </Link>
                             </p>
                         </div>
                     </div>
                     
-                    <p className="text-center text-xs text-gray-500 mt-6">
+                    <p className="text-center text-xs text-serute-body mt-6">
                         Dengan mendaftar, Anda menyetujui{' '}
-                        <a href="#" className="text-blue-600 hover:text-blue-700">Syarat & Ketentuan</a>
+                        <a href="#" className="text-serute-purple hover:text-serute-blue">Syarat & Ketentuan</a>
                         {' '}dan{' '}
-                        <a href="#" className="text-blue-600 hover:text-blue-700">Kebijakan Privasi</a> kami
+                        <a href="#" className="text-serute-purple hover:text-serute-blue">Kebijakan Privasi</a> kami
                     </p>
                 </div>
             </div>
