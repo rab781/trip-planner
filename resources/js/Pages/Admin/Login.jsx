@@ -37,9 +37,9 @@ export default function AdminLogin({ status }) {
                     </div>
 
                     {/* Card Form */}
-                    <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-gray-700">
+                    <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border-2 border-serute-purple/30">
                         {status && (
-                            <div className="mb-4 px-4 py-3 text-sm font-medium text-green-400 bg-green-900/30 rounded-lg border border-green-700">
+                            <div className="mb-4 px-4 py-3 text-sm font-medium text-serute-teal bg-serute-teal/10 rounded-lg border border-serute-teal/30">
                                 {status}
                             </div>
                         )}
@@ -63,7 +63,7 @@ export default function AdminLogin({ status }) {
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="mt-2 block w-full px-4 py-3 bg-gray-700/50 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                                    className="mt-2 block w-full px-4 py-3 bg-gray-900/50 border-2 border-serute-purple/30 rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple text-white placeholder-gray-400"
                                     autoComplete="username"
                                     isFocused={true}
                                     placeholder="admin@tripplanner.com"
@@ -85,7 +85,7 @@ export default function AdminLogin({ status }) {
                                     type="password"
                                     name="password"
                                     value={data.password}
-                                    className="mt-2 block w-full px-4 py-3 bg-gray-700/50 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                                    className="mt-2 block w-full px-4 py-3 bg-gray-900/50 border-2 border-serute-purple/30 rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple text-white placeholder-gray-400"
                                     autoComplete="current-password"
                                     placeholder="••••••••"
                                     onChange={(e) => setData('password', e.target.value)}
@@ -111,7 +111,7 @@ export default function AdminLogin({ status }) {
                             </div>
 
                             <PrimaryButton
-                                className="w-full justify-center py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition"
+                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition" 
                                 disabled={processing}
                             >
                                 {processing ? 'Memproses...' : 'Masuk ke Admin Panel'}
@@ -123,7 +123,7 @@ export default function AdminLogin({ status }) {
                                 Bukan admin?{' '}
                                 <Link
                                     href={route('login')}
-                                    className="text-blue-400 hover:text-blue-300 font-medium"
+                                    className="text-serute-purple hover:text-serute-blue font-medium"
                                 >
                                     Login sebagai User
                                 </Link>
@@ -141,12 +141,12 @@ export default function AdminLogin({ status }) {
                     </div>
 
                     {/* Security Notice */}
-                    <div className="mt-6 bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
+                    <div className="mt-6 bg-serute-orange/10 border border-serute-orange/30 rounded-lg p-4">
                         <div className="flex items-start space-x-3">
-                            <ShieldCheckIcon className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-                            <div className="text-xs text-yellow-200">
-                                <p className="font-semibold mb-1">Akses Terbatas</p>
-                                <p className="text-yellow-300/80">
+                            <ShieldCheckIcon className="h-5 w-5 text-serute-orange flex-shrink-0 mt-0.5" />
+                            <div className="text-xs text-gray-300">
+                                <p className="font-semibold mb-1 text-serute-orange">Akses Terbatas</p>
+                                <p className="text-gray-400">
                                     Halaman ini hanya untuk administrator. Aktivitas login akan dicatat untuk keamanan sistem.
                                 </p>
                             </div>
