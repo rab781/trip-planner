@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\ZoneController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Api\ItineraryController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\TransportRateController;
+
 // public API routes
 
 Route::get('/cities', [CityController::class, 'index']);
@@ -35,4 +37,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/itineraries/{id}', [ItineraryController::class, 'destroy']);
 
     Route::put('/iternary/(id)/reorder',[ItineraryController::class, 'reorder']);
+});
+
+// ========================================
+// ADMIN API (Protected)
+// ========================================
+
+Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
+    // Dashboard stats
+    Route::get('/stats', [DashboardController::class, 'stats']);
+
+    // Manage Destinations
+    Route::apiResource('destinations', AdminDestinationController::class);
+
+    // Manage Users
+    Route::get('/users', [AdminUserController::class, 'index']);
+    Route::patch('/users/{id}/role', [AdminUserController::class, 'updateRole']);
+
+    // Manage Categories/Zones
+    Route::apiResource('categories', AdminCategoryController::class);
+    Route::apiResource('zones', AdminZoneController::class);
 });
