@@ -13,16 +13,29 @@ class AdminMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || !$request->user()->isAdmin()){
-            if($request->is('api/*')){
+        // User belum login
+        if (!$request->user()) {
+            return redirect()->route('admin.login')
+                ->with('error', 'Please login as admin first.');
+        }
+
+        // User login tapi bukan admin
+        if (!$request->user()->isAdmin()) {
+            // Kalau API request
+            if ($request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Forbidden. Admins only.'
+                    'success' => false,
+                    'message' => 'Unauthorized. Admin access required.',
                 ], 403);
             }
-            abort(403, 'Forbidden. Admins only.');
+
+            // Kalau web request - redirect ke user dashboard
+            return redirect()->route('dashboard')
+                ->with('error', 'Access denied. Admin only.');
         }
+
         return $next($request);
     }
 }

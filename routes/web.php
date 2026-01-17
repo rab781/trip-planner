@@ -1,14 +1,17 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\Admin\UserController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// ========================================
+// PUBLIC ROUTES
+// ========================================
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -18,6 +21,10 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+// ========================================
+// USER ROUTES (Authenticated)
+// ========================================
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -29,27 +36,48 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// ========================================
+// ADMIN LOGIN (Public - No Middleware!)
+// ========================================
+
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])
+        ->name('admin.login')
+        ->middleware('guest');  // ✅ Redirect kalau sudah login
+
+    Route::post('/login', [AdminAuthController::class, 'login'])
+        ->name('admin.login.post');
+
+    Route::post('/logout', [AdminAuthController::class, 'logout'])
+        ->name('admin.logout')
+        ->middleware('auth');
+});
+
+// ========================================
+// ADMIN ROUTES (Protected)
+// ========================================
+
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
 
     // Manage Destinations (CRUD)
     Route::resource('destinations', AdminDestinationController::class);
 
     // Manage Users
-    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::patch('/users/{id}/toggle-role', [UserController::class, 'toggleRole'])->name('admin.users.toggle-role');
+    Route::get('/users', [UserController::class, 'index'])
+        ->name('admin.users.index');
+    Route::patch('/users/{id}/toggle-role', [UserController::class, 'toggleRole'])
+        ->name('admin.users.toggle-role');
 
     // Reports
-    Route::get('/reports', [DashboardController::class, 'reports'])->name('admin.reports');
+    Route::get('/reports', [DashboardController::class, 'reports'])
+        ->name('admin.reports');
 });
 
-use App\Http\Controllers\Admin\AuthController as AdminAuthController;
-
-Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AdminAuthController::class, 'login']);
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
-});
+// ========================================
+// AUTH ROUTES (Laravel Breeze)
+// ========================================
 
 require __DIR__.'/auth.php';
