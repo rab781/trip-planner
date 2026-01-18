@@ -111,7 +111,7 @@ export default function AdminLogin({ status }) {
                             </div>
 
                             <PrimaryButton
-                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition" 
+                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition"
                                 disabled={processing}
                             >
                                 {processing ? 'Memproses...' : 'Masuk ke Admin Panel'}

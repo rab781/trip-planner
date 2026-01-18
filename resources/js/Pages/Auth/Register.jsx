@@ -24,7 +24,7 @@ export default function Register() {
     return (
         <>
             <Head title="Daftar - Serute" />
-            
+
             <div className="min-h-screen bg-serute-light flex items-center justify-center p-4">
                 <div className="w-full max-w-md">
                     <div className="text-center mb-8">
@@ -106,7 +106,7 @@ export default function Register() {
                             </div>
 
                             <PrimaryButton
-                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition" 
+                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition"
                                 disabled={processing}
                             >
                                 {processing ? 'Memproses...' : 'Daftar Sekarang'}
@@ -122,7 +122,7 @@ export default function Register() {
                             </p>
                         </div>
                     </div>
-                    
+
                     <p className="text-center text-xs text-serute-body mt-6">
                         Dengan mendaftar, Anda menyetujui{' '}
                         <a href="#" className="text-serute-purple hover:text-serute-blue">Syarat & Ketentuan</a>
