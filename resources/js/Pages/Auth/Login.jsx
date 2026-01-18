@@ -24,7 +24,7 @@ export default function Login({ status, canResetPassword }) {
     return (
         <>
             <Head title="Masuk - Serute" />
-            
+
             <div className="min-h-screen bg-serute-light flex items-center justify-center p-4">
                 <div className="w-full max-w-md">
                     {/* Logo & Header */}
@@ -108,8 +108,8 @@ export default function Login({ status, canResetPassword }) {
                                 )}
                             </div>
 
-                            <PrimaryButton 
-                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition" 
+                            <PrimaryButton
+                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition"
                                 disabled={processing}
                             >
                                 {processing ? 'Memproses...' : 'Masuk'}
