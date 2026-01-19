@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { MapPinIcon, CalendarIcon, CurrencyDollarIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import Chatbot from '@/Components/Chatbot';
 
 export default function Welcome({ auth }) {
     const cities = ['Bandung','Surabaya','Yogyakarta','Jakarta','Medan','Semarang','Malang','Bali'];
@@ -213,6 +214,9 @@ export default function Welcome({ auth }) {
                         </p>
                     </div>
                 </footer>
+
+                {/* AI Chatbot */}
+                <Chatbot />
             </div>
         </>
     );

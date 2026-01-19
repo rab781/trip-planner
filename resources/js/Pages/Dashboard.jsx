@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import Chatbot from '@/Components/Chatbot';
 
 export default function Dashboard() {
     return (
@@ -21,6 +22,9 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            {/* AI Chatbot */}
+            <Chatbot />
         </AuthenticatedLayout>
     );
 }
