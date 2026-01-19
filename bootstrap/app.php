@@ -19,7 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        // Register chatbot rate limit alias
+        $middleware->alias([
+            'chatbot.rate' => \App\Http\Middleware\ChatbotRateLimit::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
