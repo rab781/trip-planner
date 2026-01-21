@@ -5,20 +5,20 @@ import MapWithSidebar from '@/Components/Map/MapWithSidebar';
 import DraggableList from '@/Components/Itinerary/DraggableList';
 import DayTabs from '@/Components/Itinerary/DayTabs';
 import BudgetSummary from '@/Components/Itinerary/BudgetSummary';
-import { 
-    ArrowLeftIcon, 
+import {
+    ArrowLeftIcon,
     CheckIcon,
     PlusIcon,
 } from '@heroicons/react/24/outline';
 
 /**
  * Itinerary Edit Page - Edit existing itinerary
- * 
+ *
  * Similar to Show page but with editing capabilities
  */
-export default function Edit({ 
-    itinerary, 
-    itemsByDay = {}, 
+export default function Edit({
+    itinerary,
+    itemsByDay = {},
     budget = {},
     cities = [],
     zones = [],
@@ -291,7 +291,7 @@ export default function Edit({
                                         {showDestinationPicker ? 'Tutup' : 'Buka Picker'}
                                     </button>
                                 </div>
-                                
+
                                 {showDestinationPicker && (
                                     <div className="p-4">
                                         <MapWithSidebar

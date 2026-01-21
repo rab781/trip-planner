@@ -80,7 +80,7 @@ export default function Show({ user }) {
                                         <div>
                                             <p className="font-medium text-gray-900">{itinerary.title}</p>
                                             <p className="text-sm text-gray-500">
-                                                {new Date(itinerary.start_date).toLocaleDateString('id-ID')} - 
+                                                {new Date(itinerary.start_date).toLocaleDateString('id-ID')} -
                                                 {new Date(itinerary.end_date).toLocaleDateString('id-ID')}
                                             </p>
                                         </div>

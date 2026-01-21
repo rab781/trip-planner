@@ -3,9 +3,9 @@ import { useState, useMemo } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import MapWithSidebar from '@/Components/Map/MapWithSidebar';
 import BudgetSummary from '@/Components/Itinerary/BudgetSummary';
-import { 
-    ArrowLeftIcon, 
-    ArrowRightIcon, 
+import {
+    ArrowLeftIcon,
+    ArrowRightIcon,
     CheckIcon,
     MapPinIcon,
     CalendarDaysIcon,
@@ -15,7 +15,7 @@ import {
 
 /**
  * Itinerary Create Page - Multi-step wizard
- * 
+ *
  * Inspired by Wanderlog: step indicator, hybrid map picker
  * Step 1: Basic info (title, dates, pax, transport)
  * Step 2: Select destinations (map + list)
@@ -62,7 +62,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
         const ticketCost = selectedDestinations.reduce((sum, d) => sum + (d.min_price || 0), 0) * data.total_pax_count;
         const foodPerDay = 50000 * data.total_pax_count;
         const transportEstimate = selectedDestinations.length * 15000 * (data.transportation_preference === 'CAR' ? 2 : 1);
-        
+
         return {
             ticket_cost: ticketCost,
             transport_cost: transportEstimate,
@@ -107,7 +107,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
     // Handle form submission
     const handleSubmit = async () => {
         setIsSubmitting(true);
-        
+
         try {
             // Create itinerary via API
             const response = await fetch('/api/itineraries', {
@@ -125,7 +125,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
             });
 
             const result = await response.json();
-            
+
             if (response.ok) {
                 // Redirect to show page
                 router.visit(route('itineraries.show', result.data.id));
@@ -179,7 +179,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                             <span className="font-semibold">{s.number}</span>
                                         )}
                                     </div>
-                                    
+
                                     {/* Step Label */}
                                     <span className={`ml-2 text-sm font-medium hidden sm:block ${
                                         step === s.number ? 'text-button' : 'text-paragraph'
@@ -422,7 +422,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                             </h4>
                                             <div className="space-y-2">
                                                 {selectedDestinations.map((dest, index) => (
-                                                    <div 
+                                                    <div
                                                         key={dest.id}
                                                         className="flex items-center gap-3 p-3 bg-main border border-secondary rounded-lg"
                                                     >

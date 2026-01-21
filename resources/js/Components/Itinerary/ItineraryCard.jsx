@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 /**
  * ItineraryCard Component - Timeline card for destinations
- * 
+ *
  * Inspired by TripIt: time, icon kategori, duration badge
  * Shows destination details with expandable ticket variants
- * 
+ *
  * @param {Object} item - Itinerary item with destination data
  * @param {number} index - Sequence number in the itinerary
  * @param {boolean} isDragging - Whether the card is being dragged
@@ -21,7 +21,7 @@ export default function ItineraryCard({
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const destination = item.destination;
-    
+
     // Zone colors
     const zoneColors = {
         1: { bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-300' },
@@ -59,8 +59,8 @@ export default function ItineraryCard({
     return (
         <div
             className={`relative bg-main rounded-xl border-l-4 shadow-sm transition-all ${
-                isDragging 
-                    ? 'shadow-lg ring-2 ring-button/30 rotate-2' 
+                isDragging
+                    ? 'shadow-lg ring-2 ring-button/30 rotate-2'
                     : 'hover:shadow-md'
             } ${zoneStyle.border}`}
         >
@@ -69,7 +69,7 @@ export default function ItineraryCard({
                 {/* Header Row */}
                 <div className="flex items-start gap-3">
                     {/* Drag Handle & Number */}
-                    <div 
+                    <div
                         {...dragHandleProps}
                         className="flex flex-col items-center gap-1 cursor-grab active:cursor-grabbing"
                     >
@@ -152,7 +152,7 @@ export default function ItineraryCard({
                         {isExpanded && optionalTickets.length > 0 && (
                             <div className="mt-2 pl-6 space-y-1.5 border-l-2 border-gray-100">
                                 {optionalTickets.map(ticket => (
-                                    <div 
+                                    <div
                                         key={ticket.id}
                                         className="flex items-center justify-between py-1 px-2 bg-gray-50 rounded text-xs"
                                     >

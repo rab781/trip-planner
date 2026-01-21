@@ -3,9 +3,9 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 /**
  * BudgetSummary Component - Sticky sidebar with budget breakdown
- * 
+ *
  * Inspired by Sygic Travel: pie chart visualization, categorized breakdown
- * 
+ *
  * @param {Object} budget - Budget breakdown object from ItineraryService
  * @param {number} paxCount - Number of travelers
  * @param {boolean} isSticky - Whether to make it sticky on scroll
@@ -170,7 +170,7 @@ export default function BudgetSummary({
                         {/* Tips */}
                         <div className="p-3 bg-amber-50 rounded-lg border border-amber-100">
                             <p className="text-xs text-amber-800">
-                                💡 <strong>Tips:</strong> Biaya transportasi dapat berubah sesuai urutan destinasi. 
+                                💡 <strong>Tips:</strong> Biaya transportasi dapat berubah sesuai urutan destinasi.
                                 Coba atur ulang itinerary untuk mengoptimalkan biaya!
                             </p>
                         </div>

@@ -4,11 +4,11 @@ import MapDisplay from './MapDisplay';
 
 /**
  * MapWithSidebar Component - Hybrid map + list picker
- * 
+ *
  * Inspired by Wanderlog: collapsible sidebar with search/filter
  * Mobile: Toggle between map and list view
  * Desktop: Side-by-side layout
- * 
+ *
  * @param {Array} destinations - All available destinations
  * @param {Array} selectedIds - Currently selected destination IDs
  * @param {Function} onToggleDestination - Callback to add/remove destination
@@ -41,10 +41,10 @@ export default function MapWithSidebar({
     // Filter destinations
     const filteredDestinations = useMemo(() => {
         return destinations.filter(d => {
-            const matchesSearch = !searchQuery || 
+            const matchesSearch = !searchQuery ||
                 d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 d.description?.toLowerCase().includes(searchQuery.toLowerCase());
-            
+
             const matchesZone = !selectedZone || d.zone?.id === selectedZone;
             const matchesCategory = !selectedCategory || d.category?.id === selectedCategory;
 

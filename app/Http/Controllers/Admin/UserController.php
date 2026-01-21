@@ -56,7 +56,7 @@ class UserController extends Controller
         $user->save();
 
         $roleLabel = $user->role === 'admin' ? 'Admin' : 'User';
-        
+
         return back()->with('success', "Role {$user->name} berhasil diubah menjadi {$roleLabel}");
     }
 

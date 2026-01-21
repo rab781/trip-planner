@@ -4,10 +4,10 @@ import TransportConnector from './TransportConnector';
 
 /**
  * DraggableList Component - Wrapper for drag and drop reordering
- * 
+ *
  * Inspired by Futurenda: smooth drag, visual feedback, drop zones
  * Uses @hello-pangea/dnd for React 18 compatibility
- * 
+ *
  * @param {Array} items - Array of itinerary items
  * @param {Function} onReorder - Callback when items are reordered
  * @param {Function} onRemove - Callback when item is removed

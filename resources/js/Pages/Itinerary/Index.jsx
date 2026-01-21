@@ -4,7 +4,7 @@ import { PlusIcon, MapPinIcon, CalendarDaysIcon, UsersIcon, CurrencyDollarIcon }
 
 /**
  * Itinerary Index Page - Grid of user's itineraries
- * 
+ *
  * Inspired by Google Travel: minimal, clean, grid cards
  */
 export default function Index({ itineraries = [] }) {
@@ -97,7 +97,7 @@ export default function Index({ itineraries = [] }) {
                                         <h3 className="font-semibold text-headline text-lg mb-1 group-hover:text-button transition-colors truncate">
                                             {itinerary.title}
                                         </h3>
-                                        
+
                                         {itinerary.description && (
                                             <p className="text-sm text-gray-500 mb-3 line-clamp-2">
                                                 {itinerary.description}
