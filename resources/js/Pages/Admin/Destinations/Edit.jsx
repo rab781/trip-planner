@@ -13,7 +13,7 @@ export default function Edit({ destination, zones, categories }) {
         zone_id: destination.zone_id || '',
         category_id: destination.category_id || '',
         thumbnail: null,
-        ticket_variants: destination.ticket_variants?.length > 0 
+        ticket_variants: destination.ticket_variants?.length > 0
             ? destination.ticket_variants.map(v => ({
                 id: v.id,
                 name: v.name,
@@ -79,7 +79,7 @@ export default function Edit({ destination, zones, categories }) {
                     {/* Basic Info */}
                     <div className="bg-white rounded-xl shadow-sm p-6">
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">Informasi Dasar</h2>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -196,7 +196,7 @@ export default function Edit({ destination, zones, categories }) {
                     {/* Thumbnail */}
                     <div className="bg-white rounded-xl shadow-sm p-6">
                         <h2 className="text-lg font-semibold text-gray-900 mb-4">Gambar</h2>
-                        
+
                         <div className="flex items-start space-x-6">
                             <div className="flex-shrink-0">
                                 {thumbnailPreview ? (

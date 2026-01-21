@@ -55,7 +55,7 @@ export default function Show({ zone }) {
                             <div>
                                 <dt className="text-sm text-gray-500">Koordinat Pusat</dt>
                                 <dd className="text-gray-900 font-mono text-sm">
-                                    {zone.center_latitude && zone.center_longitude 
+                                    {zone.center_latitude && zone.center_longitude
                                         ? `${zone.center_latitude}, ${zone.center_longitude}`
                                         : '-'}
                                 </dd>

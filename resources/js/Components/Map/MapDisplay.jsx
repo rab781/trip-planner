@@ -53,9 +53,9 @@ function FitBounds({ positions }) {
 
 /**
  * MapDisplay Component - Leaflet map with markers and polyline route
- * 
+ *
  * Inspired by Roadtrippers: numbered markers, animated polyline
- * 
+ *
  * @param {Array} destinations - Array of destinations with lat/lng
  * @param {Array} selectedIds - Array of selected destination IDs
  * @param {Function} onMarkerClick - Callback when marker is clicked
@@ -72,13 +72,13 @@ export default function MapDisplay({
     zoom = 11,
 }) {
     // Filter destinations with valid coordinates
-    const validDestinations = useMemo(() => 
+    const validDestinations = useMemo(() =>
         destinations.filter(d => d.latitude && d.longitude),
         [destinations]
     );
 
     // Get positions for bounds fitting
-    const positions = useMemo(() => 
+    const positions = useMemo(() =>
         validDestinations.map(d => [d.latitude, d.longitude]),
         [validDestinations]
     );
@@ -92,7 +92,7 @@ export default function MapDisplay({
     }, [validDestinations, selectedIds]);
 
     // Polyline positions
-    const routePositions = useMemo(() => 
+    const routePositions = useMemo(() =>
         selectedDestinations.map(d => [d.latitude, d.longitude]),
         [selectedDestinations]
     );
@@ -127,7 +127,7 @@ export default function MapDisplay({
                     const isSelected = selectedIds.includes(destination.id);
                     const selectedIndex = selectedIds.indexOf(destination.id);
                     const zoneColor = zoneColors[destination.zone?.id] || zoneColors[5];
-                    
+
                     return (
                         <Marker
                             key={destination.id}
@@ -147,7 +147,7 @@ export default function MapDisplay({
                                         {destination.name}
                                     </h3>
                                     {destination.zone && (
-                                        <span 
+                                        <span
                                             className="inline-block px-2 py-0.5 text-xs rounded-full text-white mb-2"
                                             style={{ backgroundColor: zoneColor }}
                                         >
@@ -209,7 +209,7 @@ export default function MapDisplay({
                 <div className="space-y-1">
                     {Object.entries(zoneColors).slice(0, 4).map(([id, color]) => (
                         <div key={id} className="flex items-center gap-2">
-                            <span 
+                            <span
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: color }}
                             />

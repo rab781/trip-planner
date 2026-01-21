@@ -109,7 +109,7 @@ export default function Reports({ data }) {
                                             .map((dest) => {
                                                 const maxCount = Math.max(...data.itineraries_per_destination.map(d => d.itineraries_count));
                                                 const percentage = maxCount > 0 ? (dest.itineraries_count / maxCount) * 100 : 0;
-                                                
+
                                                 return (
                                                     <tr key={dest.id}>
                                                         <td className="px-4 py-3 text-sm text-gray-900">

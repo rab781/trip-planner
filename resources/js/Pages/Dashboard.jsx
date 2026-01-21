@@ -36,7 +36,7 @@ const SparklesIcon = ({ className }) => (
 
 /**
  * User Dashboard - Inspired by Google Travel
- * 
+ *
  * Features: hero section "Where to next?", quick stats, recent trips, prominent CTA
  */
 export default function Dashboard() {
@@ -62,13 +62,13 @@ export default function Dashboard() {
             if (response.ok) {
                 const result = await response.json();
                 const itineraries = result.data || [];
-                
+
                 setRecentItineraries(itineraries.slice(0, 3));
-                
+
                 // Calculate stats
                 const upcoming = itineraries.filter(i => new Date(i.start_date) > new Date()).length;
                 const totalDestinations = itineraries.reduce((sum, i) => sum + (i.itinerary_items?.length || 0), 0);
-                
+
                 setStats({
                     total_itineraries: itineraries.length,
                     total_destinations: totalDestinations,
@@ -127,10 +127,10 @@ export default function Dashboard() {
                                     Mau kemana hari ini?
                                 </h1>
                                 <p className="text-secondary text-lg max-w-xl mb-8">
-                                    Rencanakan perjalanan seru ke Bandung. Pilih destinasi, atur jadwal, 
+                                    Rencanakan perjalanan seru ke Bandung. Pilih destinasi, atur jadwal,
                                     dan dapatkan estimasi biaya secara otomatis.
                                 </p>
-                                
+
                                 <Link
                                     href={route('itineraries.create')}
                                     className="inline-flex items-center gap-3 px-6 py-3.5 bg-main text-button font-semibold rounded-xl hover:bg-secondary transition-colors shadow-lg shadow-headline/20"

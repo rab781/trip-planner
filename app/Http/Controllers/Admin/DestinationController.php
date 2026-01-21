@@ -197,7 +197,7 @@ class DestinationController extends Controller
         // Sync ticket variants
         if (isset($validated['ticket_variants'])) {
             $existingIds = [];
-            
+
             foreach ($validated['ticket_variants'] as $variant) {
                 if (!empty($variant['id'])) {
                     // Update existing
@@ -241,7 +241,7 @@ class DestinationController extends Controller
 
         // Delete ticket variants (cascade should handle this, but just in case)
         $destination->ticketVariants()->delete();
-        
+
         $destination->delete();
 
         return redirect()

@@ -37,7 +37,7 @@ class ItineraryController extends Controller
                 404
             );
         }
-    
+
     }
 
     // Post /api/itineraries
@@ -220,7 +220,7 @@ class ItineraryController extends Controller
             foreach ($itemsByDay as $dayNumber => $dayItems) {
                 // Extract item IDs in new order
                 $newOrder = $dayItems->pluck('id')->toArray();
-                
+
                 // Update day_number for each item first
                 foreach ($dayItems as $itemData) {
                     ItineraryItem::where('id', $itemData['id'])->update([

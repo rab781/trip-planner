@@ -5,9 +5,9 @@ import MapDisplay from '@/Components/Map/MapDisplay';
 import DraggableList from '@/Components/Itinerary/DraggableList';
 import DayTabs from '@/Components/Itinerary/DayTabs';
 import BudgetSummary from '@/Components/Itinerary/BudgetSummary';
-import { 
-    ArrowLeftIcon, 
-    PencilIcon, 
+import {
+    ArrowLeftIcon,
+    PencilIcon,
     ShareIcon,
     MapIcon,
     ListBulletIcon,
@@ -15,7 +15,7 @@ import {
 
 /**
  * Itinerary Show Page - Detail view with drag & drop
- * 
+ *
  * Inspired by Sygic Travel: split view (map kiri 60%, detail kanan 40%)
  * Features: drag & drop reorder, live map update, budget summary
  */
@@ -91,7 +91,7 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                 if (result.data?.budget) {
                     setCurrentBudget(result.data.budget);
                 }
-                
+
                 // Update items with recalculated distances
                 if (result.data?.items) {
                     const updatedItems = result.data.items;
@@ -249,7 +249,7 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                                         Drag untuk mengatur ulang
                                     </span>
                                 </div>
-                                
+
                                 <DraggableList
                                     items={currentDayItems}
                                     onReorder={handleReorder}

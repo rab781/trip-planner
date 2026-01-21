@@ -3,9 +3,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 /**
  * DayTabs Component - Horizontal tabs for multi-day itineraries
- * 
+ *
  * Inspired by Sygic Travel: horizontal scroll on mobile, day indicators
- * 
+ *
  * @param {Array} days - Array of day numbers or objects
  * @param {number} activeDay - Currently active day
  * @param {Function} onDayChange - Callback when day changes
@@ -104,7 +104,7 @@ export default function DayTabs({
                 {days.map((day) => {
                     const dayNumber = typeof day === 'object' ? day.number : day;
                     const isActive = activeDay === dayNumber;
-                    
+
                     return (
                         <button
                             key={dayNumber}
