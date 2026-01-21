@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ItineraryItem;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Services\ItineraryService;
 
 class ItineraryController extends Controller
 {
@@ -185,7 +186,7 @@ class ItineraryController extends Controller
     }
 
     // Put /api/itineraries/{id}/reorder
-    public function reorder(Request $request, $id)
+    public function reorder(Request $request, $id, ItineraryService $itineraryService)
     {
         $itinerary = Itinerary::where('user_id', $request->user()->id)->find($id);
 
@@ -200,26 +201,55 @@ class ItineraryController extends Controller
             );
         }
 
-         $validated = $request->validate([
+        $validated = $request->validate([
             'items' => 'required|array',
             'items.*.id' => 'required|exists:itinerary_items,id',
-            'items.*.sequence_order' => 'required|integer',
             'items.*.day_number' => 'required|integer',
+            'start_location' => 'nullable|array',
+            'start_location.lat' => 'required_with:start_location|numeric',
+            'start_location.lng' => 'required_with:start_location|numeric',
         ]);
-        
-        DB::transaction(function () use ($validated) {
-            foreach ($validated['items'] as $itemData) {
-                ItineraryItem::where('id', $itemData['id'])->update([
-                    'sequence_order' => $itemData['sequence_order'],
-                    'day_number' => $itemData['day_number'],
-                ]);
+
+        // Group items by day and recalculate
+        $itemsByDay = collect($validated['items'])->groupBy('day_number');
+        $startLocation = $validated['start_location'] ?? null;
+
+        $updatedItems = collect();
+
+        DB::transaction(function () use ($itemsByDay, $itinerary, $itineraryService, $startLocation, &$updatedItems) {
+            foreach ($itemsByDay as $dayNumber => $dayItems) {
+                // Extract item IDs in new order
+                $newOrder = $dayItems->pluck('id')->toArray();
+                
+                // Update day_number for each item first
+                foreach ($dayItems as $itemData) {
+                    ItineraryItem::where('id', $itemData['id'])->update([
+                        'day_number' => $itemData['day_number'],
+                    ]);
+                }
+
+                // Use ItineraryService to recalculate distances and transport costs
+                $recalculated = $itineraryService->recalculateAfterReorder(
+                    $itinerary,
+                    $newOrder,
+                    $startLocation
+                );
+
+                $updatedItems = $updatedItems->merge($recalculated);
             }
         });
 
+        // Reload itinerary with updated items and budget
+        $itinerary->load(['itineraryItems.destination', 'itineraryItems.itineraryItemDetails']);
+        $budgetBreakdown = $itineraryService->calculateBudgetBreakdown($itinerary);
+
         return response()->json(
             [
-                'data' => null,
-                'message' => 'Itinerary items reordered successfully',
+                'data' => [
+                    'items' => $updatedItems,
+                    'budget' => $budgetBreakdown,
+                ],
+                'message' => 'Itinerary items reordered and recalculated successfully',
                 'status' => 200,
             ]
         );
