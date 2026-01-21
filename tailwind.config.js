@@ -17,22 +17,24 @@ export default {
             },
 
             colors: {
-            serute: {
-                purple: '#A855F7', // Primary Accent / Logo Top
-                blue: '#3B82F6',   // Primary Action / Logo Bottom
-                teal: '#0D9488',   // Secondary / Positive indicators
-                orange: '#F97316', // Secondary / Urgency indicators
-                dark: '#1E293B',   // Headings text
-                body: '#475569',   // Paragraph text
-                light: '#F8FAFC',  // Main background
-                border: '#E2E8F0', // Borders
-            }
+                    // Main Background
+                background: '#f9f4ef',
+
+                // Text Colors
+                headline: '#020826',
+                paragraph: '#716040',
+
+                // UI Elements
+                button: '#8c7851',
+                'button-text': '#fffffe',
+
+                // Illustration / Accents
+                stroke: '#020826',
+                main: '#fffffe',
+                highlight: '#8c7851',
+                secondary: '#eaddcf',
+                tertiary: '#f25042', // Warna merah/coral untuk aksen
         },
-            backgroundImage: {
-                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'gradient-conic':
-                    'conic-gradient(from 180deg at center, var(--tw-gradient-stops))',
-            },
         },
     },
 

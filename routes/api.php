@@ -43,7 +43,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/itineraries/{id}', [ItineraryController::class, 'update']);
     Route::delete('/itineraries/{id}', [ItineraryController::class, 'destroy']);
 
-    Route::put('/iternary/(id)/reorder',[ItineraryController::class, 'reorder']);
+    Route::put('/itineraries/{id}/reorder', [ItineraryController::class, 'reorder']);
 });
 
 // ========================================

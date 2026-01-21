@@ -137,7 +137,7 @@ export default function Chatbot() {
                 className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
                     isOpen
                         ? 'bg-gradient-to-r from-red-500 to-red-600'
-                        : 'bg-gradient-to-r from-serute-purple to-serute-blue'
+                        : 'bg-gradient-to-r from-button to-highlight'
                 }`}
             >
                 {isOpen ? (
@@ -145,8 +145,8 @@ export default function Chatbot() {
                 ) : (
                     <div className="relative">
                         <ChatBubbleLeftRightIcon className="h-6 w-6 text-white" />
-                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-serute-orange rounded-full animate-ping"></span>
-                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-serute-orange rounded-full"></span>
+                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-tertiary rounded-full animate-ping"></span>
+                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-tertiary rounded-full"></span>
                     </div>
                 )}
             </button>
@@ -158,11 +158,11 @@ export default function Chatbot() {
                 }`}
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-serute-purple to-serute-blue p-4 rounded-t-2xl">
+                <div className="bg-gradient-to-r from-button to-highlight p-4 rounded-t-2xl">
                     <div className="flex items-center space-x-3">
                         <div className="relative">
                             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                <SparklesIcon className="h-6 w-6 text-serute-purple" />
+                                <SparklesIcon className="h-6 w-6 text-button" />
                             </div>
                             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
                         </div>
@@ -183,8 +183,8 @@ export default function Chatbot() {
                             <div
                                 className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                                     message.sender === 'user'
-                                        ? 'bg-gradient-to-r from-serute-purple to-serute-blue text-white'
-                                        : 'bg-white text-serute-dark shadow-sm border border-serute-border'
+                                        ? 'bg-gradient-to-r from-button to-highlight text-white'
+                                        : 'bg-white text-headline shadow-sm border border-secondary'
                                 }`}
                             >
                                 <p className="text-sm whitespace-pre-line">{message.text}</p>
@@ -202,11 +202,11 @@ export default function Chatbot() {
 
                     {isTyping && (
                         <div className="flex justify-start">
-                            <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-serute-border">
+                            <div className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-secondary">
                                 <div className="flex space-x-2">
-                                    <div className="w-2 h-2 bg-serute-purple rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                    <div className="w-2 h-2 bg-serute-purple rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                    <div className="w-2 h-2 bg-serute-purple rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                    <div className="w-2 h-2 bg-button rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                    <div className="w-2 h-2 bg-button rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                    <div className="w-2 h-2 bg-button rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                                 </div>
                             </div>
                         </div>
@@ -217,14 +217,14 @@ export default function Chatbot() {
 
                 {/* Quick Questions */}
                 {messages.length <= 2 && (
-                    <div className="px-4 py-2 border-t border-serute-border bg-white">
-                        <p className="text-xs text-serute-body mb-2">Pertanyaan Cepat:</p>
+                    <div className="px-4 py-2 border-t border-secondary bg-white">
+                        <p className="text-xs text-paragraph mb-2">Pertanyaan Cepat:</p>
                         <div className="flex flex-wrap gap-2">
                             {quickQuestions.map((question, index) => (
                                 <button
                                     key={index}
                                     onClick={() => handleQuickQuestion(question)}
-                                    className="text-xs px-3 py-1.5 bg-serute-light text-serute-purple rounded-full hover:bg-gradient-to-r hover:from-serute-purple hover:to-serute-blue hover:text-white transition-all"
+                                    className="text-xs px-3 py-1.5 bg-background text-button rounded-full hover:bg-gradient-to-r hover:from-button hover:to-highlight hover:text-white transition-all"
                                 >
                                     {question}
                                 </button>
@@ -234,19 +234,19 @@ export default function Chatbot() {
                 )}
 
                 {/* Input */}
-                <form onSubmit={handleSendMessage} className="p-4 border-t border-serute-border bg-white rounded-b-2xl">
+                <form onSubmit={handleSendMessage} className="p-4 border-t border-secondary bg-white rounded-b-2xl">
                     <div className="flex items-center space-x-2">
                         <input
                             type="text"
                             value={inputMessage}
                             onChange={(e) => setInputMessage(e.target.value)}
                             placeholder="Ketik pertanyaan Anda..."
-                            className="flex-1 px-4 py-2 border-2 border-serute-border rounded-full focus:ring-2 focus:ring-serute-purple focus:border-serute-purple outline-none text-sm"
+                            className="flex-1 px-4 py-2 border-2 border-secondary rounded-full focus:ring-2 focus:ring-button focus:border-button outline-none text-sm"
                         />
                         <button
                             type="submit"
                             disabled={!inputMessage.trim()}
-                            className="p-2 bg-gradient-to-r from-serute-purple to-serute-blue text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
                             <PaperAirplaneIcon className="h-5 w-5" />
                         </button>

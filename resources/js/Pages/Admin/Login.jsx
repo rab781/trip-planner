@@ -29,7 +29,7 @@ export default function AdminLogin({ status }) {
                 <div className="w-full max-w-md">
                     {/* Logo & Header */}
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-xl">
+                        <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-button to-highlight rounded-2xl mb-4 shadow-xl">
                             <ShieldCheckIcon className="h-12 w-12 text-white" />
                         </div>
                         <h1 className="text-3xl font-bold text-white mb-2">Admin Panel</h1>
@@ -37,9 +37,9 @@ export default function AdminLogin({ status }) {
                     </div>
 
                     {/* Card Form */}
-                    <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border-2 border-serute-purple/30">
+                    <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border-2 border-button/30">
                         {status && (
-                            <div className="mb-4 px-4 py-3 text-sm font-medium text-serute-teal bg-serute-teal/10 rounded-lg border border-serute-teal/30">
+                            <div className="mb-4 px-4 py-3 text-sm font-medium text-highlight bg-highlight/10 rounded-lg border border-highlight/30">
                                 {status}
                             </div>
                         )}
@@ -63,7 +63,7 @@ export default function AdminLogin({ status }) {
                                     type="email"
                                     name="email"
                                     value={data.email}
-                                    className="mt-2 block w-full px-4 py-3 bg-gray-900/50 border-2 border-serute-purple/30 rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple text-white placeholder-gray-400"
+                                    className="mt-2 block w-full px-4 py-3 bg-gray-900/50 border-2 border-button/30 rounded-lg focus:ring-2 focus:ring-button focus:border-button text-white placeholder-gray-400"
                                     autoComplete="username"
                                     isFocused={true}
                                     placeholder="admin@tripplanner.com"
@@ -85,7 +85,7 @@ export default function AdminLogin({ status }) {
                                     type="password"
                                     name="password"
                                     value={data.password}
-                                    className="mt-2 block w-full px-4 py-3 bg-gray-900/50 border-2 border-serute-purple/30 rounded-lg focus:ring-2 focus:ring-serute-purple focus:border-serute-purple text-white placeholder-gray-400"
+                                    className="mt-2 block w-full px-4 py-3 bg-gray-900/50 border-2 border-button/30 rounded-lg focus:ring-2 focus:ring-button focus:border-button text-white placeholder-gray-400"
                                     autoComplete="current-password"
                                     placeholder="••••••••"
                                     onChange={(e) => setData('password', e.target.value)}
@@ -111,7 +111,7 @@ export default function AdminLogin({ status }) {
                             </div>
 
                             <PrimaryButton
-                                className="w-full justify-center py-3 bg-gradient-to-r from-serute-purple to-serute-blue hover:opacity-90 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition"
+                                className="w-full justify-center py-3 bg-gradient-to-r from-button to-highlight hover:opacity-90 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition"
                                 disabled={processing}
                             >
                                 {processing ? 'Memproses...' : 'Masuk ke Admin Panel'}
@@ -123,7 +123,7 @@ export default function AdminLogin({ status }) {
                                 Bukan admin?{' '}
                                 <Link
                                     href={route('login')}
-                                    className="text-serute-purple hover:text-serute-blue font-medium"
+                                    className="text-button hover:text-highlight font-medium"
                                 >
                                     Login sebagai User
                                 </Link>
@@ -141,11 +141,11 @@ export default function AdminLogin({ status }) {
                     </div>
 
                     {/* Security Notice */}
-                    <div className="mt-6 bg-serute-orange/10 border border-serute-orange/30 rounded-lg p-4">
+                    <div className="mt-6 bg-tertiary/10 border border-tertiary/30 rounded-lg p-4">
                         <div className="flex items-start space-x-3">
-                            <ShieldCheckIcon className="h-5 w-5 text-serute-orange flex-shrink-0 mt-0.5" />
+                            <ShieldCheckIcon className="h-5 w-5 text-tertiary flex-shrink-0 mt-0.5" />
                             <div className="text-xs text-gray-300">
-                                <p className="font-semibold mb-1 text-serute-orange">Akses Terbatas</p>
+                                <p className="font-semibold mb-1 text-tertiary">Akses Terbatas</p>
                                 <p className="text-gray-400">
                                     Halaman ini hanya untuk administrator. Aktivitas login akan dicatat untuk keamanan sistem.
                                 </p>
