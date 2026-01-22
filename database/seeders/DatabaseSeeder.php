@@ -686,6 +686,11 @@ class DatabaseSeeder extends Seeder
             'est_transport_cost' => 20500, // 5000 + (6.2 * 2500)
         ]);
 
+        // ========================================
+        // UPDATE DESTINATIONS WITH SOLO TRAVELER DATA
+        // ========================================
+        $this->updateSoloTravelerData();
+
         echo "\n✅ Database seeding completed successfully!\n";
         echo "📊 Summary:\n";
         echo "   - Users: " . User::count() . "\n";
@@ -696,5 +701,211 @@ class DatabaseSeeder extends Seeder
         echo "   - Ticket Variants: " . TicketVariant::count() . "\n";
         echo "   - Transport Rates: " . TransportRate::count() . "\n";
         echo "   - Itineraries: " . Itinerary::count() . "\n";
+    }
+
+    /**
+     * Update destinations with solo traveler fields
+     */
+    private function updateSoloTravelerData(): void
+    {
+        $soloTravelerData = [
+            // LEMBANG
+            'Kawah Tangkuban Perahu' => [
+                'solo_friendly_score' => 4,
+                'solo_tips' => "Bawa jaket karena udara dingin. Area parkir luas & aman. Banyak guide lokal yg bisa dipercaya. Jangan beli telur rebus terlalu mahal, tawar dulu!",
+                'activities' => ['foto kawah', 'trekking ke kawah ratu', 'beli oleh-oleh', 'makan jagung bakar'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'tinggi', 'sore' => 'sedang'],
+                'parking_fee' => 10000,
+                'food_price_range' => ['min' => 15000, 'max' => 50000],
+            ],
+            'Farmhouse Lembang' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Cocok untuk solo traveler! Banyak spot foto yg bisa minta tolong pengunjung lain. Gratis kostum hobbit. Weekday lebih sepi, weekend antri panjang.",
+                'activities' => ['foto spot eropa', 'minum susu sapi', 'belanja souvenir', 'naik kereta mini'],
+                'crowd_level' => ['pagi' => 'sedang', 'siang' => 'tinggi', 'sore' => 'sedang'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 20000, 'max' => 75000],
+            ],
+            'Floating Market Lembang' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Wajib beli sate kelinci! Hati-hati harga makanan agak mahal. Bisa naik perahu sendirian tanpa awkward. Area luas & instagramable.",
+                'activities' => ['makan di perahu', 'naik kano', 'foto', 'beli oleh-oleh'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'tinggi'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 25000, 'max' => 100000],
+            ],
+            'De Ranch Lembang' => [
+                'solo_friendly_score' => 3,
+                'solo_tips' => "Lebih seru kalau bareng orang lain, tapi bisa foto sendiri naik kuda. Staff ramah & helpful. Weekend sangat ramai.",
+                'activities' => ['naik kuda', 'panahan', 'foto koboi', 'makan steak'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'tinggi', 'sore' => 'sedang'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 30000, 'max' => 120000],
+            ],
+            'Observatorium Bosscha' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Wajib booking dulu! Cocok untuk solo traveler karena formatnya tur bersama. Sangat edukatif. Bawa kamera untuk foto sunrise.",
+                'activities' => ['observasi bintang', 'tur edukasi', 'foto teleskop vintage'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'rendah'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 10000, 'max' => 30000],
+            ],
+
+            // CIWIDEY
+            'Kawah Putih' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Datang pagi-pagi untuk kabut yg estetik! Bawa masker karena bau belerang. Bisa naik ontang-anting jika malas jalan. Sangat aman untuk solo.",
+                'activities' => ['foto kawah', 'jalan-jalan', 'beli strawberry'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'tinggi', 'sore' => 'sedang'],
+                'parking_fee' => 15000,
+                'food_price_range' => ['min' => 10000, 'max' => 40000],
+            ],
+            'Situ Patenggang' => [
+                'solo_friendly_score' => 4,
+                'solo_tips' => "Naik perahu sendirian bisa tapi lebih worth it patungan. Coba wisata ke Pulau Asmara. Bawa bekal dari luar lebih murah.",
+                'activities' => ['naik perahu', 'foto batu cinta', 'keliling danau', 'piknik'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'sedang'],
+                'parking_fee' => 10000,
+                'food_price_range' => ['min' => 15000, 'max' => 50000],
+            ],
+            'Rancabali Tea Plantation' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "View paling bagus pagi hari! Gratis masuk, hanya bayar parkir. Beli teh segar di kebun. Jalan-jalan santai di tengah kebun teh.",
+                'activities' => ['jalan di kebun teh', 'foto', 'beli teh', 'minum teh hangat'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'rendah'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 10000, 'max' => 35000],
+            ],
+            'Glamping Lakeside Rancabali' => [
+                'solo_friendly_score' => 3,
+                'solo_tips' => "Ada tent private untuk solo. Lebih worth patungan. Fasilitas lengkap. View danau keren banget pagi hari.",
+                'activities' => ['camping', 'foto sunrise', 'BBQ', 'stargazing'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'sedang'],
+                'parking_fee' => 10000,
+                'food_price_range' => ['min' => 50000, 'max' => 200000],
+            ],
+
+            // RANCAUPAS
+            'Rancaupas Camping Ground' => [
+                'solo_friendly_score' => 3,
+                'solo_tips' => "Bisa camping sendirian, tapi lebih aman bareng orang. Ada rumah pohon yg bisa sewa solo. Bawa bekal makanan sendiri.",
+                'activities' => ['camping', 'trekking', 'foto sunrise', 'api unggun'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'sedang'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 15000, 'max' => 40000],
+            ],
+
+            // DAGO
+            'Dago Dream Park' => [
+                'solo_friendly_score' => 4,
+                'solo_tips' => "Wahana bisa naik sendiri! Ada zipline & spot foto keren. Weekday lebih sepi. Staff bisa bantuin foto.",
+                'activities' => ['naik wahana', 'zipline', 'foto', 'makan'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'tinggi', 'sore' => 'sedang'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 20000, 'max' => 60000],
+            ],
+            'Tebing Keraton' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "WAJIB datang subuh untuk sunrise! Jangan takut sendirian, banyak pengunjung lain. Hati-hati jalan licin. Bawa jaket tebal.",
+                'activities' => ['foto sunrise', 'trekking ringan', 'menikmati view'],
+                'crowd_level' => ['pagi' => 'tinggi', 'siang' => 'rendah', 'sore' => 'sedang'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 10000, 'max' => 30000],
+            ],
+            'Curug Dago' => [
+                'solo_friendly_score' => 4,
+                'solo_tips' => "Trek lumayan menantang tapi worth it! Bawa sandal cadangan. Air dingin tapi segar. Bisa minta tolong foto sama pengunjung lain.",
+                'activities' => ['berenang', 'foto air terjun', 'trekking'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'rendah'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 10000, 'max' => 25000],
+            ],
+
+            // PUSAT KOTA
+            'Gedung Sate' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Wajib dikunjungi! Foto dari luar gratis. Ada museum di dalam. Weekday bisa masuk gedung dengan izin. Dekat kampus ITB.",
+                'activities' => ['foto ikon kota', 'museum', 'jalan-jalan'],
+                'crowd_level' => ['pagi' => 'sedang', 'siang' => 'sedang', 'sore' => 'sedang'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 15000, 'max' => 40000],
+            ],
+            'Museum Konferensi Asia Afrika' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "GRATIS! Sangat edukatif. Ada audio guide. Cocok banget untuk solo traveler. Weekday sepi, bisa explore santai.",
+                'activities' => ['belajar sejarah', 'foto ruangan konferensi', 'audio tour'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'rendah'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 0, 'max' => 0],
+            ],
+            'Jalan Braga' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Perfect untuk solo cafe hopping! Banyak kafe instagramable. Malam hari lebih hidup. Coba kopi di Braga Permai.",
+                'activities' => ['cafe hopping', 'foto bangunan vintage', 'street photography', 'kuliner'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'tinggi'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 25000, 'max' => 100000],
+            ],
+            'Alun-alun Bandung' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Aman 24 jam ada security. Banyak street food enak. Bisa main rumput & foto masjid. Weekend ada event musik.",
+                'activities' => ['santai di taman', 'kuliner malam', 'foto', 'ibadah di masjid'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'tinggi'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 5000, 'max' => 30000],
+            ],
+
+            // CIHAMPELAS
+            'Cihampelas Walk' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "Mall kecil tapi nyaman. Banyak FO murah. Food court variatif. Ada bioskop. Parkir luas & aman.",
+                'activities' => ['belanja', 'makan', 'nonton bioskop', 'cafe'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'tinggi'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 25000, 'max' => 75000],
+            ],
+            'Rumah Mode Factory Outlet' => [
+                'solo_friendly_score' => 5,
+                'solo_tips' => "FO terlengkap! Banyak diskon. Fitting room luas. Staff helpful. Weekday lebih sepi untuk belanja santai.",
+                'activities' => ['belanja baju', 'cari diskon', 'foto'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'tinggi'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 20000, 'max' => 50000],
+            ],
+
+            // BANDUNG UTARA
+            'Maribaya Hot Spring Resort' => [
+                'solo_friendly_score' => 4,
+                'solo_tips' => "Kolam air panas bikin rileks! Ada area private pool. Curug Maribaya bagus untuk foto. Trek tidak terlalu berat.",
+                'activities' => ['berendam air panas', 'foto curug', 'trekking', 'spa'],
+                'crowd_level' => ['pagi' => 'rendah', 'siang' => 'sedang', 'sore' => 'sedang'],
+                'parking_fee' => 10000,
+                'food_price_range' => ['min' => 25000, 'max' => 80000],
+            ],
+        ];
+
+        foreach ($soloTravelerData as $name => $data) {
+            Destination::where('name', $name)->update([
+                'solo_friendly_score' => $data['solo_friendly_score'],
+                'solo_tips' => $data['solo_tips'],
+                'activities' => $data['activities'],
+                'crowd_level' => $data['crowd_level'],
+                'parking_fee' => $data['parking_fee'],
+                'food_price_range' => $data['food_price_range'],
+            ]);
+        }
+
+        // Set default values for destinations not in the list
+        Destination::whereNull('solo_friendly_score')
+            ->update([
+                'solo_friendly_score' => 4,
+                'solo_tips' => 'Tempat ini cocok dikunjungi solo traveler. Tanyakan pada staff lokal jika butuh bantuan.',
+                'activities' => ['jalan-jalan', 'foto', 'menikmati suasana'],
+                'crowd_level' => ['pagi' => 'sedang', 'siang' => 'sedang', 'sore' => 'sedang'],
+                'parking_fee' => 5000,
+                'food_price_range' => ['min' => 15000, 'max' => 50000],
+            ]);
+
+        echo "   - Solo traveler data updated!\n";
     }
 }
