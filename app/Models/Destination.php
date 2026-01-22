@@ -20,12 +20,22 @@ class Destination extends Model
         'opening_time',
         'closing_time',
         'avg_visit_duration_minutes',
+        // Solo traveler fields
+        'solo_friendly_score',
+        'solo_tips',
+        'activities',
+        'crowd_level',
+        'parking_fee',
+        'food_price_range',
     ];
 
     protected $casts = [
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
         'rating' => 'decimal:2',
+        'activities' => 'array',
+        'crowd_level' => 'array',
+        'food_price_range' => 'array',
     ];
 
     public function zone()

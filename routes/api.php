@@ -44,6 +44,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/itineraries/{id}', [ItineraryController::class, 'destroy']);
 
     Route::put('/itineraries/{id}/reorder', [ItineraryController::class, 'reorder']);
+
+    // AI-powered itinerary generation
+    Route::post('/itineraries/generate', [ItineraryController::class, 'generate']);
+    Route::post('/itineraries/regenerate-day', [ItineraryController::class, 'regenerateDay']);
+    Route::post('/itineraries/suggest-replacement', [ItineraryController::class, 'suggestReplacement']);
 });
 
 // ========================================

@@ -8,6 +8,7 @@ use App\Models\ItineraryItem;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\ItineraryService;
+use App\Services\ItineraryGeneratorService;
 
 class ItineraryController extends Controller
 {
@@ -253,5 +254,147 @@ class ItineraryController extends Controller
                 'status' => 200,
             ]
         );
+    }
+
+    /**
+     * Generate itinerary based on preferences (AI-powered)
+     * POST /api/itineraries/generate
+     */
+    public function generate(Request $request, ItineraryGeneratorService $generatorService)
+    {
+        $validated = $request->validate([
+            'city_id' => 'required|exists:cities,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'total_pax_count' => 'required|integer|min:1',
+            'transportation_preference' => 'required|in:MOTOR,CAR',
+            'categories' => 'required|array|min:1',
+            'categories.*' => 'exists:categories,id',
+            'priority' => 'required|in:balanced,budget,popular,rating',
+            'pace' => 'required|in:relaxed,normal,packed',
+            'budget_per_day' => 'nullable|integer|min:0',
+            'solo_mode' => 'boolean',
+        ]);
+
+        // Calculate total days
+        $startDate = \Carbon\Carbon::parse($validated['start_date']);
+        $endDate = \Carbon\Carbon::parse($validated['end_date']);
+        $totalDays = $startDate->diffInDays($endDate) + 1;
+
+        $preferences = [
+            'city_id' => $validated['city_id'],
+            'total_days' => $totalDays,
+            'total_pax_count' => $validated['total_pax_count'],
+            'transportation_preference' => $validated['transportation_preference'],
+            'categories' => $validated['categories'],
+            'priority' => $validated['priority'],
+            'pace' => $validated['pace'],
+            'budget_per_day' => $validated['budget_per_day'] ?? null,
+            'solo_mode' => $validated['solo_mode'] ?? false,
+        ];
+
+        try {
+            $result = $generatorService->generate($preferences);
+
+            return response()->json([
+                'success' => true,
+                'data' => $result['data'],
+                'message' => 'Itinerary generated successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate itinerary: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Regenerate a specific day
+     * POST /api/itineraries/regenerate-day
+     */
+    public function regenerateDay(Request $request, ItineraryGeneratorService $generatorService)
+    {
+        $validated = $request->validate([
+            'city_id' => 'required|exists:cities,id',
+            'day_number' => 'required|integer|min:1',
+            'total_days' => 'required|integer|min:1',
+            'total_pax_count' => 'required|integer|min:1',
+            'transportation_preference' => 'required|in:MOTOR,CAR',
+            'categories' => 'required|array|min:1',
+            'priority' => 'required|in:balanced,budget,popular,rating',
+            'pace' => 'required|in:relaxed,normal,packed',
+            'exclude_ids' => 'array',
+            'exclude_ids.*' => 'integer',
+            'solo_mode' => 'boolean',
+        ]);
+
+        $preferences = [
+            'city_id' => $validated['city_id'],
+            'total_days' => $validated['total_days'],
+            'total_pax_count' => $validated['total_pax_count'],
+            'transportation_preference' => $validated['transportation_preference'],
+            'categories' => $validated['categories'],
+            'priority' => $validated['priority'],
+            'pace' => $validated['pace'],
+            'solo_mode' => $validated['solo_mode'] ?? false,
+        ];
+
+        try {
+            $result = $generatorService->regenerateDay(
+                $preferences,
+                $validated['day_number'],
+                $validated['exclude_ids'] ?? []
+            );
+
+            return response()->json([
+                'success' => true,
+                'data' => $result['data'],
+                'message' => 'Day regenerated successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to regenerate day: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Suggest replacement for a destination
+     * POST /api/itineraries/suggest-replacement
+     */
+    public function suggestReplacement(Request $request, ItineraryGeneratorService $generatorService)
+    {
+        $validated = $request->validate([
+            'city_id' => 'required|exists:cities,id',
+            'exclude_id' => 'required|exists:destinations,id',
+            'category_id' => 'nullable|exists:categories,id',
+            'priority' => 'required|in:balanced,budget,popular,rating',
+            'solo_mode' => 'boolean',
+            'limit' => 'integer|min:1|max:10',
+        ]);
+
+        try {
+            $suggestions = $generatorService->suggestReplacement(
+                $validated['city_id'],
+                $validated['exclude_id'],
+                $validated['category_id'] ?? null,
+                $validated['priority'],
+                $validated['solo_mode'] ?? false,
+                $validated['limit'] ?? 5
+            );
+
+            return response()->json([
+                'success' => true,
+                'data' => $suggestions,
+                'message' => 'Replacement suggestions retrieved',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get suggestions: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
