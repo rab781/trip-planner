@@ -1,3 +1,326 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ========================================
+   CUSTOM ANIMATIONS & UTILITIES
+   ======================================== */
+
+@layer base {
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Body styling */
+    body {
+        @apply bg-background text-paragraph transition-colors duration-300;
+    }
+}
+
+@layer components {
+    /* ========================================
+       ANIMATION UTILITIES
+       ======================================== */
+    
+    /* Staggered animation delays for children */
+    .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+    .stagger-children > *:nth-child(2) { animation-delay: 100ms; }
+    .stagger-children > *:nth-child(3) { animation-delay: 200ms; }
+    .stagger-children > *:nth-child(4) { animation-delay: 300ms; }
+    .stagger-children > *:nth-child(5) { animation-delay: 400ms; }
+    .stagger-children > *:nth-child(6) { animation-delay: 500ms; }
+    .stagger-children > *:nth-child(7) { animation-delay: 600ms; }
+    .stagger-children > *:nth-child(8) { animation-delay: 700ms; }
+
+    /* Reveal on scroll - initial state */
+    .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .reveal-on-scroll.revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Reveal variants */
+    .reveal-fade {
+        opacity: 0;
+        transition: opacity 0.6s ease-out;
+    }
+
+    .reveal-fade.revealed {
+        opacity: 1;
+    }
+
+    .reveal-slide-left {
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .reveal-slide-left.revealed {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .reveal-slide-right {
+        opacity: 0;
+        transform: translateX(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .reveal-slide-right.revealed {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .reveal-scale {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+
+    .reveal-scale.revealed {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* ========================================
+       HOVER EFFECTS
+       ======================================== */
+    
+    /* Card hover lift effect */
+    .hover-lift {
+        @apply transition-all duration-300 ease-out;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-6px);
+        @apply shadow-card-hover;
+    }
+
+    /* Button hover glow */
+    .hover-glow-teal {
+        @apply transition-all duration-300;
+    }
+
+    .hover-glow-teal:hover {
+        @apply shadow-glow-teal;
+    }
+
+    .hover-glow-coral {
+        @apply transition-all duration-300;
+    }
+
+    .hover-glow-coral:hover {
+        @apply shadow-glow-coral;
+    }
+
+    /* Scale on hover */
+    .hover-scale {
+        @apply transition-transform duration-200 ease-out;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+
+    .hover-scale-sm {
+        @apply transition-transform duration-200 ease-out;
+    }
+
+    .hover-scale-sm:hover {
+        transform: scale(1.02);
+    }
+
+    /* ========================================
+       GRADIENT BACKGROUNDS
+       ======================================== */
+    
+    /* Animated gradient button */
+    .gradient-animated {
+        background: linear-gradient(135deg, #0d9488, #14b8a6, #0f766e, #0d9488);
+        background-size: 300% 300%;
+        animation: gradientShift 4s ease infinite;
+    }
+
+    .gradient-coral-animated {
+        background: linear-gradient(135deg, #f25042, #ff7b6b, #dc3d30, #f25042);
+        background-size: 300% 300%;
+        animation: gradientShift 4s ease infinite;
+    }
+
+    /* Static gradients */
+    .gradient-teal {
+        @apply bg-gradient-to-r from-teal-500 to-teal-600;
+    }
+
+    .gradient-warm {
+        @apply bg-gradient-to-r from-amber-400 via-coral-400 to-coral-500;
+    }
+
+    .gradient-hero {
+        background: linear-gradient(135deg, #f9f4ef 0%, #eaddcf 50%, #f9f4ef 100%);
+    }
+
+    .dark .gradient-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    }
+
+    /* ========================================
+       TEXT EFFECTS
+       ======================================== */
+    
+    /* Gradient text */
+    .text-gradient-teal {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-teal-700;
+    }
+
+    .text-gradient-warm {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-red-500 to-red-600;
+    }
+
+    /* ========================================
+       LOADING STATES
+       ======================================== */
+    
+    /* Skeleton loading */
+    .skeleton {
+        @apply bg-secondary animate-pulse rounded;
+    }
+
+    /* Shimmer effect */
+    .shimmer {
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    /* ========================================
+       SPECIAL EFFECTS
+       ======================================== */
+    
+    /* Sparkle/particle effect container */
+    .sparkle-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sparkle-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+        );
+        animation: sparkle 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+        0% { left: -100%; }
+        50%, 100% { left: 100%; }
+    }
+
+    /* Ripple effect on click */
+    .ripple {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ripple::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        background-image: radial-gradient(circle, #fff 10%, transparent 10%);
+        background-repeat: no-repeat;
+        background-position: 50%;
+        transform: scale(10);
+        opacity: 0;
+        transition: transform 0.5s, opacity 0.5s;
+    }
+
+    .ripple:active::after {
+        transform: scale(0);
+        opacity: 0.3;
+        transition: 0s;
+    }
+
+    /* Floating shadow for cards */
+    .shadow-float {
+        box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.05),
+            0 10px 15px -3px rgba(0, 0, 0, 0.05),
+            0 20px 25px -5px rgba(0, 0, 0, 0.03);
+    }
+}
+
+@layer utilities {
+    /* GPU acceleration hint */
+    .gpu-accelerated {
+        transform: translateZ(0);
+        will-change: transform;
+    }
+
+    /* Animation play state */
+    .animation-paused {
+        animation-play-state: paused;
+    }
+
+    .animation-running {
+        animation-play-state: running;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY: Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .reveal-on-scroll,
+    .reveal-fade,
+    .reveal-slide-left,
+    .reveal-slide-right,
+    .reveal-scale {
+        opacity: 1;
+        transform: none;
+    }
+
+    .animate-float,
+    .animate-float-slow,
+    .animate-plane-float,
+    .animate-cloud-drift {
+        animation: none;
+    }
+}

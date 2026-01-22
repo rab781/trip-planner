@@ -1,18 +1,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import EmptyStateIllustration from '@/Components/Illustrations/EmptyStateIllustration';
+import { CompassIcon, MapPinIcon as TravelMapPinIcon, CalendarIcon, SparklesIcon as TravelSparkles, RouteIcon, SuitcaseIcon } from '@/Components/Icons/TravelIcons';
+import { useRevealOnScroll, useStaggeredReveal } from '@/Hooks/useIntersectionObserver';
 
 // SVG Icons as components
 const PlusIcon = ({ className }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-    </svg>
-);
-
-const MapPinIcon = ({ className }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
 );
 
@@ -28,12 +24,6 @@ const ArrowRightIcon = ({ className }) => (
     </svg>
 );
 
-const SparklesIcon = ({ className }) => (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-    </svg>
-);
-
 /**
  * User Dashboard - Inspired by Google Travel
  *
@@ -44,6 +34,12 @@ export default function Dashboard() {
     const [stats, setStats] = useState({ total_itineraries: 0, total_destinations: 0, upcoming_trips: 0 });
     const [recentItineraries, setRecentItineraries] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    
+    // Scroll animations
+    const heroReveal = useRevealOnScroll({ animation: 'fade-up', delay: 0 });
+    const actionsReveal = useStaggeredReveal({ staggerDelay: 100, itemCount: 4 });
+    const recentReveal = useRevealOnScroll({ animation: 'fade-up', delay: 100 });
+    const zonesReveal = useStaggeredReveal({ staggerDelay: 100, itemCount: 4 });
 
     useEffect(() => {
         fetchDashboardData();
@@ -107,53 +103,62 @@ export default function Dashboard() {
         <AuthenticatedLayout>
             <Head title="Dashboard" />
 
-            <div className="min-h-screen bg-gradient-to-b from-secondary/50 to-main">
+            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
                 {/* Hero Section */}
-                <div className="relative overflow-hidden bg-button text-button-text">
+                <div className="relative overflow-hidden bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 dark:from-teal-600 dark:via-teal-700 dark:to-teal-800 text-white">
                     {/* Decorative Elements */}
                     <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute -top-24 -right-24 w-96 h-96 bg-main/10 rounded-full blur-3xl" />
-                        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-highlight/20 rounded-full blur-3xl" />
+                        <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow" />
+                        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-400/20 rounded-full blur-3xl" />
+                        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-coral-500/10 rounded-full blur-2xl" />
                     </div>
 
-                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+                    <div 
+                        ref={heroReveal.ref}
+                        className={`relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 ${heroReveal.className}`}
+                        style={heroReveal.style}
+                    >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                             {/* Left Content */}
-                            <div>
-                                <p className="text-secondary mb-2">
-                                    {getGreeting()}, {auth.user?.name?.split(' ')[0] || 'Traveler'}! 👋
+                            <div className="animate-fade-in">
+                                <p className="text-teal-100 mb-2 flex items-center gap-2">
+                                    <span className="animate-wave inline-block">👋</span>
+                                    {getGreeting()}, {auth.user?.name?.split(' ')[0] || 'Traveler'}!
                                 </p>
                                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
                                     Mau kemana hari ini?
                                 </h1>
-                                <p className="text-secondary text-lg max-w-xl mb-8">
+                                <p className="text-teal-100 text-lg max-w-xl mb-8">
                                     Rencanakan perjalanan seru ke Bandung. Pilih destinasi, atur jadwal,
                                     dan dapatkan estimasi biaya secara otomatis.
                                 </p>
 
                                 <Link
                                     href={route('itineraries.create')}
-                                    className="inline-flex items-center gap-3 px-6 py-3.5 bg-main text-button font-semibold rounded-xl hover:bg-secondary transition-colors shadow-lg shadow-headline/20"
+                                    className="group inline-flex items-center gap-3 px-6 py-3.5 bg-white text-teal-600 font-semibold rounded-xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl hover:shadow-teal-500/25"
                                 >
-                                    <SparklesIcon className="w-5 h-5" />
+                                    <TravelSparkles className="w-5 h-5 group-hover:animate-pulse" />
                                     Buat Rencana Baru
-                                    <ArrowRightIcon className="w-5 h-5" />
+                                    <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
 
                             {/* Right Content - Stats Cards */}
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-main/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+                            <div className="grid grid-cols-3 gap-4 animate-fade-in-up">
+                                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20 hover:bg-white/20 transition-colors">
+                                    <SuitcaseIcon className="w-6 h-6 mx-auto mb-2 text-teal-100" />
                                     <p className="text-3xl font-bold">{stats.total_itineraries}</p>
-                                    <p className="text-secondary text-sm">Rencana</p>
+                                    <p className="text-teal-100 text-sm">Rencana</p>
                                 </div>
-                                <div className="bg-main/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+                                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20 hover:bg-white/20 transition-colors">
+                                    <CalendarIcon className="w-6 h-6 mx-auto mb-2 text-teal-100" />
                                     <p className="text-3xl font-bold">{stats.upcoming_trips}</p>
-                                    <p className="text-secondary text-sm">Akan Datang</p>
+                                    <p className="text-teal-100 text-sm">Akan Datang</p>
                                 </div>
-                                <div className="bg-main/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+                                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20 hover:bg-white/20 transition-colors">
+                                    <TravelMapPinIcon className="w-6 h-6 mx-auto mb-2 text-teal-100" />
                                     <p className="text-3xl font-bold">{stats.total_destinations}</p>
-                                    <p className="text-secondary text-sm">Destinasi</p>
+                                    <p className="text-teal-100 text-sm">Destinasi</p>
                                 </div>
                             </div>
                         </div>
@@ -163,58 +168,51 @@ export default function Dashboard() {
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Quick Actions */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-                        <Link
-                            href={route('itineraries.create')}
-                            className="flex flex-col items-center gap-3 p-5 bg-main rounded-2xl border border-secondary shadow-sm hover:shadow-md hover:border-button/20 transition-all group"
-                        >
-                            <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center group-hover:bg-button group-hover:text-button-text transition-colors">
-                                <PlusIcon className="w-6 h-6 text-button group-hover:text-button-text" />
-                            </div>
-                            <span className="font-medium text-headline text-sm">Buat Baru</span>
-                        </Link>
-
-                        <Link
-                            href={route('itineraries.index')}
-                            className="flex flex-col items-center gap-3 p-5 bg-main rounded-2xl border border-secondary shadow-sm hover:shadow-md hover:border-button/20 transition-all group"
-                        >
-                            <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center group-hover:bg-button transition-colors">
-                                <CalendarDaysIcon className="w-6 h-6 text-button group-hover:text-button-text" />
-                            </div>
-                            <span className="font-medium text-headline text-sm">Lihat Semua</span>
-                        </Link>
-
-                        <a
-                            href="#explore"
-                            className="flex flex-col items-center gap-3 p-5 bg-main rounded-2xl border border-secondary shadow-sm hover:shadow-md hover:border-button/20 transition-all group"
-                        >
-                            <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center group-hover:bg-highlight transition-colors">
-                                <MapPinIcon className="w-6 h-6 text-highlight group-hover:text-button-text" />
-                            </div>
-                            <span className="font-medium text-headline text-sm">Jelajahi</span>
-                        </a>
-
-                        <a
-                            href="#tips"
-                            className="flex flex-col items-center gap-3 p-5 bg-main rounded-2xl border border-secondary shadow-sm hover:shadow-md hover:border-button/20 transition-all group"
-                        >
-                            <div className="w-12 h-12 bg-tertiary/20 rounded-xl flex items-center justify-center group-hover:bg-tertiary transition-colors">
-                                <span className="text-xl">💡</span>
-                            </div>
-                            <span className="font-medium text-headline text-sm">Tips Travel</span>
-                        </a>
+                    <div 
+                        ref={actionsReveal.containerRef}
+                        className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10"
+                    >
+                        {[
+                            { href: route('itineraries.create'), icon: PlusIcon, label: 'Buat Baru', color: 'teal' },
+                            { href: route('itineraries.index'), icon: CalendarDaysIcon, label: 'Lihat Semua', color: 'indigo' },
+                            { href: '#explore', icon: TravelMapPinIcon, label: 'Jelajahi', color: 'coral' },
+                            { href: '#tips', icon: CompassIcon, label: 'Tips Travel', color: 'amber' },
+                        ].map((action, index) => {
+                            const itemProps = actionsReveal.getItemProps(index);
+                            return (
+                                <Link
+                                    key={action.label}
+                                    ref={itemProps.ref}
+                                    href={action.href}
+                                    className={`flex flex-col items-center gap-3 p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-${action.color}-300 dark:hover:border-${action.color}-700 transition-all group ${itemProps.className}`}
+                                    style={itemProps.style}
+                                >
+                                    <div className={`w-12 h-12 bg-${action.color}-100 dark:bg-${action.color}-900/30 rounded-xl flex items-center justify-center group-hover:bg-${action.color}-500 group-hover:scale-110 transition-all`}>
+                                        <action.icon className={`w-6 h-6 text-${action.color}-600 dark:text-${action.color}-400 group-hover:text-white`} />
+                                    </div>
+                                    <span className="font-medium text-headline dark:text-white text-sm">{action.label}</span>
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Recent Itineraries */}
-                    <section className="mb-10">
+                    <section 
+                        ref={recentReveal.ref}
+                        className={`mb-10 ${recentReveal.className}`}
+                        style={recentReveal.style}
+                    >
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-semibold text-headline">Rencana Terbaru</h2>
+                            <h2 className="text-xl font-semibold text-headline dark:text-white flex items-center gap-2">
+                                <RouteIcon className="w-5 h-5 text-teal-500" />
+                                Rencana Terbaru
+                            </h2>
                             <Link
                                 href={route('itineraries.index')}
-                                className="text-sm text-button hover:underline flex items-center gap-1"
+                                className="text-sm text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 group"
                             >
                                 Lihat Semua
-                                <ArrowRightIcon className="w-4 h-4" />
+                                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
 
@@ -222,26 +220,26 @@ export default function Dashboard() {
                             /* Skeleton Loader */
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {[1, 2, 3].map((i) => (
-                                    <div key={i} className="bg-main rounded-2xl border border-secondary overflow-hidden animate-pulse">
-                                        <div className="h-24 bg-secondary" />
+                                    <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                        <div className="h-24 bg-gray-200 dark:bg-gray-700 shimmer" />
                                         <div className="p-4 space-y-3">
-                                            <div className="h-5 bg-secondary rounded w-3/4" />
-                                            <div className="h-4 bg-secondary/50 rounded w-1/2" />
+                                            <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 shimmer" />
+                                            <div className="h-4 bg-gray-100 dark:bg-gray-600 rounded w-1/2 shimmer" />
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : recentItineraries.length === 0 ? (
-                            /* Empty State */
-                            <div className="text-center py-12 bg-main rounded-2xl border border-secondary">
-                                <div className="w-20 h-20 mx-auto bg-secondary rounded-full flex items-center justify-center mb-4">
-                                    <span className="text-4xl">🗺️</span>
+                            /* Empty State with Illustration */
+                            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+                                <div className="max-w-xs mx-auto mb-6">
+                                    <EmptyStateIllustration />
                                 </div>
-                                <h3 className="font-semibold text-headline mb-2">Belum ada rencana</h3>
-                                <p className="text-paragraph mb-6">Mulai petualanganmu sekarang!</p>
+                                <h3 className="font-semibold text-headline dark:text-white mb-2">Belum ada rencana</h3>
+                                <p className="text-gray-500 dark:text-gray-400 mb-6">Mulai petualanganmu sekarang!</p>
                                 <Link
                                     href={route('itineraries.create')}
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-button text-button-text font-medium rounded-xl hover:bg-button/90 transition-colors"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-medium rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all shadow-md hover:shadow-lg hover:shadow-teal-500/25"
                                 >
                                     <PlusIcon className="w-5 h-5" />
                                     Buat Rencana
@@ -250,16 +248,18 @@ export default function Dashboard() {
                         ) : (
                             /* Itinerary Cards */
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {recentItineraries.map((itinerary) => (
+                                {recentItineraries.map((itinerary, index) => (
                                     <Link
                                         key={itinerary.id}
                                         href={route('itineraries.show', itinerary.id)}
-                                        className="bg-main rounded-2xl border border-secondary overflow-hidden hover:shadow-lg hover:border-button/20 transition-all group"
+                                        className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg hover:border-teal-300 dark:hover:border-teal-700 transition-all group animate-fade-in-up"
+                                        style={{ animationDelay: `${index * 100}ms` }}
                                     >
                                         {/* Card Header */}
-                                        <div className="h-20 bg-button relative">
+                                        <div className="h-20 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 relative overflow-hidden">
+                                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent)]" />
                                             <div className="absolute bottom-2 left-3">
-                                                <span className="px-2 py-0.5 bg-main/20 backdrop-blur-sm text-button-text text-xs rounded-full">
+                                                <span className="px-2 py-0.5 bg-white/20 backdrop-blur-sm text-white text-xs rounded-full">
                                                     {itinerary.city?.name || 'Bandung'}
                                                 </span>
                                             </div>
@@ -267,10 +267,10 @@ export default function Dashboard() {
 
                                         {/* Card Body */}
                                         <div className="p-4">
-                                            <h3 className="font-semibold text-headline group-hover:text-button transition-colors truncate mb-2">
+                                            <h3 className="font-semibold text-headline dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate mb-2">
                                                 {itinerary.title}
                                             </h3>
-                                            <div className="flex items-center gap-4 text-sm text-paragraph">
+                                            <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                                                 <span className="flex items-center gap-1">
                                                     <CalendarDaysIcon className="w-4 h-4" />
                                                     {formatDate(itinerary.start_date)}
@@ -287,48 +287,62 @@ export default function Dashboard() {
 
                     {/* Featured Zones */}
                     <section id="explore" className="mb-10">
-                        <h2 className="text-xl font-semibold text-headline mb-6">Zona Populer di Bandung</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <h2 className="text-xl font-semibold text-headline dark:text-white mb-6 flex items-center gap-2">
+                            <TravelMapPinIcon className="w-5 h-5 text-coral-500" />
+                            Zona Populer di Bandung
+                        </h2>
+                        <div 
+                            ref={zonesReveal.containerRef}
+                            className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+                        >
                             {[
-                                { name: 'Lembang', emoji: '🌿', color: 'from-button to-highlight', desc: 'Alam & Kebun' },
-                                { name: 'Ciwidey', emoji: '🌋', color: 'from-highlight to-button', desc: 'Kawah & Danau' },
-                                { name: 'Dago', emoji: '🏙️', color: 'from-tertiary to-button', desc: 'Kuliner & Kafe' },
-                                { name: 'Kota', emoji: '🛍️', color: 'from-button to-tertiary', desc: 'Belanja & Sejarah' },
-                            ].map((zone) => (
-                                <div
-                                    key={zone.name}
-                                    className="relative overflow-hidden rounded-2xl h-32 cursor-pointer group"
-                                >
-                                    <div className={`absolute inset-0 bg-gradient-to-br ${zone.color}`} />
-                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-                                    <div className="relative h-full flex flex-col items-center justify-center text-button-text">
-                                        <span className="text-3xl mb-1">{zone.emoji}</span>
-                                        <h3 className="font-bold">{zone.name}</h3>
-                                        <p className="text-xs text-button-text/80">{zone.desc}</p>
+                                { name: 'Lembang', emoji: '🌿', gradient: 'from-teal-500 to-teal-600', desc: 'Alam & Kebun' },
+                                { name: 'Ciwidey', emoji: '🌋', gradient: 'from-coral-500 to-coral-600', desc: 'Kawah & Danau' },
+                                { name: 'Dago', emoji: '🏙️', gradient: 'from-indigo-500 to-indigo-600', desc: 'Kuliner & Kafe' },
+                                { name: 'Kota', emoji: '🛍️', gradient: 'from-amber-500 to-amber-600', desc: 'Belanja & Sejarah' },
+                            ].map((zone, index) => {
+                                const itemProps = zonesReveal.getItemProps(index);
+                                return (
+                                    <div
+                                        key={zone.name}
+                                        ref={itemProps.ref}
+                                        className={`relative overflow-hidden rounded-2xl h-32 cursor-pointer group ${itemProps.className}`}
+                                        style={itemProps.style}
+                                    >
+                                        <div className={`absolute inset-0 bg-gradient-to-br ${zone.gradient}`} />
+                                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                                        <div className="relative h-full flex flex-col items-center justify-center text-white">
+                                            <span className="text-3xl mb-1 group-hover:scale-125 transition-transform">{zone.emoji}</span>
+                                            <h3 className="font-bold">{zone.name}</h3>
+                                            <p className="text-xs text-white/80">{zone.desc}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </section>
 
                     {/* Tips Section */}
-                    <section id="tips" className="bg-gradient-to-br from-secondary to-background rounded-2xl p-6 sm:p-8">
-                        <h2 className="text-xl font-semibold text-headline mb-4">💡 Tips Hemat Perjalanan</h2>
+                    <section id="tips" className="bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 sm:p-8 transition-colors duration-300">
+                        <h2 className="text-xl font-semibold text-headline dark:text-white mb-4 flex items-center gap-2">
+                            <CompassIcon className="w-5 h-5 text-amber-500" />
+                            Tips Hemat Perjalanan
+                        </h2>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div className="bg-main rounded-xl p-4 shadow-sm">
+                            <div className="bg-white dark:bg-gray-700 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-600">
                                 <span className="text-2xl">🗓️</span>
-                                <h3 className="font-medium text-headline mt-2 mb-1">Pilih Hari Weekday</h3>
-                                <p className="text-sm text-paragraph">Harga tiket dan penginapan biasanya lebih murah di hari kerja.</p>
+                                <h3 className="font-medium text-headline dark:text-white mt-2 mb-1">Pilih Hari Weekday</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Harga tiket dan penginapan biasanya lebih murah di hari kerja.</p>
                             </div>
-                            <div className="bg-main rounded-xl p-4 shadow-sm">
+                            <div className="bg-white dark:bg-gray-700 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-600">
                                 <span className="text-2xl">📍</span>
-                                <h3 className="font-medium text-headline mt-2 mb-1">Kelompokkan per Zona</h3>
-                                <p className="text-sm text-paragraph">Kunjungi destinasi di zona yang sama untuk hemat transportasi.</p>
+                                <h3 className="font-medium text-headline dark:text-white mt-2 mb-1">Kelompokkan per Zona</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Kunjungi destinasi di zona yang sama untuk hemat transportasi.</p>
                             </div>
-                            <div className="bg-main rounded-xl p-4 shadow-sm">
+                            <div className="bg-white dark:bg-gray-700 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-600">
                                 <span className="text-2xl">🎟️</span>
-                                <h3 className="font-medium text-headline mt-2 mb-1">Beli Tiket Online</h3>
-                                <p className="text-sm text-paragraph">Beberapa tempat wisata menawarkan diskon untuk pembelian online.</p>
+                                <h3 className="font-medium text-headline dark:text-white mt-2 mb-1">Beli Tiket Online</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Beberapa tempat wisata menawarkan diskon untuk pembelian online.</p>
                             </div>
                         </div>
                     </section>
