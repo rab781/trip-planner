@@ -5,6 +5,8 @@ import EmptyStateIllustration from '@/Components/Illustrations/EmptyStateIllustr
 import { CompassIcon, MapPinIcon as TravelMapPinIcon, CalendarIcon, SparklesIcon as TravelSparkles, RouteIcon, SuitcaseIcon } from '@/Components/Icons/TravelIcons';
 import { useRevealOnScroll, useStaggeredReveal } from '@/Hooks/useIntersectionObserver';
 
+import TravelPathAnimation from '@/Components/Illustrations/TravelPathAnimation';
+
 // SVG Icons as components
 const PlusIcon = ({ className }) => (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,7 +36,7 @@ export default function Dashboard() {
     const [stats, setStats] = useState({ total_itineraries: 0, total_destinations: 0, upcoming_trips: 0 });
     const [recentItineraries, setRecentItineraries] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     // Scroll animations
     const heroReveal = useRevealOnScroll({ animation: 'fade-up', delay: 0 });
     const actionsReveal = useStaggeredReveal({ staggerDelay: 100, itemCount: 4 });
@@ -111,9 +113,13 @@ export default function Dashboard() {
                         <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow" />
                         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-teal-400/20 rounded-full blur-3xl" />
                         <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-coral-500/10 rounded-full blur-2xl" />
+                        {/* Walking Animation Overlay */}
+                        <div className="absolute inset-0 opacity-30 pointer-events-none">
+                            <TravelPathAnimation />
+                        </div>
                     </div>
 
-                    <div 
+                    <div
                         ref={heroReveal.ref}
                         className={`relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 ${heroReveal.className}`}
                         style={heroReveal.style}
@@ -168,7 +174,7 @@ export default function Dashboard() {
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Quick Actions */}
-                    <div 
+                    <div
                         ref={actionsReveal.containerRef}
                         className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10"
                     >
@@ -197,7 +203,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Recent Itineraries */}
-                    <section 
+                    <section
                         ref={recentReveal.ref}
                         className={`mb-10 ${recentReveal.className}`}
                         style={recentReveal.style}
@@ -291,7 +297,7 @@ export default function Dashboard() {
                             <TravelMapPinIcon className="w-5 h-5 text-coral-500" />
                             Zona Populer di Bandung
                         </h2>
-                        <div 
+                        <div
                             ref={zonesReveal.containerRef}
                             className="grid grid-cols-2 sm:grid-cols-4 gap-4"
                         >

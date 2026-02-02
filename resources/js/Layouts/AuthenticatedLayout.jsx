@@ -14,13 +14,13 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <div className="min-h-screen bg-background dark:bg-background-dark transition-colors duration-300">
-            <nav className="border-b border-secondary dark:border-gray-700 bg-main dark:bg-gray-900 transition-colors duration-300">
+            <nav className="glass sticky top-0 z-50 transition-all duration-300">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
+                    <div className="flex h-16 justify-between items-center">
+                        <div className="flex items-center">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-white" />
+                                    <ApplicationLogo className="block h-10 w-auto fill-current text-brand-700 dark:text-brand-400 hover:scale-105 transition-transform duration-300" />
                                 </Link>
                             </div>
 
@@ -28,13 +28,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
+                                    className="text-paragraph-light dark:text-paragraph-dark hover:text-brand-600 dark:hover:text-brand-400 font-medium transition-colors"
                                 >
                                     Dashboard
                                 </NavLink>
                             </div>
                         </div>
 
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center gap-3">
+                        <div className="hidden sm:ms-6 sm:flex sm:items-center gap-4">
                             {/* Theme Toggle Button */}
                             <ThemeToggle size="sm" />
 
@@ -44,12 +45,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white dark:bg-gray-800 px-3 py-2 text-sm font-medium leading-4 text-gray-500 dark:text-gray-300 transition duration-150 ease-in-out hover:text-gray-700 dark:hover:text-white focus:outline-none"
+                                                className="inline-flex items-center gap-2 rounded-xl bg-surface-light/50 dark:bg-surface-dark/50 px-4 py-2 text-sm font-medium leading-4 text-headline-light dark:text-headline-dark hover:text-brand-600 dark:hover:text-brand-400 focus:outline-none transition ease-in-out duration-150 border border-transparent hover:border-brand-200"
                                             >
                                                 {user.name}
 
                                                 <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
+                                                    className="-me-0.5 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
                                                     fill="currentColor"
@@ -74,6 +75,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                             href={route('logout')}
                                             method="post"
                                             as="button"
+                                            className="text-red-500 hover:text-red-600"
                                         >
                                             Log Out
                                         </Dropdown.Link>
@@ -131,7 +133,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div
                     className={
                         (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
+                        ' sm:hidden glass'
                     }
                 >
                     <div className="space-y-1 pb-3 pt-2">
@@ -145,10 +147,10 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     <div className="border-t border-gray-200 dark:border-gray-700 pb-1 pt-4">
                         <div className="px-4">
-                            <div className="text-base font-medium text-gray-800 dark:text-gray-100">
+                            <div className="text-base font-medium text-headline-light dark:text-headline-dark">
                                 {user.name}
                             </div>
-                            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            <div className="text-sm font-medium text-paragraph-light dark:text-paragraph-dark">
                                 {user.email}
                             </div>
                         </div>
