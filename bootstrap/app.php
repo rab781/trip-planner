@@ -19,6 +19,16 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        // Prepend Sanctum's stateful middleware to API routes for SPA authentication
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
+
+        // Exclude API routes from CSRF verification (Sanctum uses session auth instead)
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
+
         // Register chatbot rate limit alias
         $middleware->alias([
             'chatbot.rate' => \App\Http\Middleware\ChatbotRateLimit::class,

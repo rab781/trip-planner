@@ -248,7 +248,8 @@ export default function Welcome({ auth }) {
                 {/* CTA Section */}
                 <section className="py-24 relative overflow-hidden">
                     <div className="absolute inset-0 bg-brand-900 rounded-t-[3rem] mx-4 sm:mx-8 lg:mx-16">
-                        <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-10 mix-blend-overlay"></div>
+                        {/* Subtle Pattern Overlay (using CSS gradient instead of missing image) */}
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:20px_20px] opacity-30"></div>
                     </div>
 
                     <div className="relative z-10 max-w-5xl mx-auto px-4 text-center pt-20">
