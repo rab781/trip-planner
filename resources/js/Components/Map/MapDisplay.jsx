@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import L from 'leaflet';
+import RoutePolyline from './RoutePolyline';
 
 // Fix for default marker icons in webpack/vite
 delete L.Icon.Default.prototype._getIconUrl;
@@ -67,10 +68,14 @@ export default function MapDisplay({
     selectedIds = [],
     onMarkerClick = null,
     showRoute = true,
+    useRoadRouting = false, // NEW: Use OSRM road routing instead of straight lines
+    onRouteInfo = null, // NEW: Callback with route info (distance, duration)
+    routeColor = '#3b82f6', // NEW: Customizable route color
     className = '',
     center = [-6.9175, 107.6191], // Bandung center
     zoom = 11,
 }) {
+    const [routeInfo, setRouteInfo] = useState(null);
     // Filter destinations with valid coordinates
     const validDestinations = useMemo(() =>
         destinations.filter(d => d.latitude && d.longitude),
@@ -172,11 +177,10 @@ export default function MapDisplay({
                                     {onMarkerClick && (
                                         <button
                                             onClick={() => onMarkerClick(destination)}
-                                            className={`mt-2 w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-colors ${
-                                                isSelected
-                                                    ? 'bg-tertiary/20 text-tertiary hover:bg-tertiary/30'
-                                                    : 'bg-button text-button-text hover:bg-button/90'
-                                            }`}
+                                            className={`mt-2 w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-colors ${isSelected
+                                                ? 'bg-tertiary/20 text-tertiary hover:bg-tertiary/30'
+                                                : 'bg-button text-button-text hover:bg-button/90'
+                                                }`}
                                         >
                                             {isSelected ? 'Hapus dari Itinerary' : 'Tambah ke Itinerary'}
                                         </button>
@@ -187,19 +191,34 @@ export default function MapDisplay({
                     );
                 })}
 
-                {/* Route Polyline */}
-                {showRoute && routePositions.length > 1 && (
-                    <Polyline
-                        positions={routePositions}
-                        pathOptions={{
-                            color: '#8c7851',
-                            weight: 4,
-                            opacity: 0.8,
-                            dashArray: '10, 10',
-                            lineCap: 'round',
-                            lineJoin: 'round',
-                        }}
-                    />
+                {/* Route Polyline - Road Routing or Straight Line */}
+                {showRoute && selectedDestinations.length > 1 && (
+                    useRoadRouting ? (
+                        <RoutePolyline
+                            destinations={selectedDestinations}
+                            profile="driving"
+                            color={routeColor}
+                            weight={4}
+                            opacity={0.9}
+                            showPopup={true}
+                            onRouteLoad={(info) => {
+                                setRouteInfo(info);
+                                onRouteInfo?.(info);
+                            }}
+                        />
+                    ) : (
+                        <Polyline
+                            positions={routePositions}
+                            pathOptions={{
+                                color: routeColor,
+                                weight: 4,
+                                opacity: 0.8,
+                                dashArray: '10, 10',
+                                lineCap: 'round',
+                                lineJoin: 'round',
+                            }}
+                        />
+                    )
                 )}
             </MapContainer>
 

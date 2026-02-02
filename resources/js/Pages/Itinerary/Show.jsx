@@ -191,22 +191,20 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                     <div className="lg:hidden flex bg-gray-100 rounded-xl p-1 mb-4">
                         <button
                             onClick={() => setMobileView('list')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                                mobileView === 'list'
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${mobileView === 'list'
                                     ? 'bg-white text-button shadow-sm'
                                     : 'text-gray-600 hover:text-gray-900'
-                            }`}
+                                }`}
                         >
                             <ListBulletIcon className="w-5 h-5" />
                             Itinerary
                         </button>
                         <button
                             onClick={() => setMobileView('map')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
-                                mobileView === 'map'
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${mobileView === 'map'
                                     ? 'bg-white text-button shadow-sm'
                                     : 'text-gray-600 hover:text-gray-900'
-                            }`}
+                                }`}
                         >
                             <MapIcon className="w-5 h-5" />
                             Peta
@@ -231,6 +229,8 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                                         destinations={allDestinations}
                                         selectedIds={selectedIds}
                                         showRoute={true}
+                                        useRoadRouting={true}
+                                        routeColor="#3b82f6"
                                         className="h-full"
                                     />
                                 </div>

@@ -145,6 +145,56 @@ export default function Edit({
         });
     };
 
+    // Save items and navigate to show page
+    const handleSaveAndFinish = async () => {
+        setIsSaving(true);
+
+        try {
+            // Flatten items into array with day_number and sequence_order
+            const itemsToSync = [];
+            Object.entries(items).forEach(([dayNumber, dayItems]) => {
+                dayItems.forEach((item, index) => {
+                    itemsToSync.push({
+                        destination_id: item.destination?.id || item.destination_id,
+                        day_number: parseInt(dayNumber),
+                        sequence_order: index + 1,
+                    });
+                });
+            });
+
+            // Sync items to backend
+            const response = await fetch(`/api/itineraries/${itinerary.id}/sync-items`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ items: itemsToSync }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Also save basic info if changed
+                put(route('itineraries.update', itinerary.id), {
+                    preserveScroll: false,
+                    onSuccess: () => {
+                        window.location.href = route('itineraries.show', itinerary.id);
+                    },
+                });
+            } else {
+                alert(result.message || 'Gagal menyimpan perubahan');
+                setIsSaving(false);
+            }
+        } catch (error) {
+            console.error('Error saving items:', error);
+            alert('Terjadi kesalahan saat menyimpan');
+            setIsSaving(false);
+        }
+    };
+
     // Add new day
     const handleAddDay = () => {
         const newDay = Math.max(...days, 0) + 1;
@@ -180,13 +230,14 @@ export default function Edit({
                                 Menyimpan...
                             </span>
                         )}
-                        <Link
-                            href={route('itineraries.show', itinerary.id)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-button text-white text-sm font-medium rounded-xl hover:bg-button/90 transition-colors"
+                        <button
+                            onClick={handleSaveAndFinish}
+                            disabled={isSaving}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-button text-white text-sm font-medium rounded-xl hover:bg-button/90 transition-colors disabled:opacity-50"
                         >
                             <CheckIcon className="w-4 h-4" />
-                            Selesai
-                        </Link>
+                            {isSaving ? 'Menyimpan...' : 'Selesai'}
+                        </button>
                     </div>
                 </div>
             }

@@ -42,7 +42,7 @@ class ItineraryController extends Controller
     }
 
     // Post /api/itineraries
-    public function store(Request $request)
+    public function store(Request $request, ItineraryService $itineraryService)
     {
         $validated = $request->validate([
             'city_id' => 'required|exists:cities,id',
@@ -52,32 +52,156 @@ class ItineraryController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'total_pax_count' => 'required|integer|min:1',
             'transportation_preference' => 'required|in:MOTOR,CAR',
+            'destination_ids' => 'nullable|array',
+            'destination_ids.*' => 'exists:destinations,id',
+            'days' => 'nullable|array', // New format: array of days with destinations
+            'days.*.day' => 'required_with:days|integer|min:1',
+            'days.*.destinations' => 'required_with:days|array',
+            'days.*.destinations.*.id' => 'required_with:days|exists:destinations,id',
         ]);
 
         $validated['user_id'] = $request->user()->id;
 
-        $itinerary = Itinerary::create($validated);
+        // Calculate total days
+        $startDate = \Carbon\Carbon::parse($validated['start_date']);
+        $endDate = \Carbon\Carbon::parse($validated['end_date']);
+        $totalDays = $startDate->diffInDays($endDate) + 1;
 
-        return response()->json(
-            [
+        try {
+            $itinerary = DB::transaction(function () use ($validated, $totalDays, $itineraryService) {
+                // Create the itinerary
+                $itinerary = Itinerary::create([
+                    'user_id' => $validated['user_id'],
+                    'city_id' => $validated['city_id'],
+                    'title' => $validated['title'],
+                    'description' => $validated['description'] ?? null,
+                    'start_date' => $validated['start_date'],
+                    'end_date' => $validated['end_date'],
+                    'total_pax_count' => $validated['total_pax_count'],
+                    'transportation_preference' => $validated['transportation_preference'],
+                ]);
+
+                // Handle days format (preferred - from GeneratedItinerary)
+                if (!empty($validated['days'])) {
+                    foreach ($validated['days'] as $dayData) {
+                        $dayNumber = $dayData['day'];
+                        $sequence = 1;
+                        $prevDestination = null;
+
+                        foreach ($dayData['destinations'] as $destData) {
+                            $destinationId = is_array($destData) ? $destData['id'] : $destData;
+                            $destination = \App\Models\Destination::find($destinationId);
+
+                            if (!$destination) continue;
+
+                            // Calculate distance from previous destination
+                            $distFromPrev = 0;
+                            $estTransportCost = 0;
+
+                            if ($prevDestination) {
+                                $distFromPrev = $itineraryService->calculateDistance(
+                                    $prevDestination->latitude,
+                                    $prevDestination->longitude,
+                                    $destination->latitude,
+                                    $destination->longitude
+                                );
+                                $estTransportCost = $itineraryService->estimateTransportCost(
+                                    $distFromPrev,
+                                    $validated['transportation_preference']
+                                );
+                            }
+
+                            ItineraryItem::create([
+                                'itinerary_id' => $itinerary->id,
+                                'destination_id' => $destinationId,
+                                'day_number' => $dayNumber,
+                                'sequence_order' => $sequence,
+                                'dist_from_prev_km' => $distFromPrev,
+                                'est_transport_cost' => $estTransportCost,
+                            ]);
+
+                            $prevDestination = $destination;
+                            $sequence++;
+                        }
+                    }
+                }
+                // Handle flat destination_ids format (legacy)
+                elseif (!empty($validated['destination_ids'])) {
+                    $destinations = $validated['destination_ids'];
+                    $destinationsPerDay = ceil(count($destinations) / $totalDays);
+
+                    $dayNumber = 1;
+                    $sequence = 1;
+                    $itemsInCurrentDay = 0;
+                    $prevDestination = null;
+
+                    foreach ($destinations as $destId) {
+                        $destination = \App\Models\Destination::find($destId);
+                        if (!$destination) continue;
+
+                        // Calculate distance from previous destination
+                        $distFromPrev = 0;
+                        $estTransportCost = 0;
+
+                        if ($prevDestination && $itemsInCurrentDay > 0) {
+                            $distFromPrev = $itineraryService->calculateDistance(
+                                $prevDestination->latitude,
+                                $prevDestination->longitude,
+                                $destination->latitude,
+                                $destination->longitude
+                            );
+                            $estTransportCost = $itineraryService->estimateTransportCost(
+                                $distFromPrev,
+                                $validated['transportation_preference']
+                            );
+                        }
+
+                        ItineraryItem::create([
+                            'itinerary_id' => $itinerary->id,
+                            'destination_id' => $destId,
+                            'day_number' => $dayNumber,
+                            'sequence_order' => $sequence,
+                            'dist_from_prev_km' => $distFromPrev,
+                            'est_transport_cost' => $estTransportCost,
+                        ]);
+
+                        $prevDestination = $destination;
+                        $itemsInCurrentDay++;
+                        $sequence++;
+
+                        // Move to next day if needed
+                        if ($itemsInCurrentDay >= $destinationsPerDay && $dayNumber < $totalDays) {
+                            $dayNumber++;
+                            $itemsInCurrentDay = 0;
+                            $sequence = 1;
+                            $prevDestination = null; // Reset for new day
+                        }
+                    }
+                }
+
+                return $itinerary;
+            });
+
+            // Load the itinerary with items
+            $itinerary->load(['itineraryItems.destination', 'city']);
+
+            return response()->json([
+                'success' => true,
                 'data' => $itinerary,
                 'message' => 'Itinerary created successfully',
                 'status' => 201,
-            ],
-            201
-        );
+            ], 201);
 
-        if (!$itinerary) {
-            return response()->json(
-                [
-                    'data' => null,
-                    'message' => 'Itinerary creation failed',
-                    'status' => 500,
-                ],
-                500
-            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'message' => 'Itinerary creation failed: ' . $e->getMessage(),
+                'status' => 500,
+            ], 500);
         }
     }
+
 
     // Get /api/itineraries/{id}
     public function show(Request $request, $id)
@@ -184,6 +308,97 @@ class ItineraryController extends Controller
                 'status' => 200,
             ]
         );
+    }
+
+    /**
+     * Sync itinerary items - add new items and remove deleted ones
+     * PUT /api/itineraries/{id}/sync-items
+     */
+    public function syncItems(Request $request, $id, ItineraryService $itineraryService)
+    {
+        $itinerary = Itinerary::where('user_id', $request->user()->id)->find($id);
+
+        if (!$itinerary) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Itinerary not found',
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'items' => 'required|array',
+            'items.*' => 'array',
+            'items.*.destination_id' => 'required|exists:destinations,id',
+            'items.*.day_number' => 'required|integer|min:1',
+            'items.*.sequence_order' => 'required|integer|min:1',
+        ]);
+
+        try {
+            DB::transaction(function () use ($itinerary, $validated, $itineraryService) {
+                // Delete all existing items
+                $itinerary->itineraryItems()->delete();
+
+                // Re-create items from request
+                $itemsByDay = collect($validated['items'])->groupBy('day_number');
+                
+                foreach ($itemsByDay as $dayNumber => $dayItems) {
+                    $prevDestination = null;
+                    $sequence = 1;
+
+                    foreach ($dayItems->sortBy('sequence_order') as $itemData) {
+                        $destination = \App\Models\Destination::find($itemData['destination_id']);
+                        if (!$destination) continue;
+
+                        // Calculate distance from previous destination
+                        $distFromPrev = 0;
+                        $estTransportCost = 0;
+
+                        if ($prevDestination) {
+                            $distFromPrev = $itineraryService->calculateDistance(
+                                $prevDestination->latitude,
+                                $prevDestination->longitude,
+                                $destination->latitude,
+                                $destination->longitude
+                            );
+                            $estTransportCost = $itineraryService->estimateTransportCost(
+                                $distFromPrev,
+                                $itinerary->transportation_preference
+                            );
+                        }
+
+                        ItineraryItem::create([
+                            'itinerary_id' => $itinerary->id,
+                            'destination_id' => $itemData['destination_id'],
+                            'day_number' => $dayNumber,
+                            'sequence_order' => $sequence,
+                            'dist_from_prev_km' => $distFromPrev,
+                            'est_transport_cost' => $estTransportCost,
+                        ]);
+
+                        $prevDestination = $destination;
+                        $sequence++;
+                    }
+                }
+            });
+
+            // Reload with items
+            $itinerary->load(['itineraryItems.destination']);
+            $budget = $itineraryService->calculateBudgetBreakdown($itinerary);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'itinerary' => $itinerary,
+                    'budget' => $budget,
+                ],
+                'message' => 'Items synced successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to sync items: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     // Put /api/itineraries/{id}/reorder

@@ -64,7 +64,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
 
     // Toggle category selection
     const handleToggleCategory = (categoryId) => {
-        setData('categories', 
+        setData('categories',
             data.categories.includes(categoryId)
                 ? data.categories.filter(id => id !== categoryId)
                 : [...data.categories, categoryId]
@@ -72,14 +72,14 @@ export default function Create({ cities = [], zones = [], categories = [], desti
     };
 
     // Validate step 1
-    const isStep1Valid = data.title && 
-        data.start_date && 
-        data.end_date && 
-        data.total_pax_count > 0 && 
+    const isStep1Valid = data.title &&
+        data.start_date &&
+        data.end_date &&
+        data.total_pax_count > 0 &&
         data.categories.length > 0;
 
     // Validate step 2
-    const isStep2Valid = generatedDays.length > 0 && 
+    const isStep2Valid = generatedDays.length > 0 &&
         generatedDays.some(d => d.destinations.length > 0);
 
     // Generate itinerary
@@ -163,7 +163,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
             const result = await response.json();
 
             if (result.success && result.data.day) {
-                setGeneratedDays(prev => prev.map(d => 
+                setGeneratedDays(prev => prev.map(d =>
                     d.day === dayNumber ? result.data.day : d
                 ));
             }
@@ -195,12 +195,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
         setIsSubmitting(true);
 
         try {
-            // Extract destination IDs from generated days
-            const destinationIds = generatedDays.flatMap(d => 
-                d.destinations.map(dest => dest.id)
-            );
-
-            // Create itinerary via API
+            // Create itinerary via API with days format
             const response = await fetch('/api/itineraries', {
                 method: 'POST',
                 headers: {
@@ -217,7 +212,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                     end_date: data.end_date,
                     total_pax_count: data.total_pax_count,
                     transportation_preference: data.transportation_preference,
-                    destination_ids: destinationIds,
+                    days: generatedDays, // Send full days array with destinations
                 }),
             });
 
@@ -279,28 +274,25 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                         <div className="flex items-center justify-center">
                             {steps.map((s, index) => (
                                 <div key={s.number} className="flex items-center">
-                                    <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${
-                                        step === s.number
+                                    <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step === s.number
                                             ? 'bg-teal-500 border-teal-500 text-white shadow-lg shadow-teal-500/30'
                                             : step > s.number
-                                            ? 'bg-green-500 border-green-500 text-white'
-                                            : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500'
-                                    }`}>
+                                                ? 'bg-green-500 border-green-500 text-white'
+                                                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500'
+                                        }`}>
                                         {step > s.number ? (
                                             <CheckIcon className="w-5 h-5" />
                                         ) : (
                                             <s.icon className="w-5 h-5" />
                                         )}
                                     </div>
-                                    <span className={`ml-2 text-sm font-medium hidden sm:block ${
-                                        step === s.number ? 'text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'
-                                    }`}>
+                                    <span className={`ml-2 text-sm font-medium hidden sm:block ${step === s.number ? 'text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'
+                                        }`}>
                                         {s.title}
                                     </span>
                                     {index < steps.length - 1 && (
-                                        <div className={`w-12 sm:w-24 h-0.5 mx-4 transition-colors duration-500 ${
-                                            step > s.number ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-700'
-                                        }`} />
+                                        <div className={`w-12 sm:w-24 h-0.5 mx-4 transition-colors duration-500 ${step > s.number ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-700'
+                                            }`} />
                                     )}
                                 </div>
                             ))}
@@ -455,11 +447,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                 <button
                                                     type="button"
                                                     onClick={() => setData('transportation_preference', 'MOTOR')}
-                                                    className={`p-3 rounded-xl border-2 transition-all text-left ${
-                                                        data.transportation_preference === 'MOTOR'
+                                                    className={`p-3 rounded-xl border-2 transition-all text-left ${data.transportation_preference === 'MOTOR'
                                                             ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
                                                             : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <span className="text-2xl">🏍️</span>
                                                     <span className="font-medium text-headline dark:text-white ml-2">Motor</span>
@@ -467,11 +458,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                 <button
                                                     type="button"
                                                     onClick={() => setData('transportation_preference', 'CAR')}
-                                                    className={`p-3 rounded-xl border-2 transition-all text-left ${
-                                                        data.transportation_preference === 'CAR'
+                                                    className={`p-3 rounded-xl border-2 transition-all text-left ${data.transportation_preference === 'CAR'
                                                             ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
                                                             : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <span className="text-2xl">🚗</span>
                                                     <span className="font-medium text-headline dark:text-white ml-2">Mobil</span>
@@ -494,11 +484,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                         key={cat.id}
                                                         type="button"
                                                         onClick={() => handleToggleCategory(cat.id)}
-                                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                                                            data.categories.includes(cat.id)
+                                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${data.categories.includes(cat.id)
                                                                 ? 'bg-teal-500 text-white shadow-md shadow-teal-500/25'
                                                                 : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {cat.name}
                                                     </button>
@@ -517,11 +506,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                         key={opt.value}
                                                         type="button"
                                                         onClick={() => setData('priority', opt.value)}
-                                                        className={`p-3 rounded-xl border-2 text-left transition-all ${
-                                                            data.priority === opt.value
+                                                        className={`p-3 rounded-xl border-2 text-left transition-all ${data.priority === opt.value
                                                                 ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
                                                                 : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         <span className="font-medium text-headline dark:text-white text-sm">{opt.label}</span>
                                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.desc}</p>
@@ -541,11 +529,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                         key={opt.value}
                                                         type="button"
                                                         onClick={() => setData('pace', opt.value)}
-                                                        className={`p-3 rounded-xl border-2 text-center transition-all ${
-                                                            data.pace === opt.value
+                                                        className={`p-3 rounded-xl border-2 text-center transition-all ${data.pace === opt.value
                                                                 ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
                                                                 : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         <span className="text-2xl block">{opt.icon}</span>
                                                         <span className="font-medium text-headline dark:text-white text-sm">{opt.label}</span>
@@ -574,17 +561,15 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                         </div>
 
                                         {/* Solo Mode Toggle */}
-                                        <div className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                                            data.solo_mode 
-                                                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30' 
+                                        <div className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${data.solo_mode
+                                                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
                                                 : 'border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-700'
-                                        }`}
+                                            }`}
                                             onClick={() => setData('solo_mode', !data.solo_mode)}
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                                    data.solo_mode ? 'bg-indigo-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
-                                                }`}>
+                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${data.solo_mode ? 'bg-indigo-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                                                    }`}>
                                                     <UserIcon className="w-6 h-6" />
                                                 </div>
                                                 <div className="flex-1">
@@ -593,12 +578,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                         Aktifkan untuk mendapat tips & rekomendasi khusus solo traveler
                                                     </p>
                                                 </div>
-                                                <div className={`w-12 h-6 rounded-full transition-colors ${
-                                                    data.solo_mode ? 'bg-indigo-500' : 'bg-gray-300 dark:bg-gray-600'
-                                                }`}>
-                                                    <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform mt-0.5 ${
-                                                        data.solo_mode ? 'translate-x-6' : 'translate-x-0.5'
-                                                    }`} />
+                                                <div className={`w-12 h-6 rounded-full transition-colors ${data.solo_mode ? 'bg-indigo-500' : 'bg-gray-300 dark:bg-gray-600'
+                                                    }`}>
+                                                    <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform mt-0.5 ${data.solo_mode ? 'translate-x-6' : 'translate-x-0.5'
+                                                        }`} />
                                                 </div>
                                             </div>
                                         </div>
@@ -707,7 +690,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                         <h5 className="font-medium text-headline dark:text-white mb-2">Hari {day.day}</h5>
                                                         <div className="flex flex-wrap gap-2">
                                                             {day.destinations.map((dest, idx) => (
-                                                                <span 
+                                                                <span
                                                                     key={dest.id}
                                                                     className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-200"
                                                                 >
@@ -741,11 +724,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                 type="button"
                                 onClick={handlePrevStep}
                                 disabled={step === 1}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                                    step === 1
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${step === 1
                                         ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
                                         : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                }`}
+                                    }`}
                             >
                                 <ArrowLeftIcon className="w-4 h-4" />
                                 Kembali
@@ -756,11 +738,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                     type="button"
                                     onClick={handleNextStep}
                                     disabled={!isStep1Valid || isGenerating}
-                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                                        !isStep1Valid || isGenerating
+                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${!isStep1Valid || isGenerating
                                             ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                                             : 'bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 shadow-md hover:shadow-lg hover:shadow-teal-500/25'
-                                    }`}
+                                        }`}
                                 >
                                     {isGenerating ? (
                                         <>
@@ -779,11 +760,10 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                     type="button"
                                     onClick={handleNextStep}
                                     disabled={!isStep2Valid}
-                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                                        !isStep2Valid
+                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${!isStep2Valid
                                             ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                                             : 'bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 shadow-md hover:shadow-lg hover:shadow-teal-500/25'
-                                    }`}
+                                        }`}
                                 >
                                     Lanjut ke Konfirmasi
                                     <ArrowRightIcon className="w-4 h-4" />

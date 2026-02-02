@@ -44,6 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/itineraries/{id}', [ItineraryController::class, 'destroy']);
 
     Route::put('/itineraries/{id}/reorder', [ItineraryController::class, 'reorder']);
+    Route::put('/itineraries/{id}/sync-items', [ItineraryController::class, 'syncItems']);
 
     // AI-powered itinerary generation
     Route::post('/itineraries/generate', [ItineraryController::class, 'generate']);
