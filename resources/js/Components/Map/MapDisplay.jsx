@@ -146,43 +146,97 @@ export default function MapDisplay({
                                 click: () => onMarkerClick && onMarkerClick(destination),
                             }}
                         >
-                            <Popup>
-                                <div className="p-2 min-w-[200px]">
-                                    <h3 className="font-bold text-gray-900 mb-1">
-                                        {destination.name}
-                                    </h3>
-                                    {destination.zone && (
-                                        <span
-                                            className="inline-block px-2 py-0.5 text-xs rounded-full text-white mb-2"
-                                            style={{ backgroundColor: zoneColor }}
-                                        >
-                                            {destination.zone.name}
-                                        </span>
+                            <Popup className="destination-popup">
+                                <div className="w-[280px] overflow-hidden">
+                                    {/* Thumbnail Image */}
+                                    {destination.thumbnail && (
+                                        <div className="relative h-32 -mx-3 -mt-3 mb-3 overflow-hidden">
+                                            <img
+                                                src={destination.thumbnail}
+                                                alt={destination.name}
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                            <div className="absolute bottom-2 left-3 right-3">
+                                                <h3 className="font-bold text-white text-base leading-tight drop-shadow-lg">
+                                                    {destination.name}
+                                                </h3>
+                                            </div>
+                                        </div>
                                     )}
-                                    {destination.category && (
-                                        <p className="text-xs text-gray-500 mb-2">
-                                            {destination.category.name}
+
+                                    {/* Title (if no thumbnail) */}
+                                    {!destination.thumbnail && (
+                                        <h3 className="font-bold text-gray-900 text-base mb-2">
+                                            {destination.name}
+                                        </h3>
+                                    )}
+
+                                    {/* Tags Row */}
+                                    <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                                        {destination.zone && (
+                                            <span
+                                                className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full text-white"
+                                                style={{ backgroundColor: zoneColor }}
+                                            >
+                                                📍 {destination.zone.name}
+                                            </span>
+                                        )}
+                                        {destination.category && (
+                                            <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700">
+                                                {destination.category.name}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Info Grid */}
+                                    <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+                                        {destination.min_price > 0 && (
+                                            <div className="flex items-center gap-1.5 text-emerald-600 font-semibold">
+                                                <span>💰</span>
+                                                <span>Rp {destination.min_price.toLocaleString('id-ID')}</span>
+                                            </div>
+                                        )}
+                                        {destination.avg_duration_minutes && (
+                                            <div className="flex items-center gap-1.5 text-gray-600">
+                                                <span>⏱️</span>
+                                                <span>{destination.avg_duration_minutes} menit</span>
+                                            </div>
+                                        )}
+                                        {destination.rating > 0 && (
+                                            <div className="flex items-center gap-1.5 text-amber-500">
+                                                <span>⭐</span>
+                                                <span className="font-medium">{destination.rating}</span>
+                                            </div>
+                                        )}
+                                        {destination.visitor_count > 0 && (
+                                            <div className="flex items-center gap-1.5 text-gray-600">
+                                                <span>👥</span>
+                                                <span>{destination.visitor_count.toLocaleString('id-ID')}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Description Preview */}
+                                    {destination.description && (
+                                        <p className="text-xs text-gray-500 line-clamp-2 mb-3">
+                                            {destination.description}
                                         </p>
                                     )}
-                                    {destination.min_price > 0 && (
-                                        <p className="text-sm font-medium text-button">
-                                            Mulai Rp {destination.min_price.toLocaleString('id-ID')}
-                                        </p>
-                                    )}
-                                    {destination.avg_duration_minutes && (
-                                        <p className="text-xs text-gray-500">
-                                            ⏱ {destination.avg_duration_minutes} menit
-                                        </p>
-                                    )}
+
+                                    {/* Action Button */}
                                     {onMarkerClick && (
                                         <button
                                             onClick={() => onMarkerClick(destination)}
-                                            className={`mt-2 w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-colors ${isSelected
-                                                ? 'bg-tertiary/20 text-tertiary hover:bg-tertiary/30'
-                                                : 'bg-button text-button-text hover:bg-button/90'
+                                            className={`w-full py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${isSelected
+                                                    ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                                                    : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-sm'
                                                 }`}
                                         >
-                                            {isSelected ? 'Hapus dari Itinerary' : 'Tambah ke Itinerary'}
+                                            {isSelected ? '✕ Hapus dari Itinerary' : '+ Tambah ke Itinerary'}
                                         </button>
                                     )}
                                 </div>

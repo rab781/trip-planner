@@ -231,14 +231,14 @@ class ItineraryService
      */
     public function calculateBudgetBreakdown(Itinerary $itinerary): array
     {
-        $itinerary->load(['itineraryItems.destination.ticketVariants', 'itineraryItems.itemDetails', 'itineraryLodgings']);
+        $itinerary->load(['itineraryItems.destination.ticketVariants', 'itineraryItems.itineraryItemDetails', 'itineraryLodgings']);
 
         // Transport costs
         $transportCost = $itinerary->itineraryItems->sum('est_transport_cost') ?? 0;
 
         // Ticket costs (from item details)
         $ticketCost = $itinerary->itineraryItems
-            ->flatMap(fn($item) => $item->itemDetails)
+            ->flatMap(fn($item) => $item->itineraryItemDetails)
             ->sum('price') ?? 0;
 
         // Lodging costs

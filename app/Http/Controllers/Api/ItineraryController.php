@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\ItineraryService;
 use App\Services\ItineraryGeneratorService;
+use App\Helpers\DistanceHelper;
 
 class ItineraryController extends Controller
 {
@@ -99,16 +100,15 @@ class ItineraryController extends Controller
                             $estTransportCost = 0;
 
                             if ($prevDestination) {
-                                $distFromPrev = $itineraryService->calculateDistance(
+                                $distFromPrev = DistanceHelper::calculateDistance(
                                     $prevDestination->latitude,
                                     $prevDestination->longitude,
                                     $destination->latitude,
                                     $destination->longitude
                                 );
-                                $estTransportCost = $itineraryService->estimateTransportCost(
-                                    $distFromPrev,
-                                    $validated['transportation_preference']
-                                );
+                                // Estimate transport cost: ~Rp 3000/km for motor, ~Rp 5000/km for car
+                                $costPerKm = $validated['transportation_preference'] === 'MOTOR' ? 3000 : 5000;
+                                $estTransportCost = $distFromPrev * $costPerKm;
                             }
 
                             ItineraryItem::create([
@@ -144,16 +144,15 @@ class ItineraryController extends Controller
                         $estTransportCost = 0;
 
                         if ($prevDestination && $itemsInCurrentDay > 0) {
-                            $distFromPrev = $itineraryService->calculateDistance(
+                            $distFromPrev = DistanceHelper::calculateDistance(
                                 $prevDestination->latitude,
                                 $prevDestination->longitude,
                                 $destination->latitude,
                                 $destination->longitude
                             );
-                            $estTransportCost = $itineraryService->estimateTransportCost(
-                                $distFromPrev,
-                                $validated['transportation_preference']
-                            );
+                            // Estimate transport cost: ~Rp 3000/km for motor, ~Rp 5000/km for car
+                            $costPerKm = $validated['transportation_preference'] === 'MOTOR' ? 3000 : 5000;
+                            $estTransportCost = $distFromPrev * $costPerKm;
                         }
 
                         ItineraryItem::create([
@@ -354,16 +353,15 @@ class ItineraryController extends Controller
                         $estTransportCost = 0;
 
                         if ($prevDestination) {
-                            $distFromPrev = $itineraryService->calculateDistance(
+                            $distFromPrev = DistanceHelper::calculateDistance(
                                 $prevDestination->latitude,
                                 $prevDestination->longitude,
                                 $destination->latitude,
                                 $destination->longitude
                             );
-                            $estTransportCost = $itineraryService->estimateTransportCost(
-                                $distFromPrev,
-                                $itinerary->transportation_preference
-                            );
+                            // Estimate transport cost: ~Rp 3000/km for motor, ~Rp 5000/km for car
+                            $costPerKm = $itinerary->transportation_preference === 'MOTOR' ? 3000 : 5000;
+                            $estTransportCost = $distFromPrev * $costPerKm;
                         }
 
                         ItineraryItem::create([
