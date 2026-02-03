@@ -33,28 +33,38 @@ export default function TransportConnector({
         return `Rp ${amount}`;
     };
 
+    // Calculate time estimate roughly (40km/h for car in city, 30km/h for motor)
+    const speed = isMotor ? 30 : 40;
+    const minutes = Math.round((distance / speed) * 60);
+
     return (
-        <div className="relative flex items-center justify-center py-2 px-4">
-            {/* Dashed Line */}
-            <div className="absolute left-8 right-8 top-1/2 -translate-y-1/2 border-t-2 border-dashed border-gray-200"></div>
+        <div className="relative flex items-center justify-center py-3 -my-1 z-0 group">
+            {/* Vertical Line Connector (if vertical layout is implied, but here it's horizontal segment between cards) */}
+            {/* Actually it connects vertically in the list. So a vertical line makes more sense if the cards are stacked.
+                However, the original design had a horizontal line. 
+                Let's switch to a subtle vertical connector feel or a cleaner horizontal pill.
+            */}
+
+            {/* Vertical Line through */}
+            <div className="absolute top-0 bottom-0 left-8 w-0.5 border-l-2 border-dashed border-gray-300 dark:border-gray-600 group-hover:border-teal-400 transition-colors h-full -z-10" style={{ left: '2rem' }}></div>
 
             {/* Transport Info Box */}
-            <div className="relative z-10 flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-xs">
+            <div className="relative z-10 flex items-center gap-3 px-4 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs shadow-sm group-hover:shadow-md group-hover:border-teal-300 transition-all">
                 {/* Transport Icon */}
-                <span className="text-base">
+                <span className="text-base bg-gray-100 dark:bg-gray-700 p-1 rounded-full">
                     {isMotor ? '🏍️' : '🚗'}
                 </span>
 
                 {/* Distance */}
-                <span className="text-gray-600 font-medium">
-                    {formatDistance(distance)}
+                <span className="text-gray-600 dark:text-gray-400 font-medium whitespace-nowrap">
+                    {formatDistance(distance)} • ~{minutes} mnt
                 </span>
 
                 {/* Separator */}
-                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                <span className="w-1 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></span>
 
                 {/* Estimated Cost */}
-                <span className="text-button font-semibold">
+                <span className="text-teal-600 dark:text-teal-400 font-bold whitespace-nowrap">
                     {formatCost(cost)}
                 </span>
             </div>

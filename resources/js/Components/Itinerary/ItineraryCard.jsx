@@ -22,15 +22,15 @@ export default function ItineraryCard({
     const [isExpanded, setIsExpanded] = useState(false);
     const destination = item.destination;
 
-    // Zone colors
+    // Zone colors - softer pastels
     const zoneColors = {
-        1: { bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-300' },
-        2: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-300' },
-        3: { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-300' },
-        4: { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-300' },
+        1: { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-700 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800' },
+        2: { bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-400', border: 'border-blue-200 dark:border-blue-800' },
+        3: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-800' },
+        4: { bg: 'bg-rose-50 dark:bg-rose-900/20', text: 'text-rose-700 dark:text-rose-400', border: 'border-rose-200 dark:border-rose-800' },
     };
 
-    const zoneStyle = zoneColors[destination?.zone?.id] || { bg: 'bg-secondary', text: 'text-button', border: 'border-button' };
+    const zoneStyle = zoneColors[destination?.zone?.id] || { bg: 'bg-gray-50 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', border: 'border-gray-200 dark:border-gray-700' };
 
     // Category icons
     const categoryIcons = {
@@ -44,13 +44,6 @@ export default function ItineraryCard({
 
     const categoryIcon = categoryIcons[destination?.category?.name] || '📍';
 
-    // Calculate estimated arrival time if start_time exists
-    const formatTime = (minutes) => {
-        const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
-        return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-    };
-
     // Get ticket variants
     const ticketVariants = destination?.ticket_variants || destination?.ticketVariants || [];
     const mandatoryTicket = ticketVariants.find(t => t.is_mandatory);
@@ -58,110 +51,104 @@ export default function ItineraryCard({
 
     return (
         <div
-            className={`relative bg-main rounded-xl border-l-4 shadow-sm transition-all ${
-                isDragging
-                    ? 'shadow-lg ring-2 ring-button/30 rotate-2'
-                    : 'hover:shadow-md'
-            } ${zoneStyle.border}`}
+            className={`relative glass-card rounded-2xl transition-all duration-300 group overflow-hidden ${isDragging
+                    ? 'shadow-2xl ring-2 ring-teal-500/50 rotate-2 scale-105 z-50'
+                    : 'hover:shadow-lg hover:-translate-y-1'
+                }`}
         >
+            {/* Left Border accent */}
+            <div className={`absolute top-0 bottom-0 left-0 w-1.5 ${zoneStyle.bg.replace('bg-', 'bg-gradient-to-b from-').replace('50', '400').replace('900/20', '500')}`} />
+
             {/* Card Content */}
-            <div className="p-4">
+            <div className="p-4 pl-6">
                 {/* Header Row */}
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-4">
                     {/* Drag Handle & Number */}
                     <div
                         {...dragHandleProps}
-                        className="flex flex-col items-center gap-1 cursor-grab active:cursor-grabbing"
+                        className="flex flex-col items-center gap-1 cursor-grab active:cursor-grabbing pt-1"
                     >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${zoneStyle.bg} ${zoneStyle.text}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm ${zoneStyle.bg} ${zoneStyle.text} ring-1 ring-inset ring-black/5`}>
                             {index + 1}
                         </div>
-                        <div className="flex flex-col gap-0.5">
-                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                        <div className="flex flex-col gap-1 opacity-30 group-hover:opacity-100 transition-opacity">
+                            <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
+                            <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
+                            <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
                         </div>
                     </div>
 
                     {/* Destination Info */}
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-lg">{categoryIcon}</span>
-                            <h3 className="font-semibold text-gray-900 truncate">
+                            <span className="text-xl filter drop-shadow-sm">{categoryIcon}</span>
+                            <h3 className="font-bold text-gray-900 dark:text-white truncate text-lg group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors">
                                 {destination?.name || 'Unknown Destination'}
                             </h3>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <div className="flex flex-wrap items-center gap-2 text-xs mb-3">
                             {/* Zone Badge */}
-                            <span className={`px-2 py-0.5 rounded-full ${zoneStyle.bg} ${zoneStyle.text}`}>
+                            <span className={`px-2.5 py-1 rounded-lg font-medium ${zoneStyle.bg} ${zoneStyle.text} ring-1 ring-inset ring-black/5`}>
                                 {destination?.zone?.name || 'Unknown Zone'}
                             </span>
 
                             {/* Duration Badge */}
                             {destination?.avg_duration_minutes && (
-                                <span className="flex items-center gap-1 text-gray-500">
+                                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300">
                                     <ClockIcon className="w-3.5 h-3.5" />
                                     {destination.avg_duration_minutes} menit
                                 </span>
                             )}
-
-                            {/* Location */}
-                            <span className="flex items-center gap-1 text-gray-500">
-                                <MapPinIcon className="w-3.5 h-3.5" />
-                                {destination?.category?.name || 'Wisata'}
-                            </span>
                         </div>
 
-                        {/* Ticket Info - Collapsed */}
-                        {mandatoryTicket && (
-                            <div className="mt-3 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <TicketIcon className="w-4 h-4 text-button" />
-                                    <span className="text-sm font-medium text-headline">
-                                        Rp {mandatoryTicket.price.toLocaleString('id-ID')}
-                                    </span>
-                                    <span className="text-xs text-paragraph">
-                                        ({mandatoryTicket.name})
-                                    </span>
-                                </div>
+                        {/* Ticket Info Section */}
+                        {(mandatoryTicket || optionalTickets.length > 0) && (
+                            <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-xl p-3 border border-gray-100 dark:border-gray-700/50">
+                                {mandatoryTicket && (
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className="p-1.5 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                                                <TicketIcon className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Tiket Masuk</p>
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                                    Rp {mandatoryTicket.price.toLocaleString('id-ID')}
+                                                </p>
+                                            </div>
+                                        </div>
 
-                                {/* Expand Button */}
-                                {optionalTickets.length > 0 && (
-                                    <button
-                                        onClick={() => setIsExpanded(!isExpanded)}
-                                        className="flex items-center gap-1 text-xs text-button hover:underline"
-                                    >
-                                        {isExpanded ? (
-                                            <>
-                                                Tutup
-                                                <ChevronUpIcon className="w-4 h-4" />
-                                            </>
-                                        ) : (
-                                            <>
-                                                +{optionalTickets.length} tiket opsional
-                                                <ChevronDownIcon className="w-4 h-4" />
-                                            </>
+                                        {/* Expand Button */}
+                                        {optionalTickets.length > 0 && (
+                                            <button
+                                                onClick={() => setIsExpanded(!isExpanded)}
+                                                className="flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 px-2 py-1 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-colors"
+                                            >
+                                                {isExpanded ? 'Tutup' : `+${optionalTickets.length} Opsi`}
+                                                {isExpanded ? <ChevronUpIcon className="w-3 h-3" /> : <ChevronDownIcon className="w-3 h-3" />}
+                                            </button>
                                         )}
-                                    </button>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Optional Tickets - Expanded */}
-                        {isExpanded && optionalTickets.length > 0 && (
-                            <div className="mt-2 pl-6 space-y-1.5 border-l-2 border-gray-100">
-                                {optionalTickets.map(ticket => (
-                                    <div
-                                        key={ticket.id}
-                                        className="flex items-center justify-between py-1 px-2 bg-gray-50 rounded text-xs"
-                                    >
-                                        <span className="text-gray-600">{ticket.name}</span>
-                                        <span className="font-medium text-gray-900">
-                                            Rp {ticket.price.toLocaleString('id-ID')}
-                                        </span>
                                     </div>
-                                ))}
+                                )}
+
+                                {/* Optional Tickets - Expanded */}
+                                {isExpanded && optionalTickets.length > 0 && (
+                                    <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700/50 space-y-2">
+                                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tiket Tambahan</p>
+                                        {optionalTickets.map(ticket => (
+                                            <div
+                                                key={ticket.id}
+                                                className="flex items-center justify-between p-2 hover:bg-white dark:hover:bg-gray-700/50 rounded-lg transition-colors group/ticket"
+                                            >
+                                                <span className="text-xs text-gray-600 dark:text-gray-300 group-hover/ticket:text-gray-900 dark:group-hover/ticket:text-white transition-colors">{ticket.name}</span>
+                                                <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
+                                                    Rp {ticket.price.toLocaleString('id-ID')}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -170,11 +157,11 @@ export default function ItineraryCard({
                     {onRemove && (
                         <button
                             onClick={() => onRemove(item)}
-                            className="p-1.5 text-paragraph hover:text-tertiary hover:bg-tertiary/10 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-all opacity-0 group-hover:opacity-100 -mr-2 -mt-2"
                             title="Hapus dari itinerary"
                         >
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
                     )}

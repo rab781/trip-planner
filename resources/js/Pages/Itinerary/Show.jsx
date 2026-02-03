@@ -133,40 +133,29 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
         <AuthenticatedLayout
             header={
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                    <div>
+                        <h2 className="text-xl font-bold leading-tight text-gray-900 dark:text-white">
+                            Detail Perjalanan
+                        </h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {itinerary.title}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-3">
                         <Link
                             href={route('itineraries.index')}
-                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 font-bold text-sm shadow-sm transition-all"
                         >
-                            <ArrowLeftIcon className="w-5 h-5" />
+                            Kembali
                         </Link>
-                        <div>
-                            <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                                {itinerary.title}
-                            </h2>
-                            <p className="text-sm text-gray-500">
-                                {formatDate(itinerary.start_date)} - {formatDate(itinerary.end_date)}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        {isSaving && (
-                            <span className="text-sm text-gray-500 flex items-center gap-2">
-                                <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                </svg>
-                                Menyimpan...
-                            </span>
-                        )}
                         <Link
                             href={route('itineraries.edit', itinerary.id)}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 bg-gray-100 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white rounded-xl hover:shadow-lg hover:shadow-teal-500/30 transition-all font-bold text-sm hover:-translate-y-0.5"
                         >
                             <PencilIcon className="w-4 h-4" />
-                            Edit
+                            Edit Rencana
                         </Link>
-                        <button className="inline-flex items-center gap-2 px-4 py-2 text-button bg-secondary text-sm font-medium rounded-xl hover:bg-secondary/80 transition-colors">
+                        <button className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-900 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-900/20 font-bold text-sm shadow-sm transition-all">
                             <ShareIcon className="w-4 h-4" />
                             Share
                         </button>
@@ -188,12 +177,12 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                     />
 
                     {/* Mobile View Toggle */}
-                    <div className="lg:hidden flex bg-gray-100 rounded-xl p-1 mb-4">
+                    <div className="lg:hidden flex bg-white/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl p-1 mb-6">
                         <button
                             onClick={() => setMobileView('list')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${mobileView === 'list'
-                                    ? 'bg-white text-button shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${mobileView === 'list'
+                                ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30'
+                                : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'
                                 }`}
                         >
                             <ListBulletIcon className="w-5 h-5" />
@@ -201,9 +190,9 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                         </button>
                         <button
                             onClick={() => setMobileView('map')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${mobileView === 'map'
-                                    ? 'bg-white text-button shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${mobileView === 'map'
+                                ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30'
+                                : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'
                                 }`}
                         >
                             <MapIcon className="w-5 h-5" />
@@ -212,81 +201,118 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                     </div>
 
                     {/* Main Content - Split View */}
-                    <div className="flex flex-col lg:flex-row gap-6">
+                    <div className="flex flex-col lg:flex-row gap-8">
                         {/* Map Section - Left (60%) */}
-                        <div className={`lg:w-[60%] ${mobileView === 'map' ? 'block' : 'hidden lg:block'}`}>
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-4">
-                                <div className="p-4 border-b border-gray-100">
-                                    <h3 className="font-semibold text-gray-900">
-                                        Rute Hari {activeDay}
-                                    </h3>
-                                    <p className="text-sm text-gray-500">
-                                        {currentDayItems.length} destinasi
-                                    </p>
+                        <div className={`lg:w-[60%] order-2 lg:order-1 ${mobileView === 'map' ? 'block' : 'hidden lg:block'}`}>
+                            <div className="glass-card rounded-3xl overflow-hidden shadow-xl shadow-gray-200/50 dark:shadow-none sticky top-24 h-[600px] flex flex-col group border border-white/20">
+                                {/* Decorative gradient */}
+                                <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-500" />
+
+                                <div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md flex justify-between items-center z-10">
+                                    <div>
+                                        <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                            Rute Hari {activeDay}
+                                        </h3>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            {currentDayItems.length} destinasi
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="h-[500px]">
+
+                                <div className="flex-1 relative">
                                     <MapDisplay
                                         destinations={allDestinations}
                                         selectedIds={selectedIds}
                                         showRoute={true}
                                         useRoadRouting={true}
-                                        routeColor="#3b82f6"
-                                        className="h-full"
+                                        routeColor="#0f766e"
+                                        className="h-full w-full"
                                     />
+
+                                    {/* Map Control overlay */}
+                                    <div className="absolute bottom-6 right-6 flex flex-col gap-2">
+                                        <button className="p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 hover:scale-110 transition-all border border-gray-100 dark:border-gray-700">
+                                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Itinerary & Budget Section - Right (40%) */}
-                        <div className={`lg:w-[40%] space-y-6 ${mobileView === 'list' ? 'block' : 'hidden lg:block'}`}>
+                        <div className={`lg:w-[40%] space-y-6 order-1 lg:order-2 ${mobileView === 'list' ? 'block' : 'hidden lg:block'}`}>
                             {/* Draggable Itinerary List */}
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="font-semibold text-gray-900">
-                                        Hari {activeDay}
-                                    </h3>
-                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                                        Drag untuk mengatur ulang
-                                    </span>
+                            <div className="glass-card rounded-3xl p-6 relative overflow-hidden border border-white/20">
+                                <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                                    <span className="w-1 h-6 bg-teal-500 rounded-full"></span>
+                                    Rurutan Perjalanan
+                                </h3>
+
+                                <div className="max-h-[600px] overflow-y-auto scrollbar-hide -mr-2 pr-2">
+                                    <DraggableList
+                                        items={currentDayItems}
+                                        onReorder={handleReorder}
+                                        onRemove={handleRemoveItem}
+                                        showTransport={true}
+                                        className="py-2"
+                                    />
                                 </div>
-
-                                <DraggableList
-                                    items={currentDayItems}
-                                    onReorder={handleReorder}
-                                    onRemove={handleRemoveItem}
-                                    showTransport={true}
-                                />
                             </div>
 
-                            {/* Budget Summary */}
-                            <BudgetSummary
-                                budget={currentBudget}
-                                paxCount={itinerary.total_pax_count}
-                                isSticky={true}
-                            />
                         </div>
-                    </div>
 
-                    {/* Trip Info Footer */}
-                    <div className="mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-                            <div>
-                                <span className="text-gray-500 block mb-1">Kota</span>
-                                <span className="font-medium text-gray-900">{itinerary.city?.name || 'Bandung'}</span>
+                        {/* Budget Summary */}
+                        <BudgetSummary
+                            budget={currentBudget}
+                            paxCount={itinerary.total_pax_count}
+                            isSticky={true}
+                        />
+                    </div>
+                </div>
+
+                {/* Trip Info Footer */}
+                <div className="mt-12 glass-card rounded-3xl p-8 text-center relative overflow-hidden group border border-white/20">
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-teal-50/50 to-transparent dark:from-teal-900/10 pointer-events-none transition-opacity duration-500" />
+
+                    <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-full text-teal-600 dark:text-teal-400">
+                                <span className="text-xl">🏙️</span>
                             </div>
                             <div>
-                                <span className="text-gray-500 block mb-1">Jumlah Orang</span>
-                                <span className="font-medium text-gray-900">{itinerary.total_pax_count} orang</span>
+                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block uppercase tracking-wider mb-1">Kota</span>
+                                <span className="font-bold text-gray-900 dark:text-white capitalize">{itinerary.city?.name || 'Bandung'}</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">
+                                <span className="text-xl">👥</span>
                             </div>
                             <div>
-                                <span className="text-gray-500 block mb-1">Transportasi</span>
-                                <span className="font-medium text-gray-900">
-                                    {itinerary.transportation_preference === 'MOTOR' ? '🏍️ Motor' : '🚗 Mobil'}
+                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block uppercase tracking-wider mb-1">Pax</span>
+                                <span className="font-bold text-gray-900 dark:text-white">{itinerary.total_pax_count} Orang</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-full text-purple-600 dark:text-purple-400">
+                                <span className="text-xl">🚗</span>
+                            </div>
+                            <div>
+                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block uppercase tracking-wider mb-1">Transport</span>
+                                <span className="font-bold text-gray-900 dark:text-white">
+                                    {itinerary.transportation_preference === 'MOTOR' ? 'Motor' : 'Mobil'}
                                 </span>
                             </div>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-full text-amber-600 dark:text-amber-400">
+                                <span className="text-xl">📍</span>
+                            </div>
                             <div>
-                                <span className="text-gray-500 block mb-1">Total Destinasi</span>
-                                <span className="font-medium text-gray-900">{allItems.length} tempat</span>
+                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block uppercase tracking-wider mb-1">Total</span>
+                                <span className="font-bold text-gray-900 dark:text-white">{allItems.length} Destinasi</span>
                             </div>
                         </div>
                     </div>

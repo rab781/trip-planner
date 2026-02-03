@@ -18,40 +18,30 @@ export default function DayTabs({
     itemCounts = {},
     className = '',
 }) {
-    const [scrollPosition, setScrollPosition] = useState(0);
-
     const handleScroll = (direction) => {
         const container = document.getElementById('day-tabs-container');
         if (container) {
             const scrollAmount = direction === 'left' ? -150 : 150;
             container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            setScrollPosition(container.scrollLeft + scrollAmount);
         }
     };
 
-    const formatDate = (dayNumber, startDate) => {
-        if (!startDate) return `Hari ${dayNumber}`;
-        const date = new Date(startDate);
-        date.setDate(date.getDate() + dayNumber - 1);
-        return date.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
-    };
-
     return (
-        <div className={`relative ${className}`}>
-            {/* Scroll Buttons - Desktop only */}
+        <div className={`relative group ${className}`}>
+            {/* Scroll Buttons */}
             {days.length > 5 && (
                 <>
                     <button
                         onClick={() => handleScroll('left')}
-                        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/90 backdrop-blur-sm rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors"
+                        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 text-gray-600 dark:text-gray-300 hover:scale-110 transition-all opacity-0 group-hover:opacity-100"
                     >
-                        <ChevronLeftIcon className="w-4 h-4 text-gray-600" />
+                        <ChevronLeftIcon className="w-5 h-5" />
                     </button>
                     <button
                         onClick={() => handleScroll('right')}
-                        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/90 backdrop-blur-sm rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors"
+                        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 text-gray-600 dark:text-gray-300 hover:scale-110 transition-all opacity-0 group-hover:opacity-100"
                     >
-                        <ChevronRightIcon className="w-4 h-4 text-gray-600" />
+                        <ChevronRightIcon className="w-5 h-5" />
                     </button>
                 </>
             )}
@@ -59,8 +49,7 @@ export default function DayTabs({
             {/* Tabs Container */}
             <div
                 id="day-tabs-container"
-                className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-1 md:px-10 snap-x snap-mandatory"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-1 py-1 snap-x snap-mandatory"
             >
                 {days.map((day) => {
                     const dayNumber = typeof day === 'object' ? day.number : day;
@@ -71,16 +60,23 @@ export default function DayTabs({
                         <button
                             key={dayNumber}
                             onClick={() => onDayChange && onDayChange(dayNumber)}
-                            className={`flex-shrink-0 snap-start px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
-                                isActive
-                                    ? 'bg-button text-button-text shadow-md shadow-button/30'
-                                    : 'bg-main text-paragraph border border-secondary hover:border-button/30 hover:bg-secondary/50'
-                            }`}
+                            className={`flex-shrink-0 snap-start px-5 py-3 rounded-2xl font-medium text-sm transition-all duration-300 relative overflow-hidden group/tab ${isActive
+                                    ? 'bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-500/30 scale-105'
+                                    : 'glass-card border-transparent hover:border-teal-200/50 hover:bg-white/60 dark:hover:bg-gray-800/60 text-gray-600 dark:text-gray-300'
+                                }`}
                         >
-                            <div className="flex flex-col items-center gap-0.5">
-                                <span className="font-semibold">Hari {dayNumber}</span>
-                                <span className={`text-xs ${isActive ? 'text-button-text/80' : 'text-paragraph/60'}`}>
-                                    {itemCount} destinasi
+                            {/* Active Shine Effect */}
+                            {isActive && (
+                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent translate-x-[-100%] animate-shimmer" />
+                            )}
+
+                            <div className="flex flex-col items-center gap-1 relative z-10">
+                                <span className={`font-bold ${isActive ? 'text-white' : 'text-gray-700 dark:text-gray-200'}`}>
+                                    Hari {dayNumber}
+                                </span>
+                                <span className={`text-[10px] uppercase tracking-wider font-semibold ${isActive ? 'text-teal-100' : 'text-gray-400'
+                                    }`}>
+                                    {itemCount} Destinasi
                                 </span>
                             </div>
                         </button>
@@ -90,31 +86,11 @@ export default function DayTabs({
                 {/* Add Day Button */}
                 <button
                     onClick={() => onDayChange && onDayChange(days.length + 1)}
-                    className="flex-shrink-0 snap-start px-4 py-2.5 rounded-xl border-2 border-dashed border-secondary text-paragraph hover:border-button hover:text-button hover:bg-secondary/30 transition-all"
+                    className="flex-shrink-0 snap-start px-5 py-3 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 hover:border-teal-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all flex flex-col items-center justify-center min-w-[100px]"
                 >
-                    <div className="flex items-center gap-1">
-                        <span className="text-lg">+</span>
-                        <span className="text-sm font-medium">Tambah Hari</span>
-                    </div>
+                    <span className="text-xl leading-none mb-1">+</span>
+                    <span className="text-xs font-bold">Tambah</span>
                 </button>
-            </div>
-
-            {/* Progress Indicator */}
-            <div className="mt-2 flex justify-center gap-1">
-                {days.map((day) => {
-                    const dayNumber = typeof day === 'object' ? day.number : day;
-                    const isActive = activeDay === dayNumber;
-
-                    return (
-                        <button
-                            key={dayNumber}
-                            onClick={() => onDayChange && onDayChange(dayNumber)}
-                            className={`w-2 h-2 rounded-full transition-all ${
-                                isActive ? 'bg-button w-6' : 'bg-secondary hover:bg-button/30'
-                            }`}
-                        />
-                    );
-                })}
             </div>
         </div>
     );

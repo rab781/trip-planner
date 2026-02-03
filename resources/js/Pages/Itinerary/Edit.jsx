@@ -207,17 +207,20 @@ export default function Edit({
                     <div className="flex items-center gap-4">
                         <Link
                             href={route('itineraries.show', itinerary.id)}
-                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="p-2.5 text-gray-500 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-xl transition-all"
                         >
                             <ArrowLeftIcon className="w-5 h-5" />
                         </Link>
-                        <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                            Edit: {itinerary.title}
-                        </h2>
+                        <div>
+                            <h2 className="text-xl font-bold leading-tight text-gray-900 dark:text-white">
+                                Edit: {itinerary.title}
+                            </h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Sesuaikan rencana perjalanan Anda</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         {isSaving && (
-                            <span className="text-sm text-gray-500 flex items-center gap-2">
+                            <span className="text-sm font-medium text-teal-600 dark:text-teal-400 flex items-center gap-2 bg-teal-50 dark:bg-teal-900/20 px-3 py-1.5 rounded-lg animate-pulse">
                                 <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -228,10 +231,10 @@ export default function Edit({
                         <button
                             onClick={handleSaveAndFinish}
                             disabled={isSaving}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-button text-white text-sm font-medium rounded-xl hover:bg-button/90 transition-colors disabled:opacity-50"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 text-white text-sm font-bold rounded-xl hover:shadow-lg hover:shadow-teal-500/30 transition-all disabled:opacity-50 hover:-translate-y-0.5"
                         >
-                            <CheckIcon className="w-4 h-4" />
-                            {isSaving ? 'Menyimpan...' : 'Selesai'}
+                            <CheckIcon className="w-5 h-5" />
+                            {isSaving ? 'Menyimpan...' : 'Selesai Edit'}
                         </button>
                     </div>
                 </div>
@@ -242,65 +245,77 @@ export default function Edit({
             <div className="py-6">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {/* Basic Info Edit */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-                        <h3 className="font-semibold text-gray-900 mb-4">Informasi Dasar</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Judul</label>
-                                <input
-                                    type="text"
-                                    value={data.title}
-                                    onChange={(e) => setData('title', e.target.value)}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-button/20 focus:border-button"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
-                                <input
-                                    type="date"
-                                    value={data.start_date}
-                                    onChange={(e) => setData('start_date', e.target.value)}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-button/20 focus:border-button"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
-                                <input
-                                    type="date"
-                                    value={data.end_date}
-                                    onChange={(e) => setData('end_date', e.target.value)}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-button/20 focus:border-button"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Jumlah Orang</label>
-                                <input
-                                    type="number"
-                                    value={data.total_pax_count}
-                                    onChange={(e) => setData('total_pax_count', parseInt(e.target.value))}
-                                    min="1"
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-button/20 focus:border-button"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Transportasi</label>
-                                <select
-                                    value={data.transportation_preference}
-                                    onChange={(e) => setData('transportation_preference', e.target.value)}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-button/20 focus:border-button"
-                                >
-                                    <option value="MOTOR">🏍️ Motor</option>
-                                    <option value="CAR">🚗 Mobil</option>
-                                </select>
-                            </div>
-                            <div className="flex items-end">
-                                <button
-                                    onClick={handleSaveBasicInfo}
-                                    disabled={processing}
-                                    className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50"
-                                >
-                                    {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
-                                </button>
+                    <div className="glass-card rounded-3xl p-6 mb-8 relative overflow-hidden group">
+                        {/* Decorative background gradient */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none group-hover:bg-teal-500/10 transition-colors duration-500" />
+
+                        <div className="relative z-10">
+                            <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                                <span className="w-1 h-6 bg-teal-500 rounded-full"></span>
+                                Informasi Dasar
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div className="md:col-span-2">
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2ml-1">Judul Perjalanan</label>
+                                    <input
+                                        type="text"
+                                        value={data.title}
+                                        onChange={(e) => setData('title', e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-medium"
+                                        placeholder="Contoh: Liburan Seru di Bandung"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 ml-1">Mulai</label>
+                                    <input
+                                        type="date"
+                                        value={data.start_date}
+                                        onChange={(e) => setData('start_date', e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-medium text-gray-600"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 ml-1">Selesai</label>
+                                    <input
+                                        type="date"
+                                        value={data.end_date}
+                                        onChange={(e) => setData('end_date', e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-medium text-gray-600"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 ml-1">Jumlah Orang</label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            value={data.total_pax_count}
+                                            onChange={(e) => setData('total_pax_count', parseInt(e.target.value))}
+                                            min="1"
+                                            className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-medium"
+                                        />
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">Pax</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 ml-1">Transportasi</label>
+                                    <select
+                                        value={data.transportation_preference}
+                                        onChange={(e) => setData('transportation_preference', e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-medium appearance-none cursor-pointer"
+                                    >
+                                        <option value="MOTOR">🏍️ Motor</option>
+                                        <option value="CAR">🚗 Mobil</option>
+                                    </select>
+                                </div>
+                                <div className="flex items-end md:col-span-2 lg:col-span-2 justify-end">
+                                    <button
+                                        onClick={handleSaveBasicInfo}
+                                        disabled={processing}
+                                        className="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl hover:bg-teal-500 hover:text-white dark:hover:bg-teal-600 transition-all text-sm font-bold shadow-sm hover:shadow-md disabled:opacity-50"
+                                    >
+                                        {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -324,22 +339,27 @@ export default function Edit({
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Destination Picker */}
                         <div className="lg:col-span-2">
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                            <div className="glass-card rounded-3xl overflow-hidden shadow-xl shadow-gray-200/50 dark:shadow-none min-h-[600px] flex flex-col">
+                                <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white/60 dark:bg-gray-800/60 backdrop-blur-md sticky top-0 z-20">
                                     <div>
-                                        <h3 className="font-semibold text-gray-900">Tambah Destinasi</h3>
-                                        <p className="text-sm text-gray-500">Klik untuk menambah ke Hari {activeDay}</p>
+                                        <h3 className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                            <span className="w-1 h-6 bg-purple-500 rounded-full"></span>
+                                            Daftar Destinasi
+                                        </h3>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                            Kelola destinasi untuk <span className="font-semibold text-teal-600">Hari {activeDay}</span>
+                                        </p>
                                     </div>
                                     <button
                                         onClick={() => setShowDestinationPicker(!showDestinationPicker)}
-                                        className="text-sm text-button hover:underline"
+                                        className="px-4 py-2 text-sm font-bold text-teal-600 bg-teal-50 hover:bg-teal-100 rounded-xl transition-all"
                                     >
-                                        {showDestinationPicker ? 'Tutup' : 'Buka Picker'}
+                                        {showDestinationPicker ? 'Tutup Peta' : 'Buka Peta Picker'}
                                     </button>
                                 </div>
 
                                 {showDestinationPicker && (
-                                    <div className="p-4">
+                                    <div className="flex-1 relative animate-fade-in">
                                         <MapWithSidebar
                                             destinations={destinations}
                                             selectedIds={allSelectedIds}
@@ -351,7 +371,7 @@ export default function Edit({
                                 )}
 
                                 {!showDestinationPicker && (
-                                    <div className="p-6">
+                                    <div className="p-6 bg-gradient-to-b from-gray-50/50 to-white/50 dark:from-gray-900/50 dark:to-gray-800/50 flex-1">
                                         <DraggableList
                                             items={currentDayItems}
                                             onReorder={handleReorder}
@@ -362,10 +382,13 @@ export default function Edit({
                                         {/* Add destination button */}
                                         <button
                                             onClick={() => setShowDestinationPicker(true)}
-                                            className="w-full mt-4 py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-500 hover:border-button hover:text-button hover:bg-secondary/30 transition-all flex items-center justify-center gap-2"
+                                            className="w-full mt-6 py-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl text-gray-500 hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50/50 dark:hover:bg-teal-900/10 transition-all flex flex-col items-center justify-center gap-2 group"
                                         >
-                                            <PlusIcon className="w-5 h-5" />
-                                            Tambah Destinasi
+                                            <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-full group-hover:bg-teal-100 dark:group-hover:bg-teal-900/30 transition-colors">
+                                                <PlusIcon className="w-6 h-6" />
+                                            </div>
+                                            <span className="font-bold">Tambah Destinasi Baru</span>
+                                            <span className="text-xs font-normal">Buka peta untuk memilih tempat</span>
                                         </button>
                                     </div>
                                 )}

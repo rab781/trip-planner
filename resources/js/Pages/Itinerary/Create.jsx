@@ -250,50 +250,61 @@ export default function Create({ cities = [], zones = [], categories = [], desti
     const totalDestinations = generatedDays.reduce((sum, d) => sum + d.destinations.length, 0);
 
     return (
-        <AuthenticatedLayout
-            header={
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => window.history.back()}
-                        className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                    >
-                        <ArrowLeftIcon className="w-5 h-5" />
-                    </button>
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-white">
-                        Buat Rencana Perjalanan
-                    </h2>
-                </div>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Buat Rencana Perjalanan" />
 
-            <div className="py-6">
+            {/* Background Decorations */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
+            </div>
+
+            <div className="relative py-8 min-h-screen">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => window.history.back()}
+                                className="p-2.5 glass-card hover:bg-white/50 dark:hover:bg-gray-800/50 rounded-full transition-all hover-lift text-gray-700 dark:text-gray-200"
+                            >
+                                <ArrowLeftIcon className="w-5 h-5" />
+                            </button>
+                            <div>
+                                <h2 className="text-2xl font-bold font-display text-gray-900 dark:text-white">
+                                    Buat Rencana Perjalanan
+                                </h2>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Desain liburan impianmu dengan bantuan AI
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Step Indicator */}
-                    <div className="mb-8">
-                        <div className="flex items-center justify-center">
+                    <div className="mb-8 max-w-3xl mx-auto">
+                        <div className="relative flex items-center justify-between">
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full -z-10" />
+                            <div
+                                className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-teal-400 to-teal-600 rounded-full -z-10 transition-all duration-500"
+                                style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
+                            />
+
                             {steps.map((s, index) => (
-                                <div key={s.number} className="flex items-center">
-                                    <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step === s.number
-                                            ? 'bg-teal-500 border-teal-500 text-white shadow-lg shadow-teal-500/30'
-                                            : step > s.number
-                                                ? 'bg-green-500 border-green-500 text-white'
-                                                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500'
-                                        }`}>
-                                        {step > s.number ? (
-                                            <CheckIcon className="w-5 h-5" />
-                                        ) : (
-                                            <s.icon className="w-5 h-5" />
-                                        )}
+                                <div key={s.number} className="flex flex-col items-center gap-2 bg-gray-50 dark:bg-gray-900 px-2">
+                                    <div
+                                        className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${step >= s.number
+                                                ? 'bg-teal-500 border-teal-500 text-white shadow-lg shadow-teal-500/30 scale-110'
+                                                : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-400'
+                                            }`}
+                                    >
+                                        {step > s.number ? <CheckIcon className="w-6 h-6" /> : <s.icon className="w-5 h-5" />}
                                     </div>
-                                    <span className={`ml-2 text-sm font-medium hidden sm:block ${step === s.number ? 'text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'
+                                    <span className={`text-xs font-semibold uppercase tracking-wider transition-colors ${step >= s.number ? 'text-teal-600 dark:text-teal-400' : 'text-gray-400'
                                         }`}>
                                         {s.title}
                                     </span>
-                                    {index < steps.length - 1 && (
-                                        <div className={`w-12 sm:w-24 h-0.5 mx-4 transition-colors duration-500 ${step > s.number ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-700'
-                                            }`} />
-                                    )}
                                 </div>
                             ))}
                         </div>
@@ -301,192 +312,160 @@ export default function Create({ cities = [], zones = [], categories = [], desti
 
                     {/* Loading Overlay */}
                     {isGenerating && (
-                        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center animate-fade-in">
-                            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl animate-fade-in-up">
-                                <LoadingPlannerIllustration />
-                                <div className="text-center mt-6">
-                                    <h3 className="text-lg font-semibold text-headline dark:text-white mb-2">
-                                        Menyusun Itinerary...
-                                    </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        AI sedang menganalisis preferensi Anda dan menyusun rute terbaik
-                                    </p>
-                                </div>
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-900/90 backdrop-blur-md transition-all duration-500">
+                            <div className="text-center max-w-md px-6 animate-fade-up">
+                                <LoadingPlannerIllustration className="w-64 h-64 mx-auto mb-8" />
+                                <h3 className="text-2xl font-bold font-display text-gray-900 dark:text-white mb-2">
+                                    Sedang Menyusun Rute Terbaik...
+                                </h3>
+                                <p className="text-gray-500 dark:text-gray-400 animate-pulse">
+                                    AI sedang menganalisis {data.categories.length} kategori pilihan dan mencocokkan dengan preferensi {data.priority}...
+                                </p>
                             </div>
                         </div>
                     )}
 
-                    {/* Step Content */}
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
+                    {/* Main Content Card */}
+                    <div className="glass-card rounded-3xl overflow-hidden shadow-xl ring-1 ring-black/5 dark:ring-white/10 transition-all duration-500">
+
                         {/* Step 1: Preferences */}
                         {step === 1 && (
-                            <div className="p-6 sm:p-8 animate-fade-in">
-                                <h3 className="text-lg font-semibold text-headline dark:text-white mb-6 flex items-center gap-2">
-                                    <SparklesIcon className="w-5 h-5 text-teal-500" />
-                                    Atur Preferensi Perjalanan
-                                </h3>
+                            <div className="p-8 lg:p-10 animation-fade-in">
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                    {/* Left Column - Basic Info */}
-                                    <div className="space-y-6">
-                                        {/* Title */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-1">
-                                                Judul Perjalanan <span className="text-red-500">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={data.title}
-                                                onChange={(e) => setData('title', e.target.value)}
-                                                placeholder="Contoh: Solo Trip ke Bandung"
-                                                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-colors"
-                                            />
-                                        </div>
+                                    {/* Left Column: Trip Details */}
+                                    <div className="lg:col-span-7 space-y-8">
+                                        <div className="space-y-6">
+                                            <h3 className="text-lg font-bold font-display text-gray-900 dark:text-white flex items-center gap-2">
+                                                <SparklesIcon className="w-5 h-5 text-teal-500" />
+                                                Detail Perjalanan
+                                            </h3>
 
-                                        {/* Description */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-1">
-                                                Deskripsi (Opsional)
-                                            </label>
-                                            <textarea
-                                                value={data.description}
-                                                onChange={(e) => setData('description', e.target.value)}
-                                                placeholder="Ceritakan sedikit tentang perjalanan ini..."
-                                                rows={2}
-                                                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 resize-none transition-colors"
-                                            />
-                                        </div>
-
-                                        {/* City & Pax */}
-                                        <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-1">
-                                                    Kota Tujuan
-                                                </label>
-                                                <select
-                                                    value={data.city_id}
-                                                    onChange={(e) => setData('city_id', e.target.value)}
-                                                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-colors"
-                                                >
-                                                    {cities.map(city => (
-                                                        <option key={city.id} value={city.id}>{city.name}</option>
-                                                    ))}
-                                                </select>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 ">Nama Perjalanan</label>
+                                                <input
+                                                    type="text"
+                                                    value={data.title}
+                                                    onChange={(e) => setData('title', e.target.value)}
+                                                    placeholder="e.g. Liburan Seru di Lembang"
+                                                    className="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                                                />
                                             </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-1">
-                                                    Jumlah Orang
-                                                </label>
-                                                <div className="flex items-center gap-2">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setData('total_pax_count', Math.max(1, data.total_pax_count - 1))}
-                                                        className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Kota Tujuan</label>
+                                                    <select
+                                                        value={data.city_id}
+                                                        onChange={(e) => setData('city_id', e.target.value)}
+                                                        className="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                                                     >
-                                                        -
-                                                    </button>
-                                                    <input
-                                                        type="number"
-                                                        value={data.total_pax_count}
-                                                        onChange={(e) => setData('total_pax_count', parseInt(e.target.value) || 1)}
-                                                        min="1"
-                                                        className="w-16 text-center px-2 py-2 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl"
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setData('total_pax_count', data.total_pax_count + 1)}
-                                                        className="w-10 h-10 flex items-center justify-center border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
-                                                    >
-                                                        +
-                                                    </button>
+                                                        {cities.map(city => (
+                                                            <option key={city.id} value={city.id}>{city.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Jumlah Peserta</label>
+                                                    <div className="flex items-center bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-1">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setData('total_pax_count', Math.max(1, data.total_pax_count - 1))}
+                                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm rounded-lg transition-all"
+                                                        >
+                                                            -
+                                                        </button>
+                                                        <input
+                                                            type="number"
+                                                            value={data.total_pax_count}
+                                                            onChange={(e) => setData('total_pax_count', parseInt(e.target.value) || 1)}
+                                                            className="flex-1 text-center bg-transparent border-none focus:ring-0 p-0 font-semibold text-gray-900 dark:text-white"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setData('total_pax_count', data.total_pax_count + 1)}
+                                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm rounded-lg transition-all"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Dates */}
-                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Mulai</label>
+                                                    <input
+                                                        type="date"
+                                                        value={data.start_date}
+                                                        onChange={(e) => setData('start_date', e.target.value)}
+                                                        min={new Date().toISOString().split('T')[0]}
+                                                        className="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Selesai</label>
+                                                    <input
+                                                        type="date"
+                                                        value={data.end_date}
+                                                        onChange={(e) => setData('end_date', e.target.value)}
+                                                        min={data.start_date || new Date().toISOString().split('T')[0]}
+                                                        className="w-full px-5 py-3.5 rounded-xl border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                                                    />
+                                                </div>
+                                            </div>
+
                                             <div>
-                                                <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-1">
-                                                    Tanggal Mulai <span className="text-red-500">*</span>
-                                                </label>
-                                                <input
-                                                    type="date"
-                                                    value={data.start_date}
-                                                    onChange={(e) => setData('start_date', e.target.value)}
-                                                    min={new Date().toISOString().split('T')[0]}
-                                                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-colors"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-1">
-                                                    Tanggal Selesai <span className="text-red-500">*</span>
-                                                </label>
-                                                <input
-                                                    type="date"
-                                                    value={data.end_date}
-                                                    onChange={(e) => setData('end_date', e.target.value)}
-                                                    min={data.start_date || new Date().toISOString().split('T')[0]}
-                                                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-colors"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {tripDuration > 0 && (
-                                            <div className="flex items-center gap-2 text-sm text-teal-600 dark:text-teal-400 font-medium bg-teal-50 dark:bg-teal-900/30 px-4 py-2 rounded-lg">
-                                                <CalendarIcon className="w-4 h-4" />
-                                                Durasi: {tripDuration} hari
-                                            </div>
-                                        )}
-
-                                        {/* Transport */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-2">
-                                                Transportasi
-                                            </label>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setData('transportation_preference', 'MOTOR')}
-                                                    className={`p-3 rounded-xl border-2 transition-all text-left ${data.transportation_preference === 'MOTOR'
-                                                            ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
-                                                            : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                        }`}
-                                                >
-                                                    <span className="text-2xl">🏍️</span>
-                                                    <span className="font-medium text-headline dark:text-white ml-2">Motor</span>
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setData('transportation_preference', 'CAR')}
-                                                    className={`p-3 rounded-xl border-2 transition-all text-left ${data.transportation_preference === 'CAR'
-                                                            ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
-                                                            : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                        }`}
-                                                >
-                                                    <span className="text-2xl">🚗</span>
-                                                    <span className="font-medium text-headline dark:text-white ml-2">Mobil</span>
-                                                </button>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Transportasi Utama</label>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    {['MOTOR', 'CAR'].map((type) => (
+                                                        <button
+                                                            key={type}
+                                                            type="button"
+                                                            onClick={() => setData('transportation_preference', type)}
+                                                            className={`relative group p-4 rounded-xl border-2 text-left transition-all duration-300 ${data.transportation_preference === type
+                                                                    ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+                                                                    : 'border-gray-200 dark:border-gray-700 hover:border-teal-200 dark:hover:border-teal-800'
+                                                                }`}
+                                                        >
+                                                            <div className={`text-2xl mb-2 transition-transform duration-300 group-hover:scale-110 ${data.transportation_preference === type ? 'scale-110' : ''}`}>
+                                                                {type === 'MOTOR' ? '🏍️' : '🚗'}
+                                                            </div>
+                                                            <div className="font-semibold text-gray-900 dark:text-white">
+                                                                {type === 'MOTOR' ? 'Sepeda Motor' : 'Mobil Pribadi'}
+                                                            </div>
+                                                            <div className="text-xs text-gray-500 mt-1">
+                                                                {type === 'MOTOR' ? 'Lebih cepat, hindari macet' : 'Lebih nyaman untuk keluarga'}
+                                                            </div>
+                                                            {data.transportation_preference === type && (
+                                                                <div className="absolute top-3 right-3 w-5 h-5 bg-teal-500 rounded-full flex items-center justify-center">
+                                                                    <CheckIcon className="w-3 h-3 text-white" />
+                                                                </div>
+                                                            )}
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Right Column - Preferences */}
-                                    <div className="space-y-6">
+                                    {/* Right Column: Preferences */}
+                                    <div className="lg:col-span-5 space-y-8">
+
                                         {/* Categories */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-2">
-                                                Kategori Destinasi <span className="text-red-500">*</span>
+                                        <div className="bg-white/50 dark:bg-gray-800/50 rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
+                                            <label className="block text-sm font-bold text-gray-900 dark:text-white mb-4">
+                                                Minat Destinasi <span className="font-normal text-gray-500 text-xs ml-1">(Pilih minimal 1)</span>
                                             </label>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Pilih minimal 1 kategori</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {categories.map(cat => (
                                                     <button
                                                         key={cat.id}
                                                         type="button"
                                                         onClick={() => handleToggleCategory(cat.id)}
-                                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${data.categories.includes(cat.id)
-                                                                ? 'bg-teal-500 text-white shadow-md shadow-teal-500/25'
-                                                                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${data.categories.includes(cat.id)
+                                                                ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30 hover:bg-teal-600'
+                                                                : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 border border-gray-200 dark:border-gray-600'
                                                             }`}
                                                     >
                                                         {cat.name}
@@ -495,114 +474,65 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                             </div>
                                         </div>
 
-                                        {/* Priority */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-2">
-                                                Prioritas Pemilihan
-                                            </label>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                {priorityOptions.map(opt => (
-                                                    <button
-                                                        key={opt.value}
-                                                        type="button"
-                                                        onClick={() => setData('priority', opt.value)}
-                                                        className={`p-3 rounded-xl border-2 text-left transition-all ${data.priority === opt.value
-                                                                ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
-                                                                : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                            }`}
-                                                    >
-                                                        <span className="font-medium text-headline dark:text-white text-sm">{opt.label}</span>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.desc}</p>
-                                                    </button>
-                                                ))}
+                                        {/* Priority & Pace */}
+                                        <div className="space-y-6">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Gaya Perjalanan</label>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    {paceOptions.map(opt => (
+                                                        <button
+                                                            key={opt.value}
+                                                            type="button"
+                                                            onClick={() => setData('pace', opt.value)}
+                                                            className={`p-3 rounded-xl border text-center transition-all ${data.pace === opt.value
+                                                                    ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 ring-1 ring-teal-500'
+                                                                    : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50'
+                                                                }`}
+                                                        >
+                                                            <span className="text-xl block mb-1">{opt.icon}</span>
+                                                            <span className="text-sm font-semibold block text-gray-900 dark:text-white">{opt.label}</span>
+                                                            <span className="text-[10px] text-gray-500">{opt.desc}</span>
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Pace */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-2">
-                                                Kecepatan Perjalanan
-                                            </label>
-                                            <div className="grid grid-cols-3 gap-2">
-                                                {paceOptions.map(opt => (
-                                                    <button
-                                                        key={opt.value}
-                                                        type="button"
-                                                        onClick={() => setData('pace', opt.value)}
-                                                        className={`p-3 rounded-xl border-2 text-center transition-all ${data.pace === opt.value
-                                                                ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
-                                                                : 'border-gray-200 dark:border-gray-600 hover:border-teal-300 dark:hover:border-teal-700'
-                                                            }`}
-                                                    >
-                                                        <span className="text-2xl block">{opt.icon}</span>
-                                                        <span className="font-medium text-headline dark:text-white text-sm">{opt.label}</span>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">{opt.desc}</p>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        {/* Budget per day */}
-                                        <div>
-                                            <label className="block text-sm font-medium text-headline dark:text-gray-200 mb-1">
-                                                Budget per Hari (Opsional)
-                                            </label>
-                                            <div className="relative">
-                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">Rp</span>
-                                                <input
-                                                    type="number"
-                                                    value={data.budget_per_day}
-                                                    onChange={(e) => setData('budget_per_day', e.target.value)}
-                                                    placeholder="150000"
-                                                    className="w-full pl-12 pr-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-colors"
-                                                />
-                                            </div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Per orang per hari (untuk perbandingan)</p>
-                                        </div>
-
-                                        {/* Solo Mode Toggle */}
-                                        <div className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${data.solo_mode
-                                                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
-                                                : 'border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-700'
-                                            }`}
-                                            onClick={() => setData('solo_mode', !data.solo_mode)}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${data.solo_mode ? 'bg-indigo-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                                            {/* Solo Mode Card */}
+                                            <div
+                                                onClick={() => setData('solo_mode', !data.solo_mode)}
+                                                className={`cursor-pointer p-4 rounded-2xl border-2 transition-all duration-300 flex items-center gap-4 ${data.solo_mode
+                                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 shadow-lg shadow-indigo-500/10'
+                                                        : 'border-transparent bg-white dark:bg-gray-800 hover:bg-gray-50 shadow-sm'
+                                                    }`}
+                                            >
+                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${data.solo_mode ? 'bg-indigo-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
                                                     }`}>
                                                     <UserIcon className="w-6 h-6" />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <h4 className="font-medium text-headline dark:text-white">🎒 Solo Trip Mode</h4>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                        Aktifkan untuk mendapat tips & rekomendasi khusus solo traveler
+                                                    <h4 className={`font-bold ${data.solo_mode ? 'text-indigo-700 dark:text-indigo-300' : 'text-gray-900 dark:text-white'}`}>
+                                                        Solo Traveler Mode
+                                                    </h4>
+                                                    <p className="text-xs text-gray-500">
+                                                        Rekomendasi khusus untuk keamanan & kenyamanan solo trip.
                                                     </p>
                                                 </div>
-                                                <div className={`w-12 h-6 rounded-full transition-colors ${data.solo_mode ? 'bg-indigo-500' : 'bg-gray-300 dark:bg-gray-600'
-                                                    }`}>
-                                                    <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform mt-0.5 ${data.solo_mode ? 'translate-x-6' : 'translate-x-0.5'
-                                                        }`} />
+                                                <div className={`w-12 h-6 rounded-full transition-colors relative ${data.solo_mode ? 'bg-indigo-500' : 'bg-gray-300'}`}>
+                                                    <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${data.solo_mode ? 'right-1' : 'left-1'}`} />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Generation Error */}
-                                {generationError && (
-                                    <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300 animate-shake">
-                                        {generationError}
-                                    </div>
-                                )}
                             </div>
                         )}
 
-                        {/* Step 2: Review Generated Itinerary */}
+                        {/* Step 2: Generated Itinerary */}
                         {step === 2 && (
-                            <div className="p-6 sm:p-8">
-                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    {/* Left - Generated Itinerary */}
-                                    <div className="lg:col-span-2">
+                            <div className="p-0 sm:p-0">
+                                <div className="grid grid-cols-1 lg:grid-cols-3 min-h-[600px]">
+                                    {/* Main Itinerary - Left/Top */}
+                                    <div className="lg:col-span-2 border-r border-gray-100 dark:border-gray-700 bg-white/30 dark:bg-gray-800/30">
                                         <GeneratedItinerary
                                             days={generatedDays}
                                             onDaysChange={setGeneratedDays}
@@ -622,172 +552,125 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                         />
                                     </div>
 
-                                    {/* Right - Budget Summary */}
-                                    <div>
+                                    {/* Budget Summary - Right/Bottom */}
+                                    <div className="bg-white/60 dark:bg-gray-900/60 p-6 lg:p-8 backdrop-blur-md">
                                         <CompleteBudgetSummary
                                             budget={completeBudget}
                                             paxCount={data.total_pax_count}
                                         />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Step 3: Final Review */}
-                        {step === 3 && (
-                            <div className="p-6 sm:p-8 animate-fade-in">
-                                <h3 className="text-lg font-semibold text-headline dark:text-white mb-6 flex items-center gap-2">
-                                    <CheckIcon className="w-5 h-5 text-green-500" />
-                                    Konfirmasi Rencana Perjalanan
-                                </h3>
-
-                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    {/* Trip Summary */}
-                                    <div className="lg:col-span-2 space-y-6">
-                                        {/* Basic Info Card */}
-                                        <div className="bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-xl p-5 border border-teal-200/50 dark:border-teal-700/50">
-                                            <h4 className="font-semibold text-headline dark:text-white text-lg mb-2">{data.title}</h4>
-                                            {data.description && (
-                                                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{data.description}</p>
-                                            )}
-                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-                                                <div>
-                                                    <span className="text-gray-500 dark:text-gray-400 block">📍 Kota</span>
-                                                    <span className="font-medium text-headline dark:text-white">{cities.find(c => c.id == data.city_id)?.name || 'Bandung'}</span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500 dark:text-gray-400 block">📅 Durasi</span>
-                                                    <span className="font-medium text-headline dark:text-white">{tripDuration} hari</span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500 dark:text-gray-400 block">👥 Orang</span>
-                                                    <span className="font-medium text-headline dark:text-white">{data.total_pax_count} orang</span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-500 dark:text-gray-400 block">🚗 Transport</span>
-                                                    <span className="font-medium text-headline dark:text-white">
-                                                        {data.transportation_preference === 'MOTOR' ? 'Motor' : 'Mobil'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            {data.solo_mode && (
-                                                <div className="mt-4 flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-                                                    <UserIcon className="w-4 h-4" />
-                                                    <span className="text-sm font-medium">Solo Trip Mode Aktif</span>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Destinations Preview */}
-                                        <div>
-                                            <h4 className="font-semibold text-headline dark:text-white mb-3 flex items-center gap-2">
-                                                <RouteIcon className="w-5 h-5 text-teal-500" />
-                                                {totalDestinations} Destinasi dalam {generatedDays.length} Hari
+                                        <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                                            <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2 text-sm flex items-center gap-2">
+                                                <SparklesIcon className="w-4 h-4" />
+                                                AI Tips
                                             </h4>
-                                            <div className="space-y-3">
-                                                {generatedDays.map(day => (
-                                                    <div key={day.day} className="p-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl hover:shadow-md transition-shadow">
-                                                        <h5 className="font-medium text-headline dark:text-white mb-2">Hari {day.day}</h5>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {day.destinations.map((dest, idx) => (
-                                                                <span
-                                                                    key={dest.id}
-                                                                    className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-200"
-                                                                >
-                                                                    <span className="w-5 h-5 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                                                                        {idx + 1}
-                                                                    </span>
-                                                                    {dest.name}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
+                                            <p className="text-xs text-blue-700 dark:text-blue-200">
+                                                Anda bisa "drag-and-drop" destinasi antar hari, atau klik tombol "Regenerate" pada hari tertentu jika ingin variasi lain.
+                                            </p>
                                         </div>
-                                    </div>
-
-                                    {/* Budget Summary */}
-                                    <div>
-                                        <CompleteBudgetSummary
-                                            budget={completeBudget}
-                                            paxCount={data.total_pax_count}
-                                        />
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* Footer Navigation */}
-                        <div className="px-6 sm:px-8 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                        {/* Step 3: Confirmation */}
+                        {step === 3 && (
+                            <div className="p-8 lg:p-12 animate-fade-in text-center max-w-2xl mx-auto">
+                                <div className="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-slow">
+                                    <CheckIcon className="w-12 h-12 text-green-600 dark:text-green-400" />
+                                </div>
+                                <h3 className="text-3xl font-bold font-display text-gray-900 dark:text-white mb-4">
+                                    Sempurna! Itinerary Siap Disimpan
+                                </h3>
+                                <p className="text-gray-500 dark:text-gray-400 mb-10 text-lg">
+                                    Perjalanan "{data.title}" ke {cities.find(c => c.id == data.city_id)?.name} selama {tripDuration} hari sudah tersusun rapi.
+                                </p>
+
+                                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-6 mb-10 border border-gray-100 dark:border-gray-700 text-left grid grid-cols-2 gap-y-4">
+                                    <div className="text-gray-500 text-sm">Total Estimasi Biaya</div>
+                                    <div className="text-right font-bold text-gray-900 dark:text-white">
+                                        Rp {(completeBudget.total_estimated_cost || 0).toLocaleString('id-ID')}
+                                    </div>
+                                    <div className="text-gray-500 text-sm">Total Destinasi</div>
+                                    <div className="text-right font-bold text-gray-900 dark:text-white">
+                                        {totalDestinations} Tempat
+                                    </div>
+                                    <div className="text-gray-500 text-sm">Transportasi</div>
+                                    <div className="text-right font-bold text-gray-900 dark:text-white">
+                                        {data.transportation_preference === 'MOTOR' ? 'Motor' : 'Mobil'}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Sticky Footer for Navigation */}
+                        <div className="p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 flex items-center justify-between sticky bottom-0 z-10">
                             <button
                                 type="button"
                                 onClick={handlePrevStep}
                                 disabled={step === 1}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${step === 1
-                                        ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${step === 1
+                                        ? 'text-gray-300 cursor-not-allowed hidden'
+                                        : 'text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800'
                                     }`}
                             >
-                                <ArrowLeftIcon className="w-4 h-4" />
+                                <ArrowLeftIcon className="w-5 h-5" />
                                 Kembali
                             </button>
 
-                            {step === 1 ? (
-                                <button
-                                    type="button"
-                                    onClick={handleNextStep}
-                                    disabled={!isStep1Valid || isGenerating}
-                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${!isStep1Valid || isGenerating
-                                            ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                                            : 'bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 shadow-md hover:shadow-lg hover:shadow-teal-500/25'
-                                        }`}
-                                >
-                                    {isGenerating ? (
-                                        <>
-                                            <LoadingCompass className="w-4 h-4" />
-                                            Generating...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <SparklesIcon className="w-4 h-4" />
-                                            Generate Itinerary
-                                        </>
-                                    )}
-                                </button>
-                            ) : step === 2 ? (
-                                <button
-                                    type="button"
-                                    onClick={handleNextStep}
-                                    disabled={!isStep2Valid}
-                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all ${!isStep2Valid
-                                            ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                                            : 'bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 shadow-md hover:shadow-lg hover:shadow-teal-500/25'
-                                        }`}
-                                >
-                                    Lanjut ke Konfirmasi
-                                    <ArrowRightIcon className="w-4 h-4" />
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={handleSubmit}
-                                    disabled={isSubmitting}
-                                    className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl text-sm font-medium hover:from-green-600 hover:to-green-700 transition-all shadow-md hover:shadow-lg hover:shadow-green-500/25 disabled:opacity-50"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <LoadingCompass className="w-4 h-4" />
-                                            Menyimpan...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <CheckIcon className="w-4 h-4" />
-                                            Buat Itinerary
-                                        </>
-                                    )}
-                                </button>
-                            )}
+                            <div className="ml-auto">
+                                {step === 1 ? (
+                                    <button
+                                        type="button"
+                                        onClick={handleNextStep}
+                                        disabled={!isStep1Valid || isGenerating}
+                                        className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 ${!isStep1Valid || isGenerating
+                                                ? 'bg-gray-300 dark:bg-gray-700 text-gray-400 cursor-not-allowed shadow-none hover:translate-y-0'
+                                                : 'bg-gradient-to-r from-teal-500 to-teal-700 hover:shadow-teal-500/25'
+                                            }`}
+                                    >
+                                        {isGenerating ? (
+                                            <>
+                                                <LoadingCompass className="w-5 h-5 animate-spin" />
+                                                Sedang Menyusun...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <SparklesIcon className="w-5 h-5" />
+                                                Generate Itinerary
+                                            </>
+                                        )}
+                                    </button>
+                                ) : step === 2 ? (
+                                    <button
+                                        type="button"
+                                        onClick={handleNextStep}
+                                        disabled={!isStep2Valid}
+                                        className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-500 to-teal-700 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-teal-500/25 transition-all hover:-translate-y-1"
+                                    >
+                                        Lanjut ke Konfirmasi
+                                        <ArrowRightIcon className="w-5 h-5" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={handleSubmit}
+                                        disabled={isSubmitting}
+                                        className="flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-green-500/25 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0"
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <LoadingCompass className="w-5 h-5 animate-spin" />
+                                                Menyimpan...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckIcon className="w-5 h-5" />
+                                                Simpan & Selesai
+                                            </>
+                                        )}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

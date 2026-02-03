@@ -38,12 +38,12 @@ export default function DraggableList({
 
     if (items.length === 0) {
         return (
-            <div className={`flex flex-col items-center justify-center py-12 px-4 ${className}`}>
-                <div className="w-24 h-24 bg-secondary rounded-full flex items-center justify-center mb-4">
-                    <span className="text-4xl">🗺️</span>
+            <div className={`flex flex-col items-center justify-center py-16 px-4 glass-card rounded-2xl border-dashed border-2 border-gray-200 dark:border-gray-700 ${className}`}>
+                <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6 animate-float">
+                    <span className="text-5xl filter drop-shadow-sm">🗺️</span>
                 </div>
-                <h3 className="font-semibold text-headline mb-1">Belum ada destinasi</h3>
-                <p className="text-sm text-paragraph text-center max-w-xs">
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2">Belum ada destinasi</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-xs">
                     Pilih destinasi dari peta atau daftar untuk memulai merencanakan perjalananmu
                 </p>
             </div>
@@ -57,12 +57,11 @@ export default function DraggableList({
                     <div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`space-y-0 ${
-                            snapshot.isDraggingOver ? 'bg-secondary/50 rounded-xl' : ''
-                        } ${className}`}
+                        className={`space-y-1 ${snapshot.isDraggingOver ? 'bg-teal-50/30 dark:bg-teal-900/10 rounded-2xl p-2 transition-all duration-300 ring-2 ring-teal-200/50' : ''
+                            } ${className}`}
                     >
                         {items.map((item, index) => (
-                            <div key={item.id}>
+                            <div key={item.id} className="relative z-10">
                                 <Draggable
                                     draggableId={String(item.id)}
                                     index={index}
@@ -71,9 +70,8 @@ export default function DraggableList({
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            className={`transition-transform ${
-                                                snapshot.isDragging ? 'z-50' : 'z-0'
-                                            }`}
+                                            className={`transition-all duration-200 ${snapshot.isDragging ? 'z-50 scale-105' : 'z-0'
+                                                }`}
                                         >
                                             <ItineraryCard
                                                 item={item}
@@ -100,9 +98,9 @@ export default function DraggableList({
 
                         {/* Drop zone indicator */}
                         {snapshot.isDraggingOver && (
-                            <div className="h-20 border-2 border-dashed border-button/30 rounded-xl bg-button/5 flex items-center justify-center">
-                                <span className="text-sm text-button font-medium">
-                                    Lepas di sini
+                            <div className="h-24 border-2 border-dashed border-teal-300 dark:border-teal-700 rounded-2xl bg-teal-50/50 dark:bg-teal-900/20 flex items-center justify-center animate-pulse">
+                                <span className="text-sm text-teal-600 dark:text-teal-400 font-bold bg-white/50 dark:bg-gray-800/50 px-4 py-2 rounded-full backdrop-blur-sm">
+                                    Lepas di sini untuk memindahkan
                                 </span>
                             </div>
                         )}
