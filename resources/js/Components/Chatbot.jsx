@@ -134,11 +134,13 @@ export default function Chatbot() {
             {/* Floating Chat Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
+                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus-visible:ring-4 focus-visible:ring-button focus-visible:ring-offset-2 ${
                     isOpen
                         ? 'bg-gradient-to-r from-red-500 to-red-600'
                         : 'bg-gradient-to-r from-button to-highlight'
                 }`}
+                aria-label={isOpen ? 'Tutup chat' : 'Buka chat'}
+                aria-expanded={isOpen}
             >
                 {isOpen ? (
                     <XMarkIcon className="h-6 w-6 text-white" />
@@ -242,11 +244,13 @@ export default function Chatbot() {
                             onChange={(e) => setInputMessage(e.target.value)}
                             placeholder="Ketik pertanyaan Anda..."
                             className="flex-1 px-4 py-2 border-2 border-secondary rounded-full focus:ring-2 focus:ring-button focus:border-button outline-none text-sm"
+                            aria-label="Ketik pertanyaan Anda"
                         />
                         <button
                             type="submit"
                             disabled={!inputMessage.trim()}
-                            className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-button focus-visible:ring-offset-2"
+                            aria-label="Kirim pesan"
                         >
                             <PaperAirplaneIcon className="h-5 w-5" />
                         </button>
