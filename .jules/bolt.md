@@ -1,0 +1,3 @@
+## 2024-03-21 - N+1 Queries in calculateBudgetBreakdown
+**Learning:** The `calculateBudgetBreakdown` method in `ItineraryService` was using `$itinerary->load(...)` to fetch relations required for cost calculation. Since this service is called within a `map()` loop in `ItineraryController::index` to calculate the budget for every itinerary displayed on the dashboard, this resulted in an N+1 query problem. Overriding already eager-loaded relationships causes unnecessary database hits.
+**Action:** Next time, always use `loadMissing(...)` in service methods that might be called inside a loop, allowing the controller to eagerly fetch the data upfront in O(1) queries using `with(...)`.
