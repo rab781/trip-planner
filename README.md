@@ -1,59 +1,163 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Smart Itinerary Planner
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> An AI-powered travel itinerary generator and management system that creates optimized, personalized travel plans with intelligent drag-and-drop sequencing.
 
-## About Laravel
+[![Laravel](https://img.shields.io/badge/Laravel-12.0-FF2D20.svg?style=flat&logo=laravel)](https://laravel.com)
+[![React](https://img.shields.io/badge/React-18.2-61DAFB.svg?style=flat&logo=react)](https://reactjs.org/)
+[![Inertia.js](https://img.shields.io/badge/Inertia.js-2.0-9553E9.svg?style=flat)](https://inertiajs.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Why This Exists
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Planning a multi-day trip involves juggling transportation schedules, attraction locations, opening hours, and budgets—often resulting in a messy spreadsheet and decision fatigue. The Smart Itinerary Planner solves this by using AI to instantly generate logical, distance-optimized travel days, while giving you a seamless drag-and-drop interface to easily customize the results. It bridges the gap between automated suggestions and manual control.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Quick Start
 
-## Learning Laravel
+The fastest way to get the planner running locally:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+# Clone the repository
+git clone <repository-url>
+cd smart-itinerary-planner
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Install dependencies
+composer install
+npm install
 
-## Laravel Sponsors
+# Setup environment
+cp .env.example .env
+php artisan key:generate
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Setup database (SQLite by default)
+touch database/database.sqlite
+php artisan migrate:fresh --seed
 
-### Premium Partners
+# Start the development servers
+npm run dev &
+php artisan serve
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Open `http://localhost:8000` in your browser. Default users are created by the seeder.
+
+## Installation
+
+**Prerequisites**:
+- PHP 8.2+
+- Node.js 18+ and npm 9+
+- Composer 2.0+
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd smart-itinerary-planner
+   ```
+
+2. **Install PHP and Node dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+   *Optional but recommended: Configure your Chutes AI API Token in `.env` to enable AI itinerary generation:*
+   ```env
+   CHUTES_API_TOKEN=your_chutes_api_token_here
+   ```
+
+4. **Initialize Database**
+   We use SQLite by default for easy setup.
+   ```bash
+   touch database/database.sqlite
+   php artisan migrate:fresh --seed
+   ```
+
+5. **Build Assets and Run Server**
+   ```bash
+   npm run build
+   php artisan serve
+   ```
+
+## Usage
+
+### Basic Example: Generating an Itinerary
+
+1. Log in to the application at `http://localhost:8000`.
+2. Navigate to "Itineraries" and click "Create New".
+3. Fill in the destination city, travel dates, and click "Generate with AI".
+4. The system will build a day-by-day plan automatically.
+
+### Modifying an Itinerary (Drag & Drop)
+
+You can manually adjust your schedule on the Itinerary Details page:
+- **Reorder**: Click and drag any item within a day to change the sequence. Distances and travel times will recalculate automatically.
+- **Move across days**: Drag an item from Day 1 to Day 2 to shift the schedule.
+- **Add details**: Click any destination to view more info, including estimated costs and recommended duration.
+
+### Interacting with the AI Chatbot
+
+Click the chat bubble in the bottom right corner to ask questions about your destination, seek recommendations, or request alternative activities if a place is closed.
+
+## Core Features
+
+- **AI Itinerary Generation**: Uses LLMs to create realistic, sequenced travel plans based on user preferences.
+- **Drag-and-Drop Editor**: Powered by `@hello-pangea/dnd`, allowing fluid reordering of activities with real-time distance recalculation.
+- **Budget Tracking**: Automatic calculation of transportation, lodging, and activity costs.
+- **Interactive Maps**: Integrated with Leaflet to visualize daily routes and optimize travel paths.
+- **Role-Based Admin Panel**: Manage destinations, zones, transport rates, and users from a secure dashboard.
+
+## API Reference
+
+The application exposes a REST API for core functionalities. All endpoints (except public ones like `/api/cities`) require Sanctum authentication.
+
+See the `routes/api.php` file for a full list of endpoints.
+
+**Example: Fetching Itineraries**
+```http
+GET /api/itineraries
+Authorization: Bearer <your-token>
+Accept: application/json
+```
+
+**Example Response**:
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Weekend in Paris",
+      "city_id": 4,
+      "start_date": "2026-05-10",
+      "end_date": "2026-05-12",
+      "total_budget": 850.50
+    }
+  ]
+}
+```
+
+## Architecture
+
+This project uses the **TALL/VILT stack variant**:
+- **Framework**: Laravel 12
+- **Frontend**: React 18 with Inertia.js (No separate API needed for web views)
+- **Styling**: Tailwind CSS
+- **Database**: SQLite (Configurable to MySQL/PostgreSQL)
+- **AI Integration**: Chutes API
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+We welcome contributions! Please see our standard contribution guidelines.
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the project.
+2. Create a feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes (`git commit -m 'Add amazing feature'`).
+4. Push to the branch (`git push origin feature/amazing-feature`).
+5. Open a Pull Request.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
