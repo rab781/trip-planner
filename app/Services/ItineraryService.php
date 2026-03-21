@@ -231,7 +231,9 @@ class ItineraryService
      */
     public function calculateBudgetBreakdown(Itinerary $itinerary): array
     {
-        $itinerary->load(['itineraryItems.destination.ticketVariants', 'itineraryItems.itineraryItemDetails', 'itineraryLodgings']);
+        // ⚡ Bolt: Use loadMissing instead of load to prevent N+1 queries when calculating
+        // budget for multiple itineraries that have already eager-loaded these relationships
+        $itinerary->loadMissing(['itineraryItems.destination.ticketVariants', 'itineraryItems.itineraryItemDetails', 'itineraryLodgings']);
 
         // Transport costs
         $transportCost = $itinerary->itineraryItems->sum('est_transport_cost') ?? 0;
