@@ -282,7 +282,7 @@ class ItineraryGeneratorService
             }
 
             // Generate badges
-            $badges = $this->generateBadges($dest, $scores, $priceStats, $maxPopularity, $isSoloMode);
+            $badges = $this->generateBadges($dest, $scores, $priceStats, $maxPopularity, $isSoloMode, $usageCount);
 
             $dest->calculated_score = round($totalScore, 1);
             $dest->score_breakdown = $scores;
@@ -303,7 +303,8 @@ class ItineraryGeneratorService
         array $scores,
         array $priceStats,
         float $maxPopularity,
-        bool $isSoloMode
+        bool $isSoloMode,
+        int $usageCount = 0
     ): array {
         $badges = [];
 
@@ -320,8 +321,7 @@ class ItineraryGeneratorService
         }
 
         // Popularity badge (top 25%)
-        $usageCount = ItineraryItem::where('destination_id', $dest->id)->count();
-        if ($usageCount >= ($maxPopularity * 0.75)) {
+        if ($maxPopularity > 0 && $usageCount >= ($maxPopularity * 0.75)) {
             $badges[] = ['icon' => '🔥', 'label' => 'Populer', 'type' => 'popular'];
         }
 
