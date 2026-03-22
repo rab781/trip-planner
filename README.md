@@ -141,7 +141,7 @@ Accept: application/json
 
 ## Architecture
 
-This project uses the **TALL/VILT stack variant**:
+This project uses a **Laravel + React + Inertia + Tailwind** stack:
 - **Framework**: Laravel 12
 - **Frontend**: React 18 with Inertia.js (No separate API needed for web views)
 - **Styling**: Tailwind CSS
