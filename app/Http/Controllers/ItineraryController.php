@@ -26,7 +26,12 @@ class ItineraryController extends Controller
     public function index(Request $request)
     {
         $itineraries = Itinerary::where('user_id', $request->user()->id)
-            ->with(['city', 'itineraryItems.destination'])
+            ->with([
+                'city',
+                'itineraryItems.destination.ticketVariants',
+                'itineraryItems.itineraryItemDetails',
+                'itineraryLodgings'
+            ])
             ->withCount('itineraryItems')
             ->orderBy('created_at', 'desc')
             ->get()
