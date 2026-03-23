@@ -1,59 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Itinerary Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> An intelligent, AI-powered travel planning platform that generates optimized itineraries, calculates budgets, and estimates transport costs.
 
-## About Laravel
+[![PHP Version](https://img.shields.io/badge/PHP-8.3-blue.svg)](https://php.net)
+[![Laravel Version](https://img.shields.io/badge/Laravel-12.0-red.svg)](https://laravel.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Why This Exists
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Planning a multi-destination trip often involves countless tabs, manual distance calculations, and frustrating spreadsheet budget estimates. This system solves that pain by automatically sorting destinations by proximity to minimize travel time, generating realistic budget breakdowns, and offering AI-driven route suggestions—so you spend less time planning and more time traveling.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Quick Start
 
-## Learning Laravel
+You can get the application running locally in under five minutes.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+# Clone the repository
+git clone <repository-url>
+cd <repository-directory>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Install PHP dependencies
+composer install
 
-## Laravel Sponsors
+# Set up environment
+cp .env.example .env
+php artisan key:generate
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Prepare the database
+php artisan migrate --force
 
-### Premium Partners
+# Install frontend dependencies and build assets
+pnpm install
+pnpm run build
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Start the development servers
+php artisan serve > /dev/null 2>&1 &
+pnpm run dev > /dev/null 2>&1 &
+```
+
+## Installation
+
+**Prerequisites**: PHP 8.3+, Composer 2.9.5+, Node.js (with `pnpm`), and SQLite.
+
+1. **Clone the project** to your local machine.
+2. **Install backend dependencies** using Composer:
+   ```bash
+   composer install
+   ```
+3. **Configure your environment**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+4. **Configure Chutes AI**:
+   Open your `.env` file and add your Chutes API token to enable the AI chatbot functionality:
+   ```env
+   CHUTES_API_TOKEN=your_actual_token_here
+   ```
+5. **Set up the database**:
+   By default, the application uses SQLite. Ensure `database/database.sqlite` exists or let Laravel create it during migration:
+   ```bash
+   touch database/database.sqlite
+   php artisan migrate --force
+   ```
+6. **Install frontend dependencies**:
+   This project strictly uses `pnpm` for frontend package management.
+   ```bash
+   pnpm install
+   pnpm run build
+   ```
+
+## Usage
+
+### Basic Example: Accessing the API
+
+The system provides a robust JSON API for managing itineraries. Once authenticated via Laravel Sanctum, you interact with the endpoints using a Bearer token.
+
+```javascript
+// Example: Fetch all cities
+const response = await fetch('http://localhost:8000/api/cities', {
+    headers: {
+        'Accept': 'application/json',
+    }
+});
+const cities = await response.json();
+console.log(cities);
+```
+
+### Configuration
+
+Key environment variables in your `.env` file govern system behavior:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `DB_CONNECTION` | `string` | `sqlite` | The database connection driver. |
+| `CHUTES_API_TOKEN` | `string` | `null` | Required token for AI chatbot and itinerary generation features. |
+| `VITE_APP_NAME` | `string` | `Laravel` | The application name exposed to the Vite frontend. |
+
+### Advanced Usage: AI Itinerary Generation
+
+You generate optimized daily itineraries by passing destination IDs to the AI generator endpoint. The system automatically groups destinations by zone, sorts them using a nearest-neighbor algorithm, and calculates estimated transport costs based on the pax count.
+
+```bash
+curl -X POST http://localhost:8000/api/itineraries/generate \
+  -H "Authorization: Bearer YOUR_SANCTUM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "destination_ids": [1, 4, 7, 12],
+    "total_pax_count": 2,
+    "total_days": 3
+  }'
+```
+*Note: The system requires explicit SSL verification for cURL requests in production environments.*
+
+## API Reference
+
+The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token.
+
+### Public Endpoints
+- `GET /api/cities` - List all cities.
+- `GET /api/zones` - List all zones.
+- `GET /api/destinations` - List available destinations.
+- `GET /api/transport-rates` - View transport cost rates.
+- `POST /api/chat` - Interact with the AI Chatbot (rate limited).
+
+### Protected Endpoints (Requires Auth)
+- `GET /api/itineraries` - List your itineraries.
+- `POST /api/itineraries` - Create a new itinerary manually.
+- `POST /api/itineraries/generate` - AI-generate an optimized itinerary.
+- `PUT /api/itineraries/{id}/reorder` - Manually adjust the sequence of destinations.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+We welcome contributions! Please review our coding standards:
+- Always run `php artisan test` and frontend linters before creating a PR.
+- Add comments explaining any performance optimizations.
+- Ensure all new API routes have corresponding documentation updates.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the [MIT License](https://opensource.org/licenses/MIT) details.
