@@ -207,6 +207,9 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
             $ch = curl_init('https://llm.chutes.ai/v1/chat/completions');
 
             curl_setopt_array($ch, [
+                // Security: Explicitly enforce SSL verification to prevent MITM attacks
+                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_SSL_VERIFYHOST => 2,
                 CURLOPT_POST => true,
                 CURLOPT_HTTPHEADER => [
                     'Authorization: Bearer ' . env('CHUTES_API_TOKEN'),
