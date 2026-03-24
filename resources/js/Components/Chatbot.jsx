@@ -246,6 +246,7 @@ export default function Chatbot() {
                         />
                         <button
                             type="submit"
+                            aria-label="Send message"
                             disabled={!inputMessage.trim()}
                             aria-label="Kirim pesan"
                             className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
