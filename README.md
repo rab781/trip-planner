@@ -107,9 +107,12 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
+    "city_id": 1,
+    "start_date": "2025-06-01",
+    "end_date": "2025-06-03",
+    "categories": ["sightseeing", "food", "nightlife"],
     "destination_ids": [1, 4, 7, 12],
-    "total_pax_count": 2,
-    "total_days": 3
+    "total_pax_count": 2
   }'
 ```
 *Note: The system requires explicit SSL verification for cURL requests in production environments.*
