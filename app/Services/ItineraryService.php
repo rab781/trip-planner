@@ -232,7 +232,7 @@ class ItineraryService
     public function calculateBudgetBreakdown(Itinerary $itinerary): array
     {
         // ⚡ Bolt: Use loadMissing instead of load to prevent N+1 queries when controllers have already eager-loaded the data
-        $itinerary->loadMissing(['itineraryItems.destination.ticketVariants', 'itineraryItems.itineraryItemDetails', 'itineraryLodgings']);
+        $itinerary->loadMissing(['itineraryItems.itineraryItemDetails', 'itineraryLodgings']);
 
         // Transport costs
         $transportCost = $itinerary->itineraryItems->sum('est_transport_cost') ?? 0;
