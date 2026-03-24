@@ -137,7 +137,7 @@ The application exposes several RESTful endpoints. Public endpoints do not requi
 ## Contributing
 
 We welcome contributions! Please review our coding standards:
-- Always run `php artisan test` and frontend linters before creating a PR.
+- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `npm run build`) before creating a PR.
 - Add comments explaining any performance optimizations.
 - Ensure all new API routes have corresponding documentation updates.
 
