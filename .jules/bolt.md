@@ -1,3 +1,6 @@
+## 2024-05-24 - N+1 in Services via `load`
+**Learning:** Calling `$model->load(...)` within a shared service class (like `ItineraryService`) forcibly triggers database queries every time it's called, even if the caller (like a Controller) already eager-loaded those relationships. In an index view rendering multiple models, this accidentally re-introduces an N+1 query problem.
+**Action:** Use `$model->loadMissing(...)` in services when ensuring required relations exist to safely respect data eager-loaded by the caller.
 ## 2026-03-24 - Prevent N+1 query loop when using nested relationships in loops
 **Learning:** In Laravel, `$model->load()` always executes a query, even if the data was already eager-loaded in the controller. This causes severe N+1 query problems in operations looping over collections (like budget calculations on an index page).
 **Action:** Always use `$model->loadMissing()` instead of `$model->load()` in shared services where models might already contain eager-loaded data from controllers. Additionally, explicitly eager-load deep nested relationships (e.g. `itineraryItems.destination.ticketVariants`) in the controller's `with()` method to allow `loadMissing()` to completely skip database calls.
