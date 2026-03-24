@@ -134,6 +134,7 @@ export default function Chatbot() {
             {/* Floating Chat Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={isOpen ? "Tutup chat" : "Buka chat"}
                 className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
                     isOpen
                         ? 'bg-gradient-to-r from-red-500 to-red-600'
@@ -246,6 +247,7 @@ export default function Chatbot() {
                         <button
                             type="submit"
                             disabled={!inputMessage.trim()}
+                            aria-label="Kirim pesan"
                             className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
                             <PaperAirplaneIcon className="h-5 w-5" />
