@@ -27,7 +27,7 @@ class ItineraryController extends Controller
     {
         $itineraries = Itinerary::where('user_id', $request->user()->id)
             // ⚡ Bolt: Eager load relationships required by calculateBudgetBreakdown to prevent N+1 queries in the map loop
-            ->with(['city', 'itineraryItems.destination.ticketVariants', 'itineraryItems.itineraryItemDetails', 'itineraryLodgings'])
+            ->with(['city', 'itineraryItems.itineraryItemDetails', 'itineraryLodgings'])
             ->withCount('itineraryItems')
             ->orderBy('created_at', 'desc')
             ->get()
