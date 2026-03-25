@@ -123,10 +123,12 @@ export default function ItineraryCard({
                                         {optionalTickets.length > 0 && (
                                             <button
                                                 onClick={() => setIsExpanded(!isExpanded)}
-                                                className="flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 px-2 py-1 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-colors"
+                                                aria-expanded={isExpanded}
+                                                aria-label={isExpanded ? 'Tutup opsi tiket tambahan' : `Lihat ${optionalTickets.length} opsi tiket tambahan`}
+                                                className="flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 px-2 py-1 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800"
                                             >
                                                 {isExpanded ? 'Tutup' : `+${optionalTickets.length} Opsi`}
-                                                {isExpanded ? <ChevronUpIcon className="w-3 h-3" /> : <ChevronDownIcon className="w-3 h-3" />}
+                                                {isExpanded ? <ChevronUpIcon className="w-3 h-3" aria-hidden="true" /> : <ChevronDownIcon className="w-3 h-3" aria-hidden="true" />}
                                             </button>
                                         )}
                                     </div>
@@ -157,10 +159,11 @@ export default function ItineraryCard({
                     {onRemove && (
                         <button
                             onClick={() => onRemove(item)}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-all opacity-0 group-hover:opacity-100 -mr-2 -mt-2"
+                            aria-label={`Hapus ${destination?.name || 'destinasi'} dari itinerary`}
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800 -mr-2 -mt-2"
                             title="Hapus dari itinerary"
                         >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-5 h-5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
