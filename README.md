@@ -8,63 +8,65 @@
 
 ## Why This Exists
 
-Planning a multi-destination trip often involves countless tabs, manual distance calculations, and frustrating spreadsheet budget estimates. This system solves that pain by automatically sorting destinations by proximity to minimize travel time, generating realistic budget breakdowns, and offering AI-driven route suggestions—so you spend less time planning and more time traveling.
+Planning a multi-destination trip requires endless tabs, manual calculations, and frustrating spreadsheet estimates. This platform solves that pain by automatically grouping destinations, calculating transport costs, and generating optimized daily itineraries. You spend less time planning and more time traveling.
 
 ## Quick Start
 
-You can get the application running locally in under five minutes.
-
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd <repository-directory>
-
-# Install PHP dependencies
+git clone <repository-url> itinerary-system && cd itinerary-system
 composer install
-
-# Set up environment
-cp .env.example .env
-php artisan key:generate
-
-# Prepare the database
-php artisan migrate --force
-
-# Install frontend dependencies and build assets
-pnpm install
-pnpm run build
-
-# Start the development servers
+cp .env.example .env && php artisan key:generate
+touch database/database.sqlite && php artisan migrate --force
+pnpm install && pnpm run build
 php artisan serve > /dev/null 2>&1 &
 pnpm run dev > /dev/null 2>&1 &
+```
+
+```javascript
+// Example: Fetch all cities using the public API
+const response = await fetch('http://localhost:8000/api/cities', {
+    headers: { 'Accept': 'application/json' }
+});
+const cities = await response.json();
+console.log(cities); // [{ id: 1, name: "Tokyo" }, ...]
 ```
 
 ## Installation
 
 **Prerequisites**: PHP 8.3+, Composer 2.9.5+, Node.js (with `pnpm`), and SQLite.
 
-1. **Clone the project** to your local machine.
-2. **Install backend dependencies** using Composer:
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url> itinerary-system
+   cd itinerary-system
+   ```
+
+2. **Install PHP dependencies**
    ```bash
    composer install
    ```
-3. **Configure your environment**:
+
+3. **Configure your environment**
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
-4. **Configure Chutes AI**:
-   Open your `.env` file and add your Chutes API token to enable the AI chatbot functionality:
+
+4. **Enable AI Features**
+   Open `.env` and add your Chutes API token:
    ```env
-   CHUTES_API_TOKEN=your_actual_token_here
+   CHUTES_API_TOKEN=your_chutes_api_token
    ```
-5. **Set up the database**:
-   By default, the application uses SQLite. Ensure `database/database.sqlite` exists or let Laravel create it during migration:
+
+5. **Set up the database**
+   Initialize the SQLite database and run migrations:
    ```bash
    touch database/database.sqlite
    php artisan migrate --force
    ```
-6. **Install frontend dependencies**:
-   This project strictly uses `pnpm` for frontend package management.
+
+6. **Install frontend dependencies**
+   Use `pnpm` to install and build frontend assets:
    ```bash
    pnpm install
    pnpm run build
@@ -72,34 +74,35 @@ pnpm run dev > /dev/null 2>&1 &
 
 ## Usage
 
-### Basic Example: Accessing the API
+### Basic Example
 
-The system provides a robust JSON API for managing itineraries. Once authenticated via Laravel Sanctum, you interact with the endpoints using a Bearer token.
+Interact with the API using Bearer token authentication provided by Laravel Sanctum.
 
 ```javascript
-// Example: Fetch all cities
-const response = await fetch('http://localhost:8000/api/cities', {
+// Fetch your itineraries
+const response = await fetch('http://localhost:8000/api/itineraries', {
     headers: {
         'Accept': 'application/json',
+        'Authorization': 'Bearer YOUR_SANCTUM_TOKEN'
     }
 });
-const cities = await response.json();
-console.log(cities);
+const itineraries = await response.json();
+console.log(itineraries);
 ```
 
 ### Configuration
 
-Key environment variables in your `.env` file govern system behavior:
+Customize the application through the `.env` file.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `DB_CONNECTION` | `string` | `sqlite` | The database connection driver. |
-| `CHUTES_API_TOKEN` | `string` | `null` | Required token for AI chatbot and itinerary generation features. |
-| `VITE_APP_NAME` | `string` | `Laravel` | The application name exposed to the Vite frontend. |
+| `DB_CONNECTION` | `string` | `sqlite` | The database connection driver |
+| `CHUTES_API_TOKEN` | `string` | `null` | Required token for AI chatbot and itinerary generation |
+| `VITE_APP_NAME` | `string` | `Laravel` | The application name exposed to the Vite frontend |
 
-### Advanced Usage: AI Itinerary Generation
+### Advanced Usage
 
-You generate optimized daily itineraries by passing destination IDs to the AI generator endpoint. The system automatically groups destinations by zone, sorts them using a nearest-neighbor algorithm, and calculates estimated transport costs based on the pax count.
+You generate optimized daily itineraries by passing destination IDs to the AI generator endpoint. The system automatically groups destinations by zone, sorts them using a nearest-neighbor algorithm, and calculates estimated transport costs.
 
 ```bash
 curl -X POST http://localhost:8000/api/itineraries/generate \
@@ -115,32 +118,33 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
     "total_pax_count": 2
   }'
 ```
-*Note: The system requires explicit SSL verification for cURL requests in production environments.*
+
+> **Note**: The system requires explicit SSL verification for cURL requests in production environments.
 
 ## API Reference
 
-The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. The lists below are a high-level subset of commonly used routes; refer to `routes/api.php` for the complete and authoritative list of API endpoints.
+The application exposes RESTful endpoints. Public endpoints require no authentication, while protected endpoints require a Sanctum Bearer token. See `routes/api.php` for the complete endpoint list.
 
-### Public Endpoints (high-level subset)
-- `GET /api/cities` - List all cities.
-- `GET /api/zones` - List all zones.
-- `GET /api/destinations` - List available destinations.
-- `GET /api/transport-rates` - View transport cost rates.
-- `POST /api/chat` - Interact with the AI Chatbot (rate limited).
+### Public Endpoints
+- `GET /api/cities` - List all cities
+- `GET /api/zones` - List all zones
+- `GET /api/destinations` - List available destinations
+- `GET /api/transport-rates` - View transport cost rates
+- `POST /api/chat` - Interact with the AI Chatbot (rate limited)
 
-### Protected Endpoints (Requires Auth, high-level subset)
-- `GET /api/itineraries` - List your itineraries.
-- `POST /api/itineraries` - Create a new itinerary manually.
-- `POST /api/itineraries/generate` - AI-generate an optimized itinerary.
-- `PUT /api/itineraries/{id}/reorder` - Manually adjust the sequence of destinations.
+### Protected Endpoints
+- `GET /api/itineraries` - List your itineraries
+- `POST /api/itineraries` - Create a new itinerary manually
+- `POST /api/itineraries/generate` - AI-generate an optimized itinerary
+- `PUT /api/itineraries/{id}/reorder` - Manually adjust the sequence of destinations
 
 ## Contributing
 
-We welcome contributions! Please review our coding standards:
-- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `npm run build`) before creating a PR.
+Review our coding standards before contributing:
+- Always run `php artisan test` and verify the frontend builds successfully (`pnpm run build`) before creating a PR.
 - Add comments explaining any performance optimizations.
 - Ensure all new API routes have corresponding documentation updates.
 
 ## License
 
-This project is licensed under the MIT License - see the [MIT License](https://opensource.org/licenses/MIT) details.
+MIT © Itinerary Management System
