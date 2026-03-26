@@ -320,8 +320,8 @@ class ItineraryGeneratorService
         }
 
         // Popularity badge (top 25%)
-        $usageCount = ItineraryItem::where('destination_id', $dest->id)->count();
-        if ($usageCount >= ($maxPopularity * 0.75)) {
+        // ⚡ Bolt: Prevent N+1 query by utilizing pre-calculated popularity score
+        if (($scores['popularity'] ?? 0) >= 75) {
             $badges[] = ['icon' => '🔥', 'label' => 'Populer', 'type' => 'popular'];
         }
 
