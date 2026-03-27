@@ -15,34 +15,29 @@ Planning a multi-destination trip often involves countless tabs, manual distance
 You can get the application running locally in under five minutes.
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd <repository-directory>
+git clone <repository-url> my-itinerary-app
+cd my-itinerary-app
 
-# Install PHP dependencies
 composer install
-
-# Set up environment
 cp .env.example .env
 php artisan key:generate
 
-# Prepare the database
+touch database/database.sqlite
 php artisan migrate --force
 
-# Install frontend dependencies and build assets
 pnpm install
 pnpm run build
-
-# Start the development servers
-php artisan serve > /dev/null 2>&1 &
-pnpm run dev > /dev/null 2>&1 &
 ```
 
 ## Installation
 
-**Prerequisites**: PHP 8.3+, Composer 2.9.5+, Node.js (with `pnpm`), and SQLite.
+**Prerequisites**: PHP 8.3+, Composer 2.9.5+, Node.js 18+ (with `pnpm`), and SQLite.
 
-1. **Clone the project** to your local machine.
+1. **Clone the project** to your local machine and enter the directory:
+   ```bash
+   git clone <repository-url> my-itinerary-app
+   cd my-itinerary-app
+   ```
 2. **Install backend dependencies** using Composer:
    ```bash
    composer install
@@ -58,7 +53,7 @@ pnpm run dev > /dev/null 2>&1 &
    CHUTES_API_TOKEN=your_actual_token_here
    ```
 5. **Set up the database**:
-   By default, the application uses SQLite. Ensure `database/database.sqlite` exists or let Laravel create it during migration:
+   By default, the application uses SQLite. Create the database file and run the migrations:
    ```bash
    touch database/database.sqlite
    php artisan migrate --force
@@ -69,15 +64,20 @@ pnpm run dev > /dev/null 2>&1 &
    pnpm install
    pnpm run build
    ```
+7. **Start the development servers**:
+   ```bash
+   php artisan serve > /dev/null 2>&1 &
+   pnpm run dev > /dev/null 2>&1 &
+   ```
 
 ## Usage
 
 ### Basic Example: Accessing the API
 
-The system provides a robust JSON API for managing itineraries. Once authenticated via Laravel Sanctum, you interact with the endpoints using a Bearer token.
+The system provides a robust JSON API for managing itineraries. Once you authenticate via Laravel Sanctum, you interact with the endpoints using a Bearer token.
 
 ```javascript
-// Example: Fetch all cities
+// Fetch all cities without authentication
 const response = await fetch('http://localhost:8000/api/cities', {
     headers: {
         'Accept': 'application/json',
@@ -110,34 +110,99 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
     "city_id": 1,
     "start_date": "2025-06-01",
     "end_date": "2025-06-03",
-    "categories": ["sightseeing", "food", "nightlife"],
-    "destination_ids": [1, 4, 7, 12],
-    "total_pax_count": 2
+    "categories": [1, 2, 3],
+    "priority": "balanced",
+    "pace": "normal",
+    "total_pax_count": 2,
+    "transportation_preference": "CAR"
   }'
 ```
-*Note: The system requires explicit SSL verification for cURL requests in production environments.*
+> **Note**: The system requires explicit SSL verification for cURL requests in production environments. Ensure your client handles SSL securely.
 
 ## API Reference
 
-The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. The lists below are a high-level subset of commonly used routes; refer to `routes/api.php` for the complete and authoritative list of API endpoints.
+The application exposes RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token in the `Authorization` header.
 
-### Public Endpoints (high-level subset)
+### Public Endpoints
+
 - `GET /api/cities` - List all cities.
 - `GET /api/zones` - List all zones.
 - `GET /api/destinations` - List available destinations.
 - `GET /api/transport-rates` - View transport cost rates.
 - `POST /api/chat` - Interact with the AI Chatbot (rate limited).
 
-### Protected Endpoints (Requires Auth, high-level subset)
-- `GET /api/itineraries` - List your itineraries.
-- `POST /api/itineraries` - Create a new itinerary manually.
-- `POST /api/itineraries/generate` - AI-generate an optimized itinerary.
-- `PUT /api/itineraries/{id}/reorder` - Manually adjust the sequence of destinations.
+### Protected Endpoints
+
+All protected endpoints require a `Bearer` token via the `Authorization` header.
+
+#### `GET /api/itineraries`
+Lists all itineraries created by the authenticated user.
+
+**Response (200 OK)**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "My Bali Trip",
+      "city_id": 1,
+      "total_pax_count": 2,
+      "transportation_preference": "CAR"
+    }
+  ],
+  "message": "Itineraries retrieved successfully",
+  "status": 200
+}
+```
+
+#### `POST /api/itineraries/generate`
+Generates an AI-optimized itinerary based on provided preferences.
+
+**Request Body (application/json)**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `city_id` | `integer` | Yes | ID of the target city. |
+| `start_date` | `string` | Yes | Format: `YYYY-MM-DD`. |
+| `end_date` | `string` | Yes | Format: `YYYY-MM-DD`. |
+| `total_pax_count` | `integer` | Yes | Number of travelers. |
+| `transportation_preference` | `string` | Yes | Enum: `MOTOR`, `CAR`. |
+| `categories` | `array` | Yes | Array of Category IDs. |
+| `priority` | `string` | Yes | Enum: `balanced`, `budget`, `popular`, `rating`. |
+| `pace` | `string` | Yes | Enum: `relaxed`, `normal`, `packed`. |
+| `budget_per_day` | `integer` | No | Target daily budget limit. |
+| `solo_mode` | `boolean` | No | Flag indicating if traveling solo. |
+
+**Response (200 OK)**
+```json
+{
+  "success": true,
+  "data": {
+    "days": [
+      {
+        "day": 1,
+        "destinations": [1, 4, 7]
+      }
+    ]
+  },
+  "message": "Itinerary generated successfully"
+}
+```
+
+#### `PUT /api/itineraries/{id}/reorder`
+Manually adjust the sequence of destinations within an existing itinerary.
+
+**Request Body (application/json)**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `items` | `array` | Yes | List of itinerary item objects to reorder. |
+| `items[].id` | `integer` | Yes | ID of the specific `itinerary_item`. |
+| `items[].day_number` | `integer`| Yes | The day number this item is assigned to. |
+| `start_location` | `object` | No | Optional starting point with `lat` and `lng`. |
 
 ## Contributing
 
 We welcome contributions! Please review our coding standards:
-- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `npm run build`) before creating a PR.
+- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `pnpm run build`) before creating a PR.
 - Add comments explaining any performance optimizations.
 - Ensure all new API routes have corresponding documentation updates.
 
