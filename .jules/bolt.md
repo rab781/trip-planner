@@ -7,3 +7,6 @@
 ## 2026-03-25 - Prevent N+1 queries in nested loops via memoization
 **Learning:** Services like `ItineraryGeneratorService` call other utility services (e.g. `TransportService::calculateTransportCost`) repeatedly inside nested loops (like calculating costs for each destination per day). If the utility service queries the DB on each call (`TransportRate::where(...)`), it silently causes an N+1 bottleneck that isn't immediately obvious because the DB call is encapsulated inside the helper method.
 **Action:** Always memoize DB lookups inside utility services using class-level properties when the data (like transport rates) doesn't change during the lifecycle of the request.
+## 2026-03-27 - Prevent N+1 queries in loop-mapped operations by reusing pre-calculated statistics
+**Learning:** Performing database queries (like `count()`) inside mapping functions that iterate over collections (e.g., generating badges for destinations) causes N+1 query loops.
+**Action:** When a statistic (like popularity score) is already calculated and passed to the method (or available in the context), reuse it instead of querying the database again. For example, replace `Model::where()->count()` with a simple check on the pre-calculated array value (`$scores['popularity'] >= 75`).

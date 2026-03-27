@@ -319,9 +319,14 @@ class ItineraryGeneratorService
             $badges[] = ['icon' => '💰', 'label' => 'Hemat', 'type' => 'budget'];
         }
 
-        // Popularity badge (top 25%)
-        $usageCount = ItineraryItem::where('destination_id', $dest->id)->count();
-        if ($usageCount >= ($maxPopularity * 0.75)) {
+        // ⚡ Bolt: Prevent N+1 query loop by using the pre-calculated popularity score
+        // instead of hitting the database (ItineraryItem::where()->count()) for each destination
+        // Popularity badge (top 25% based on pre-calculated score)
+        $popularityScore = $scores['popularity'] ?? 0;
+        $popularityThreshold = ($maxPopularity ?? 0) > 0
+            ? 0.75 * $maxPopularity
+            : 75;
+        if ($popularityScore >= $popularityThreshold) {
             $badges[] = ['icon' => '🔥', 'label' => 'Populer', 'type' => 'popular'];
         }
 
