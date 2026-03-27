@@ -33,13 +33,15 @@ export default function DayTabs({
                 <>
                     <button
                         onClick={() => handleScroll('left')}
-                        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 text-gray-600 dark:text-gray-300 hover:scale-110 transition-all opacity-0 group-hover:opacity-100"
+                        aria-label="Geser ke kiri"
+                        className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 text-gray-600 dark:text-gray-300 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                     >
                         <ChevronLeftIcon className="w-5 h-5" />
                     </button>
                     <button
                         onClick={() => handleScroll('right')}
-                        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 text-gray-600 dark:text-gray-300 hover:scale-110 transition-all opacity-0 group-hover:opacity-100"
+                        aria-label="Geser ke kanan"
+                        className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 items-center justify-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 text-gray-600 dark:text-gray-300 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                     >
                         <ChevronRightIcon className="w-5 h-5" />
                     </button>

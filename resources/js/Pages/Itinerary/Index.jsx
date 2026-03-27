@@ -181,7 +181,7 @@ export default function Index({ itineraries = [] }) {
                                                         {formatCurrency(itinerary.total_budget || 0)}
                                                     </span>
                                                 </div>
-                                                <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                                                <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus:opacity-100 transform translate-x-2 group-hover:translate-x-0 group-focus:translate-x-0 transition-all duration-300">
                                                     <ArrowRightIcon className="w-4 h-4 text-gray-400 dark:text-gray-300" />
                                                 </div>
                                             </div>
