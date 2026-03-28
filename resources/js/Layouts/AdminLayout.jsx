@@ -97,6 +97,8 @@ export default function AdminLayout({ children }) {
                         </Link>
                         <button
                             onClick={() => setSidebarOpen(false)}
+                            aria-label="Tutup sidebar"
+                            aria-expanded={sidebarOpen}
                             className="lg:hidden p-2 text-gray-500 hover:text-gray-700"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,6 +168,8 @@ export default function AdminLayout({ children }) {
                 <div className="sticky top-0 z-30 flex items-center h-16 px-4 bg-main border-b border-secondary lg:px-8">
                     <button
                         onClick={() => setSidebarOpen(true)}
+                        aria-label="Buka sidebar"
+                        aria-expanded={sidebarOpen}
                         className="p-2 text-paragraph hover:text-headline lg:hidden"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

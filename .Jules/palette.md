@@ -1,3 +1,3 @@
-## 2026-03-25 - Improved accessibility and focus states for ItineraryCard buttons
-**Learning:** Hidden interactive elements (like the "Remove" button in `ItineraryCard`) that are only revealed on hover (`opacity-0 group-hover:opacity-100`) break keyboard navigation if they lack focus states. Screen readers also struggle with icon-only toggle buttons (like "Expand Tickets") without dynamic `aria-label` or `aria-expanded` attributes.
-**Action:** When implementing "reveal-on-hover" buttons, always pair hover states with focus states (`focus:opacity-100 focus:outline-none focus:ring-2`) so keyboard users can discover and interact with them. Add `aria-hidden="true"` to purely decorative SVG icons within these buttons.
+## 2025-03-28 - Dynamic ARIA Labels on Toggle Buttons
+**Learning:** Found that state-dependent icon-only buttons (like navigation/sidebar toggles) lack context for screen readers if they do not have a dynamic `aria-label` reflecting their current state or at least an accurate `aria-label` describing their purpose, along with `aria-expanded` to indicate their state.
+**Action:** Ensure that all toggle buttons, especially those using only icons (SVGs), have `aria-label` attributes (e.g., `isOpen ? 'Tutup navigasi' : 'Buka navigasi'`) and `aria-expanded` attributes to improve accessibility across the application.
