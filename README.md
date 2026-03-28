@@ -119,25 +119,14 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
 
 ## API Reference
 
-The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. The lists below are a high-level subset of commonly used routes; refer to `routes/api.php` for the complete and authoritative list of API endpoints.
+The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token.
 
-### Public Endpoints (high-level subset)
-- `GET /api/cities` - List all cities.
-- `GET /api/zones` - List all zones.
-- `GET /api/destinations` - List available destinations.
-- `GET /api/transport-rates` - View transport cost rates.
-- `POST /api/chat` - Interact with the AI Chatbot (rate limited).
-
-### Protected Endpoints (Requires Auth, high-level subset)
-- `GET /api/itineraries` - List your itineraries.
-- `POST /api/itineraries` - Create a new itinerary manually.
-- `POST /api/itineraries/generate` - AI-generate an optimized itinerary.
-- `PUT /api/itineraries/{id}/reorder` - Manually adjust the sequence of destinations.
+See the [full OpenAPI reference in openapi.yml](openapi.yml) for complete details on available endpoints, parameters, schemas, rate limits, and authentication.
 
 ## Contributing
 
 We welcome contributions! Please review our coding standards:
-- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `npm run build`) before creating a PR.
+- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `pnpm run build`) before creating a PR.
 - Add comments explaining any performance optimizations.
 - Ensure all new API routes have corresponding documentation updates.
 

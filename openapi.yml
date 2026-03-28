@@ -1,0 +1,244 @@
+openapi: 3.1.0
+info:
+  title: Itinerary API
+  version: 1.0.0
+  description: |
+    The Itinerary API allows you to retrieve cities, zones, destinations, interact with the AI chatbot, and generate itineraries.
+
+    ## Authentication
+    Protected endpoints require a Bearer token (Sanctum) in the `Authorization` header.
+    Get your token by authenticating first.
+
+    ## Rate Limiting
+    Chatbot endpoints are rate-limited. Rate limit headers are included in the response.
+
+paths:
+  /api/cities:
+    get:
+      summary: List all cities
+      description: Retrieves a list of all available cities with their zone counts.
+      operationId: getCities
+      responses:
+        '200':
+          description: Cities retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  message:
+                    type: string
+                  status:
+                    type: integer
+
+  /api/cities/{id}:
+    get:
+      summary: Get city by ID
+      description: Retrieves a specific city and its zones.
+      operationId: getCityById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: City retrieved successfully
+        '404':
+          description: City not found
+
+  /api/zones:
+    get:
+      summary: List all zones
+      description: Retrieves a list of all available zones.
+      operationId: getZones
+      responses:
+        '200':
+          description: Zones retrieved successfully
+
+  /api/destinations:
+    get:
+      summary: List available destinations
+      description: Retrieves a list of available destinations.
+      operationId: getDestinations
+      responses:
+        '200':
+          description: Destinations retrieved successfully
+
+  /api/transport-rates:
+    get:
+      summary: View transport cost rates
+      description: Retrieves current transport cost rates.
+      operationId: getTransportRates
+      responses:
+        '200':
+          description: Transport rates retrieved successfully
+
+  /api/chat:
+    post:
+      summary: Interact with the AI Chatbot
+      description: Send a message to the AI chatbot and receive a response. Rate limited endpoint.
+      operationId: sendMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  maxLength: 1000
+                  description: The message to send to the chatbot.
+                conversation_history:
+                  type: array
+                  description: Optional previous conversation history.
+                  items:
+                    type: object
+            examples:
+              chat_message:
+                summary: Simple chat message
+                value:
+                  message: "Wisata di Bandung?"
+      responses:
+        '200':
+          description: Chat response retrieved successfully
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Internal server error or AI service failure
+
+  /api/itineraries:
+    get:
+      summary: List your itineraries
+      description: Retrieves a list of the authenticated user's itineraries.
+      operationId: getItineraries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Itineraries retrieved successfully
+        '401':
+          description: Unauthorized
+
+    post:
+      summary: Create a new itinerary manually
+      description: Creates a new itinerary for the authenticated user.
+      operationId: createItinerary
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Itinerary created successfully
+        '401':
+          description: Unauthorized
+
+  /api/itineraries/generate:
+    post:
+      summary: AI-generate an optimized itinerary
+      description: Generates an optimized daily itinerary based on user preferences and selected categories/destinations.
+      operationId: generateItinerary
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - city_id
+                - start_date
+                - end_date
+                - total_pax_count
+                - transportation_preference
+                - categories
+                - priority
+                - pace
+              properties:
+                city_id:
+                  type: integer
+                  description: ID of the city
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                total_pax_count:
+                  type: integer
+                  minimum: 1
+                transportation_preference:
+                  type: string
+                  enum: [MOTOR, CAR]
+                categories:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 1
+                priority:
+                  type: string
+                  enum: [balanced, budget, popular, rating]
+                pace:
+                  type: string
+                  enum: [relaxed, normal, packed]
+                budget_per_day:
+                  type: integer
+                  minimum: 0
+                solo_mode:
+                  type: boolean
+            examples:
+              generate_request:
+                summary: Generate an itinerary
+                value:
+                  city_id: 1
+                  start_date: "2025-06-01"
+                  end_date: "2025-06-03"
+                  total_pax_count: 2
+                  transportation_preference: "CAR"
+                  categories: [1, 2, 3]
+                  priority: "balanced"
+                  pace: "normal"
+      responses:
+        '200':
+          description: Itinerary generated successfully
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation error
+        '500':
+          description: Failed to generate itinerary
+
+  /api/itineraries/{id}/reorder:
+    put:
+      summary: Manually adjust the sequence of destinations
+      description: Reorders the items within a specific itinerary.
+      operationId: reorderItinerary
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary reordered successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Itinerary not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
