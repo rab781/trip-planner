@@ -94,6 +94,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                         (previousState) => !previousState,
                                     )
                                 }
+                                aria-label={showingNavigationDropdown ? 'Tutup navigasi' : 'Buka navigasi'}
+                                aria-expanded={showingNavigationDropdown}
                                 className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-300 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-white focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-gray-500 focus:outline-none"
                             >
                                 <svg
