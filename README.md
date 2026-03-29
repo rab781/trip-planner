@@ -27,6 +27,7 @@ cp .env.example .env
 php artisan key:generate
 
 # Prepare the database
+touch database/database.sqlite
 php artisan migrate --force
 
 # Install frontend dependencies and build assets
@@ -72,7 +73,7 @@ pnpm run dev > /dev/null 2>&1 &
 
 ## Usage
 
-### Basic Example: Accessing the API
+### Basic Example
 
 The system provides a robust JSON API for managing itineraries. Once authenticated via Laravel Sanctum, you interact with the endpoints using a Bearer token.
 
@@ -97,7 +98,7 @@ Key environment variables in your `.env` file govern system behavior:
 | `CHUTES_API_TOKEN` | `string` | `null` | Required token for AI chatbot and itinerary generation features. |
 | `VITE_APP_NAME` | `string` | `Laravel` | The application name exposed to the Vite frontend. |
 
-### Advanced Usage: AI Itinerary Generation
+### Advanced Usage
 
 You generate optimized daily itineraries by passing destination IDs to the AI generator endpoint. The system automatically groups destinations by zone, sorts them using a nearest-neighbor algorithm, and calculates estimated transport costs based on the pax count.
 
@@ -119,20 +120,7 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
 
 ## API Reference
 
-The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. The lists below are a high-level subset of commonly used routes; refer to `routes/api.php` for the complete and authoritative list of API endpoints.
-
-### Public Endpoints (high-level subset)
-- `GET /api/cities` - List all cities.
-- `GET /api/zones` - List all zones.
-- `GET /api/destinations` - List available destinations.
-- `GET /api/transport-rates` - View transport cost rates.
-- `POST /api/chat` - Interact with the AI Chatbot (rate limited).
-
-### Protected Endpoints (Requires Auth, high-level subset)
-- `GET /api/itineraries` - List your itineraries.
-- `POST /api/itineraries` - Create a new itinerary manually.
-- `POST /api/itineraries/generate` - AI-generate an optimized itinerary.
-- `PUT /api/itineraries/{id}/reorder` - Manually adjust the sequence of destinations.
+The full API specification, including endpoints, detailed parameters, and response schemas, is available in the [openapi.yml](openapi.yml) file.
 
 ## Contributing
 
