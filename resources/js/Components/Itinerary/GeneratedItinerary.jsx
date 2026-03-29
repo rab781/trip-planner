@@ -48,9 +48,10 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                 <button
                     {...attributes}
                     {...listeners}
-                    className="mt-1 p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg cursor-grab active:cursor-grabbing transition-colors"
+                    aria-label={`Pindahkan ${destination.name}`}
+                    className="mt-1 p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg cursor-grab active:cursor-grabbing transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                 >
-                    <ArrowsUpDownIcon className="w-5 h-5" />
+                    <ArrowsUpDownIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
 
                 {/* Sequence Number */}
@@ -109,28 +110,28 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                     )}
 
                     {/* Actions */}
-                    <div className="flex items-center gap-1 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-1 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/50 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                         <button
                             onClick={() => onViewDetail(destination)}
-                            className="flex-1 py-1.5 text-xs font-medium text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                            className="flex-1 py-1.5 text-xs font-medium text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                         >
-                            <InformationCircleIcon className="w-4 h-4" />
+                            <InformationCircleIcon className="w-4 h-4" aria-hidden="true" />
                             Detail
                         </button>
                         <div className="w-px h-4 bg-gray-200 dark:bg-gray-700"></div>
                         <button
                             onClick={() => onReplace(destination)}
-                            className="flex-1 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                            className="flex-1 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                         >
-                            <ArrowPathIcon className="w-4 h-4" />
+                            <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
                             Ganti
                         </button>
                         <div className="w-px h-4 bg-gray-200 dark:bg-gray-700"></div>
                         <button
                             onClick={() => onRemove(destination)}
-                            className="flex-1 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                            className="flex-1 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                         >
-                            <TrashIcon className="w-4 h-4" />
+                            <TrashIcon className="w-4 h-4" aria-hidden="true" />
                             Hapus
                         </button>
                     </div>
