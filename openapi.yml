@@ -1,0 +1,646 @@
+openapi: 3.1.0
+info:
+  title: Itinerary Management System API
+  version: 1.0.0
+  description: |
+    The Itinerary Management System API allows you to retrieve destinations, calculate transport rates, and generate optimized AI-driven itineraries.
+
+    ## Authentication
+    Protected endpoints require a Bearer token in the `Authorization` header. You obtain this token via Laravel Sanctum authentication.
+
+    ## Rate Limiting
+    Chatbot endpoints enforce rate limiting. Rate limit headers are included in every response.
+servers:
+  - url: http://localhost:8000/api
+    description: Local development server
+paths:
+  /cities:
+    get:
+      summary: List all cities
+      description: Retrieves a list of all available cities for travel planning.
+      operationId: getCities
+      responses:
+        '200':
+          description: A list of cities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+  /cities/{id}:
+    get:
+      summary: Get a specific city
+      description: Retrieves details of a specific city.
+      operationId: getCity
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: City details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+  /cities/{id}/zones:
+    get:
+      summary: List zones in a city
+      description: Retrieves a list of zones within a specific city.
+      operationId: getCityZones
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+  /zones:
+    get:
+      summary: List all zones
+      description: Retrieves a list of all zones.
+      operationId: getZones
+      responses:
+        '200':
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+  /zones/{id}:
+    get:
+      summary: Get a specific zone
+      description: Retrieves details of a specific zone.
+      operationId: getZone
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+  /zones/{id}/destination:
+    get:
+      summary: Get transport rates to destination
+      description: Retrieves transport cost rates for a specific zone destination.
+      operationId: getZoneDestination
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transport rates
+  /categories:
+    get:
+      summary: List all categories
+      description: Retrieves a list of all categories.
+      operationId: getCategories
+      responses:
+        '200':
+          description: A list of categories
+  /categories/{id}:
+    get:
+      summary: Get a specific category
+      description: Retrieves details of a specific category.
+      operationId: getCategory
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category details
+  /destinations:
+    get:
+      summary: List available destinations
+      description: Retrieves a list of all destinations.
+      operationId: getDestinations
+      responses:
+        '200':
+          description: A list of destinations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+  /destinations/{id}:
+    get:
+      summary: Get a specific destination
+      description: Retrieves details of a specific destination.
+      operationId: getDestination
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+  /transport-rates:
+    get:
+      summary: View transport cost rates
+      description: Retrieves transport cost rates.
+      operationId: getTransportRates
+      responses:
+        '200':
+          description: A list of transport cost rates
+  /chat:
+    post:
+      summary: Interact with the AI Chatbot
+      description: Interact with the AI Chatbot (rate limited).
+      operationId: postChat
+      responses:
+        '200':
+          description: Chatbot response
+  /chat/stream:
+    post:
+      summary: Stream AI Chatbot response
+      description: Stream the response from the AI Chatbot (rate limited).
+      operationId: postChatStream
+      responses:
+        '200':
+          description: Streamed chatbot response
+  /itineraries:
+    get:
+      summary: List your itineraries
+      description: Retrieves a list of itineraries for the authenticated user.
+      operationId: getItineraries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of itineraries
+    post:
+      summary: Create a new itinerary manually
+      description: Creates a new itinerary for the authenticated user.
+      operationId: postItineraries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Itinerary created successfully
+  /itineraries/{id}:
+    get:
+      summary: Get a specific itinerary
+      description: Retrieves details of a specific itinerary.
+      operationId: getItinerary
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary details
+    put:
+      summary: Update a specific itinerary
+      description: Updates an existing itinerary.
+      operationId: putItinerary
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary updated successfully
+    delete:
+      summary: Delete a specific itinerary
+      description: Deletes an existing itinerary.
+      operationId: deleteItinerary
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary deleted successfully
+  /itineraries/{id}/reorder:
+    put:
+      summary: Manually adjust the sequence of destinations
+      description: Reorders the destinations in a specific itinerary.
+      operationId: putItinerariesReorder
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sequence adjusted successfully
+  /itineraries/{id}/sync-items:
+    put:
+      summary: Sync itinerary items
+      description: Syncs items for a specific itinerary.
+      operationId: putItinerariesSyncItems
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary items synced successfully
+  /itineraries/generate:
+    post:
+      summary: Generate an optimized itinerary
+      description: |
+        Generates an optimized daily itinerary using AI. The system groups destinations by zone,
+        sorts them using a nearest-neighbor algorithm, and calculates estimated transport costs.
+      operationId: generateItinerary
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateItineraryRequest'
+            examples:
+              standard_generation:
+                summary: Standard itinerary generation
+                value:
+                  city_id: 1
+                  start_date: "2025-06-01"
+                  end_date: "2025-06-03"
+                  categories: ["sightseeing", "food", "nightlife"]
+                  destination_ids: [1, 4, 7, 12]
+                  total_pax_count: 2
+      responses:
+        '200':
+          description: Itinerary generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+  /itineraries/regenerate-day:
+    post:
+      summary: Regenerate a specific day in an itinerary
+      description: Regenerates a specific day in an itinerary using AI.
+      operationId: regenerateDay
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Day regenerated successfully
+  /itineraries/suggest-replacement:
+    post:
+      summary: Suggest a replacement destination
+      description: Suggests a replacement for a specific destination using AI.
+      operationId: suggestReplacement
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Replacement suggested successfully
+  /admin/stats:
+    get:
+      summary: Get admin dashboard stats
+      description: Retrieves dashboard statistics for admins.
+      operationId: getAdminStats
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dashboard stats
+  /admin/destinations:
+    get:
+      summary: List all destinations (Admin)
+      description: Retrieves all destinations for admin management.
+      operationId: getAdminDestinations
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of destinations
+    post:
+      summary: Create a destination (Admin)
+      description: Creates a new destination.
+      operationId: postAdminDestination
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Destination created
+  /admin/destinations/{id}:
+    get:
+      summary: Get a destination (Admin)
+      description: Retrieves a specific destination for admin management.
+      operationId: getAdminDestination
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination details
+    put:
+      summary: Update a destination (Admin)
+      description: Updates a specific destination.
+      operationId: putAdminDestination
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination updated
+    delete:
+      summary: Delete a destination (Admin)
+      description: Deletes a specific destination.
+      operationId: deleteAdminDestination
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination deleted
+  /admin/users:
+    get:
+      summary: List all users (Admin)
+      description: Retrieves all users for admin management.
+      operationId: getAdminUsers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of users
+  /admin/users/{id}/role:
+    patch:
+      summary: Update user role (Admin)
+      description: Updates the role of a specific user.
+      operationId: patchAdminUserRole
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User role updated
+  /admin/categories:
+    get:
+      summary: List all categories (Admin)
+      description: Retrieves all categories for admin management.
+      operationId: getAdminCategories
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of categories
+    post:
+      summary: Create a category (Admin)
+      description: Creates a new category.
+      operationId: postAdminCategory
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Category created
+  /admin/categories/{id}:
+    get:
+      summary: Get a category (Admin)
+      description: Retrieves a specific category for admin management.
+      operationId: getAdminCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category details
+    put:
+      summary: Update a category (Admin)
+      description: Updates a specific category.
+      operationId: putAdminCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category updated
+    delete:
+      summary: Delete a category (Admin)
+      description: Deletes a specific category.
+      operationId: deleteAdminCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category deleted
+  /admin/zones:
+    get:
+      summary: List all zones (Admin)
+      description: Retrieves all zones for admin management.
+      operationId: getAdminZones
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of zones
+    post:
+      summary: Create a zone (Admin)
+      description: Creates a new zone.
+      operationId: postAdminZone
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Zone created
+  /admin/zones/{id}:
+    get:
+      summary: Get a zone (Admin)
+      description: Retrieves a specific zone for admin management.
+      operationId: getAdminZone
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone details
+    put:
+      summary: Update a zone (Admin)
+      description: Updates a specific zone.
+      operationId: putAdminZone
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone updated
+    delete:
+      summary: Delete a zone (Admin)
+      description: Deletes a specific zone.
+      operationId: deleteAdminZone
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone deleted
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Zone:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        city_id:
+          type: integer
+    Destination:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        zone_id:
+          type: integer
+    GenerateItineraryRequest:
+      type: object
+      required:
+        - city_id
+        - start_date
+        - end_date
+        - destination_ids
+        - total_pax_count
+      properties:
+        city_id:
+          type: integer
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        categories:
+          type: array
+          items:
+            type: string
+        destination_ids:
+          type: array
+          items:
+            type: integer
+        total_pax_count:
+          type: integer
+    Itinerary:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        days:
+          type: array
+          items:
+            type: object
