@@ -48,9 +48,10 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                 <button
                     {...attributes}
                     {...listeners}
-                    className="mt-1 p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg cursor-grab active:cursor-grabbing transition-colors"
+                    aria-label="Pindahkan urutan destinasi"
+                    className="mt-1 p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg cursor-grab active:cursor-grabbing transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500/50"
                 >
-                    <ArrowsUpDownIcon className="w-5 h-5" />
+                    <ArrowsUpDownIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
 
                 {/* Sequence Number */}
@@ -109,28 +110,28 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                     )}
 
                     {/* Actions */}
-                    <div className="flex items-center gap-1 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-1 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/50 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                         <button
                             onClick={() => onViewDetail(destination)}
-                            className="flex-1 py-1.5 text-xs font-medium text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                            className="flex-1 py-1.5 text-xs font-medium text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:opacity-100"
                         >
-                            <InformationCircleIcon className="w-4 h-4" />
+                            <InformationCircleIcon className="w-4 h-4" aria-hidden="true" />
                             Detail
                         </button>
                         <div className="w-px h-4 bg-gray-200 dark:bg-gray-700"></div>
                         <button
                             onClick={() => onReplace(destination)}
-                            className="flex-1 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                            className="flex-1 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:opacity-100"
                         >
-                            <ArrowPathIcon className="w-4 h-4" />
+                            <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
                             Ganti
                         </button>
                         <div className="w-px h-4 bg-gray-200 dark:bg-gray-700"></div>
                         <button
                             onClick={() => onRemove(destination)}
-                            className="flex-1 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                            className="flex-1 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg flex items-center justify-center gap-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:opacity-100"
                         >
-                            <TrashIcon className="w-4 h-4" />
+                            <TrashIcon className="w-4 h-4" aria-hidden="true" />
                             Hapus
                         </button>
                     </div>
@@ -180,6 +181,8 @@ function DaySection({
             {/* Day Header */}
             <button
                 onClick={onToggle}
+                aria-expanded={isExpanded}
+                aria-label={isExpanded ? `Tutup rincian Hari ${day.day}` : `Buka rincian Hari ${day.day}`}
                 className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/40 dark:hover:bg-gray-800/40 transition-colors"
             >
                 <div className="flex items-center gap-4">
@@ -199,7 +202,7 @@ function DaySection({
                         Rp {totalTickets.toLocaleString('id-ID')}
                     </span>
                     <div className={`p-2 rounded-full transition-all duration-300 ${isExpanded ? 'bg-gray-100 dark:bg-gray-700 rotate-180' : 'bg-transparent'}`}>
-                        <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                        <ChevronDownIcon className="w-5 h-5 text-gray-500" aria-hidden="true" />
                     </div>
                 </div>
             </button>
