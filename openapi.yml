@@ -1,0 +1,317 @@
+openapi: 3.1.0
+info:
+  title: Itinerary Management System API
+  version: 1.0.0
+  description: |
+    The Itinerary Management System API allows you to retrieve destinations, cities, zones, and generate AI-optimized itineraries.
+
+    ## Authentication
+    Protected endpoints require a Bearer token in the `Authorization` header.
+    Authentication is handled via Laravel Sanctum.
+
+    ## Rate Limiting
+    Certain endpoints, such as the AI Chatbot, are rate-limited. See endpoint descriptions for details.
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local development server
+
+paths:
+  /cities:
+    get:
+      summary: List all cities
+      description: Retrieves a list of all available cities.
+      operationId: getCities
+      responses:
+        '200':
+          description: A list of cities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+
+  /cities/{id}:
+    get:
+      summary: Get a city by ID
+      description: Retrieves details of a specific city.
+      operationId: getCityById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: City details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '404':
+          description: City not found
+
+  /zones:
+    get:
+      summary: List all zones
+      description: Retrieves a list of all available zones.
+      operationId: getZones
+      responses:
+        '200':
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /destinations:
+    get:
+      summary: List available destinations
+      description: Retrieves a list of all destinations.
+      operationId: getDestinations
+      responses:
+        '200':
+          description: A list of destinations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /transport-rates:
+    get:
+      summary: View transport cost rates
+      description: Retrieves the current transport rates.
+      operationId: getTransportRates
+      responses:
+        '200':
+          description: Transport rates details
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /chat:
+    post:
+      summary: Interact with the AI Chatbot
+      description: Sends a message to the AI Chatbot. This endpoint is rate limited.
+      operationId: postChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Chatbot response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+        '429':
+          description: Rate limit exceeded
+
+  /itineraries:
+    get:
+      summary: List your itineraries
+      description: Retrieves a list of itineraries for the authenticated user.
+      operationId: getItineraries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of itineraries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Itinerary'
+        '401':
+          description: Unauthorized
+
+    post:
+      summary: Create a new itinerary manually
+      description: Creates a new itinerary for the authenticated user without AI generation.
+      operationId: createItinerary
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Itinerary created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '401':
+          description: Unauthorized
+
+  /itineraries/{id}/reorder:
+    put:
+      summary: Manually adjust sequence
+      description: Adjusts the sequence of destinations in a specific itinerary.
+      operationId: reorderItinerary
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Sequence updated
+        '401':
+          description: Unauthorized
+        '404':
+          description: Itinerary not found
+
+  /itineraries/generate:
+    post:
+      summary: AI-generate an optimized itinerary
+      description: |
+        Generates an optimized daily itinerary by grouping destinations by zone, sorting them using a nearest-neighbor algorithm, and calculating estimated transport costs based on the pax count.
+        **Note:** This endpoint requires authentication.
+      operationId: generateItinerary
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateItineraryRequest'
+            examples:
+              standard_generation:
+                summary: Generate an itinerary for 2 pax
+                value:
+                  city_id: 1
+                  start_date: "2025-06-01"
+                  end_date: "2025-06-03"
+                  categories: ["sightseeing", "food", "nightlife"]
+                  destination_ids: [1, 4, 7, 12]
+                  total_pax_count: 2
+      responses:
+        '200':
+          description: Successfully generated itinerary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+
+  schemas:
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    GenerateItineraryRequest:
+      type: object
+      required:
+        - city_id
+        - start_date
+        - end_date
+        - destination_ids
+        - total_pax_count
+      properties:
+        city_id:
+          type: integer
+          description: ID of the destination city.
+        start_date:
+          type: string
+          format: date
+          description: Start date of the itinerary (YYYY-MM-DD).
+        end_date:
+          type: string
+          format: date
+          description: End date of the itinerary (YYYY-MM-DD).
+        categories:
+          type: array
+          items:
+            type: string
+          description: Preferred destination categories.
+        destination_ids:
+          type: array
+          items:
+            type: integer
+          description: List of destination IDs to include.
+        total_pax_count:
+          type: integer
+          description: Total number of passengers to estimate transport costs.
+
+    Itinerary:
+      type: object
+      properties:
+        id:
+          type: integer
+        city_id:
+          type: integer
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        total_pax_count:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              destination_id:
+                type: integer
+              sequence:
+                type: integer
+              estimated_cost:
+                type: number
