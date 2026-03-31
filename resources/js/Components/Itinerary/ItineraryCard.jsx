@@ -66,7 +66,9 @@ export default function ItineraryCard({
                     {/* Drag Handle & Number */}
                     <div
                         {...dragHandleProps}
-                        className="flex flex-col items-center gap-1 cursor-grab active:cursor-grabbing pt-1"
+                        tabIndex={0}
+                        aria-label={`Pindahkan urutan destinasi ${destination?.name || ''}`}
+                        className="flex flex-col items-center gap-1 cursor-grab active:cursor-grabbing pt-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 rounded-lg p-1"
                     >
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm ${zoneStyle.bg} ${zoneStyle.text} ring-1 ring-inset ring-black/5`}>
                             {index + 1}
@@ -96,7 +98,7 @@ export default function ItineraryCard({
                             {/* Duration Badge */}
                             {destination?.avg_duration_minutes && (
                                 <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300">
-                                    <ClockIcon className="w-3.5 h-3.5" />
+                                    <ClockIcon className="w-3.5 h-3.5" aria-hidden="true" />
                                     {destination.avg_duration_minutes} menit
                                 </span>
                             )}
@@ -109,7 +111,7 @@ export default function ItineraryCard({
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <div className="p-1.5 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                                                <TicketIcon className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                                                <TicketIcon className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
                                             </div>
                                             <div>
                                                 <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Tiket Masuk</p>

@@ -5,3 +5,6 @@
 ## 2025-06-01 - Focus States on Hover-Hidden Elements
 **Learning:** In Tailwind, elements hidden via `opacity-0 group-hover:opacity-100` become inaccessible to keyboard users because they cannot hover over the group.
 **Action:** Always pair `group-hover:opacity-100` with `group-focus:opacity-100` or add `focus:opacity-100 focus:ring-2` if the element itself is interactive (like a button), ensuring screen reader and keyboard accessibility.
+## 2026-03-31 - Interactive Custom Elements Require Explicit ARIA Labels and Focus States
+**Learning:** Custom interactive elements like drag handles (using `@hello-pangea/dnd` or similar) are often implemented using generic `div` elements. This means they inherently lack semantic meaning and keyboard focusability, rendering them completely inaccessible to screen reader users and keyboard navigators. Visual cues (like the "hamburger" or "grip" dots) do not translate to assistive tech.
+**Action:** When implementing custom drag handles or similar non-standard interactive UI elements, always explicitly define an `aria-label` describing the action (e.g., `Pindahkan urutan destinasi [Nama]`), add `tabIndex={0}` to make the element focusable, and provide clear `:focus-visible` styles (e.g., `focus-visible:ring-2 focus-visible:ring-teal-500`) so keyboard users can see where they are.
