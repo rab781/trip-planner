@@ -1,0 +1,431 @@
+openapi: 3.1.0
+info:
+  title: Itinerary Management System API
+  version: 1.0.0
+  description: The Itinerary Management System API allows you to retrieve destinations,
+    manage itineraries, and use AI-powered trip generation.
+servers:
+- url: /api
+  description: API Base Path
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+paths:
+  /cities:
+    get:
+      summary: GET /cities
+      responses:
+        '200':
+          description: Success
+  /cities/{id}:
+    get:
+      summary: GET /cities/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /cities/{id}/zones:
+    get:
+      summary: GET /cities/{id}/zones
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /zones:
+    get:
+      summary: GET /zones
+      responses:
+        '200':
+          description: Success
+  /zones/{id}:
+    get:
+      summary: GET /zones/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /zones/{id}/destination:
+    get:
+      summary: GET /zones/{id}/destination
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /categories:
+    get:
+      summary: GET /categories
+      responses:
+        '200':
+          description: Success
+  /categories/{id}:
+    get:
+      summary: GET /categories/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /destinations:
+    get:
+      summary: GET /destinations
+      responses:
+        '200':
+          description: Success
+  /destinations/{id}:
+    get:
+      summary: GET /destinations/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /transport-rates:
+    get:
+      summary: GET /transport-rates
+      responses:
+        '200':
+          description: Success
+  /chat:
+    post:
+      summary: POST /chat
+      responses:
+        '200':
+          description: Success
+  /chat/stream:
+    post:
+      summary: POST /chat/stream
+      responses:
+        '200':
+          description: Success
+  /itineraries:
+    get:
+      summary: GET /itineraries
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+    post:
+      summary: POST /itineraries
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /itineraries/{id}:
+    get:
+      summary: GET /itineraries/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    put:
+      summary: PUT /itineraries/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    delete:
+      summary: DELETE /itineraries/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+  /itineraries/{id}/reorder:
+    put:
+      summary: PUT /itineraries/{id}/reorder
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+  /itineraries/{id}/sync-items:
+    put:
+      summary: PUT /itineraries/{id}/sync-items
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+  /itineraries/generate:
+    post:
+      summary: POST /itineraries/generate
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /itineraries/regenerate-day:
+    post:
+      summary: POST /itineraries/regenerate-day
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /itineraries/suggest-replacement:
+    post:
+      summary: POST /itineraries/suggest-replacement
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /admin/stats:
+    get:
+      summary: GET /admin/stats
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /admin/destinations:
+    get:
+      summary: GET /admin/destinations
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+    post:
+      summary: POST /admin/destinations
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /admin/destinations/{id}:
+    get:
+      summary: GET /admin/destinations/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    put:
+      summary: PUT /admin/destinations/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    delete:
+      summary: DELETE /admin/destinations/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+  /admin/users:
+    get:
+      summary: GET /admin/users
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /admin/users/{id}/role:
+    patch:
+      summary: PATCH /admin/users/{id}/role
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+  /admin/categories:
+    get:
+      summary: GET /admin/categories
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+    post:
+      summary: POST /admin/categories
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /admin/categories/{id}:
+    get:
+      summary: GET /admin/categories/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    put:
+      summary: PUT /admin/categories/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    delete:
+      summary: DELETE /admin/categories/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+  /admin/zones:
+    get:
+      summary: GET /admin/zones
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+    post:
+      summary: POST /admin/zones
+      responses:
+        '200':
+          description: Success
+      security:
+      - bearerAuth: []
+  /admin/zones/{id}:
+    get:
+      summary: GET /admin/zones/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    put:
+      summary: PUT /admin/zones/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+    delete:
+      summary: DELETE /admin/zones/{id}
+      responses:
+        '200':
+          description: Success
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
