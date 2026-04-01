@@ -66,7 +66,8 @@ export default function ItineraryCard({
                     {/* Drag Handle & Number */}
                     <div
                         {...dragHandleProps}
-                        className="flex flex-col items-center gap-1 cursor-grab active:cursor-grabbing pt-1"
+                        aria-label={`Seret untuk memindahkan ${destination?.name || 'destinasi'}`}
+                        className="flex flex-col items-center gap-1 cursor-grab active:cursor-grabbing pt-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800"
                     >
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm ${zoneStyle.bg} ${zoneStyle.text} ring-1 ring-inset ring-black/5`}>
                             {index + 1}
