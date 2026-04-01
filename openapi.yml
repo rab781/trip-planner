@@ -1,0 +1,400 @@
+openapi: 3.1.0
+info:
+  title: Itinerary Management System API
+  version: 1.0.0
+  description: |
+    The Itinerary Management System API allows you to retrieve destinations, manage itineraries, and interact with the AI chatbot for travel planning.
+
+    ## Authentication
+    Most endpoints require a Bearer token in the `Authorization` header. You can obtain a token via the Sanctum authentication flow.
+
+servers:
+  - url: /api
+    description: Base API path
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum Token
+
+security:
+  - bearerAuth: []
+
+paths:
+  /cities:
+    get:
+      summary: List all cities
+      security: []
+      responses:
+        '200':
+          description: A list of cities
+  /cities/{id}:
+    get:
+      summary: Get a specific city
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: City details
+  /cities/{id}/zones:
+    get:
+      summary: Get zones for a specific city
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zones list
+  /zones:
+    get:
+      summary: List all zones
+      security: []
+      responses:
+        '200':
+          description: A list of zones
+  /zones/{id}:
+    get:
+      summary: Get a specific zone
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone details
+  /zones/{id}/destination:
+    get:
+      summary: Get destinations for a specific zone
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destinations list
+  /categories:
+    get:
+      summary: List all categories
+      security: []
+      responses:
+        '200':
+          description: A list of categories
+  /categories/{id}:
+    get:
+      summary: Get a specific category
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category details
+  /destinations:
+    get:
+      summary: List all destinations
+      security: []
+      responses:
+        '200':
+          description: A list of destinations
+  /destinations/{id}:
+    get:
+      summary: Get a specific destination
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination details
+  /transport-rates:
+    get:
+      summary: Get transport rates
+      security: []
+      responses:
+        '200':
+          description: Transport rates list
+  /chat:
+    post:
+      summary: Send a message to the AI Chatbot
+      security: []
+      responses:
+        '200':
+          description: Chat response
+  /chat/stream:
+    post:
+      summary: Stream a message to the AI Chatbot
+      security: []
+      responses:
+        '200':
+          description: Chat stream response
+
+  /itineraries:
+    get:
+      summary: List user itineraries
+      responses:
+        '200':
+          description: A list of itineraries
+    post:
+      summary: Create a new itinerary
+      responses:
+        '201':
+          description: Itinerary created
+  /itineraries/{id}:
+    get:
+      summary: Get a specific itinerary
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary details
+    put:
+      summary: Update a specific itinerary
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary updated
+    delete:
+      summary: Delete a specific itinerary
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Itinerary deleted
+  /itineraries/{id}/reorder:
+    put:
+      summary: Reorder itinerary items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary items reordered
+  /itineraries/{id}/sync-items:
+    put:
+      summary: Sync itinerary items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary items synced
+  /itineraries/generate:
+    post:
+      summary: AI-generate an optimized itinerary
+      responses:
+        '200':
+          description: Itinerary generated
+  /itineraries/regenerate-day:
+    post:
+      summary: Regenerate a specific day in an itinerary
+      responses:
+        '200':
+          description: Day regenerated
+  /itineraries/suggest-replacement:
+    post:
+      summary: Suggest a replacement for an itinerary item
+      responses:
+        '200':
+          description: Suggested replacement
+
+  /admin/stats:
+    get:
+      summary: Get admin dashboard stats
+      responses:
+        '200':
+          description: Dashboard stats
+  /admin/destinations:
+    get:
+      summary: List destinations (admin)
+      responses:
+        '200':
+          description: List of destinations
+    post:
+      summary: Create destination (admin)
+      responses:
+        '201':
+          description: Destination created
+  /admin/destinations/{id}:
+    get:
+      summary: Get destination details (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination details
+    put:
+      summary: Update destination (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination updated
+    delete:
+      summary: Delete destination (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Destination deleted
+  /admin/users:
+    get:
+      summary: List users (admin)
+      responses:
+        '200':
+          description: List of users
+  /admin/users/{id}/role:
+    patch:
+      summary: Update user role (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User role updated
+  /admin/categories:
+    get:
+      summary: List categories (admin)
+      responses:
+        '200':
+          description: List of categories
+    post:
+      summary: Create category (admin)
+      responses:
+        '201':
+          description: Category created
+  /admin/categories/{id}:
+    get:
+      summary: Get category details (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category details
+    put:
+      summary: Update category (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category updated
+    delete:
+      summary: Delete category (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Category deleted
+  /admin/zones:
+    get:
+      summary: List zones (admin)
+      responses:
+        '200':
+          description: List of zones
+    post:
+      summary: Create zone (admin)
+      responses:
+        '201':
+          description: Zone created
+  /admin/zones/{id}:
+    get:
+      summary: Get zone details (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone details
+    put:
+      summary: Update zone (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone updated
+    delete:
+      summary: Delete zone (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Zone deleted

@@ -27,6 +27,7 @@ cp .env.example .env
 php artisan key:generate
 
 # Prepare the database
+touch database/database.sqlite
 php artisan migrate --force
 
 # Install frontend dependencies and build assets
@@ -119,20 +120,7 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
 
 ## API Reference
 
-The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. The lists below are a high-level subset of commonly used routes; refer to `routes/api.php` for the complete and authoritative list of API endpoints.
-
-### Public Endpoints (high-level subset)
-- `GET /api/cities` - List all cities.
-- `GET /api/zones` - List all zones.
-- `GET /api/destinations` - List available destinations.
-- `GET /api/transport-rates` - View transport cost rates.
-- `POST /api/chat` - Interact with the AI Chatbot (rate limited).
-
-### Protected Endpoints (Requires Auth, high-level subset)
-- `GET /api/itineraries` - List your itineraries.
-- `POST /api/itineraries` - Create a new itinerary manually.
-- `POST /api/itineraries/generate` - AI-generate an optimized itinerary.
-- `PUT /api/itineraries/{id}/reorder` - Manually adjust the sequence of destinations.
+See [openapi.yml](openapi.yml) for the full OpenAPI 3.1.0 specification.
 
 ## Contributing
 
