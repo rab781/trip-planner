@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'chutes' => [
+        'api_token' => env('CHUTES_API_TOKEN'),
+    ],
+
 ];
