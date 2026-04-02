@@ -1,3 +1,8 @@
+## 2025-02-15 - [Medium] Direct env() usage outside configuration files
+**Vulnerability:** The application used the `env()` helper function directly in `ChatController.php` to access the `CHUTES_API_TOKEN`.
+**Learning:** In Laravel, relying on the `env()` helper directly within the application codebase is insecure and brittle. If configuration caching is enabled (`php artisan config:cache`), the `env()` function will always return `null`, potentially resulting in application crashes, failure to authenticate to third-party services, or exposing credentials indirectly if the app continues executing under assumed configurations.
+**Prevention:** Always define external API keys or environment variables in standard config files (like `config/services.php`) and access them exclusively via the `config()` helper method.
+
 ## 2025-02-14 - [Critical] Explicit SSL Verification in cURL
 
 **Vulnerability:** Missing explicit SSL verification settings (`CURLOPT_SSL_VERIFYPEER` and `CURLOPT_SSL_VERIFYHOST`) in cURL requests within the application, specifically in `ChatController.php` calling the Chutes API.
