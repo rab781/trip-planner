@@ -11,3 +11,8 @@
 **Vulnerability:** External API calls (Chutes AI integration) using raw `curl_init` did not explicitly enforce `CURLOPT_SSL_VERIFYPEER` or `CURLOPT_SSL_VERIFYHOST`. By default, PHP cURL usually verifies peers, but it can be overridden in `php.ini` or by OS-level cURL changes. Relying on defaults is a potential security risk leading to Man-in-the-Middle (MitM) attacks.
 **Learning:** In legacy or highly configured environments, standard tools might have insecure default configurations. Directly using cURL bypasses Laravel `Http::` wrapper protections and defaults. The `ChatController::sendMessageStream` implementation opted for raw cURL for streaming capabilities but missed the explicit security config.
 **Prevention:** Always explicitly set `CURLOPT_SSL_VERIFYPEER => true` and `CURLOPT_SSL_VERIFYHOST => 2` when writing custom cURL requests. Prefer using Laravel's robust `Http` facade where possible, even for advanced use cases if supported.
+
+## 2026-04-02 - [High] Direct env() usage outside configuration files
+**Vulnerability:** Application logic (like `ChatController`) directly called `env('CHUTES_API_TOKEN')` instead of reading from configuration.
+**Learning:** In Laravel, when `php artisan config:cache` is run in production, the `env()` function returns `null` for all calls outside of configuration files. This can lead to silent authentication failures or exposing empty credentials to external services, representing both a stability and security risk.
+**Prevention:** Never use `env()` directly in application logic. Always map environment variables in a `config/*.php` file (e.g., `config/services.php`) and use the `config()` helper to access them.
