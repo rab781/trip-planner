@@ -1,3 +1,8 @@
+## 2026-04-02 - [High] Direct usage of env() helper outside config files
+**Vulnerability:** The `env()` helper function was used directly inside `app/Http/Controllers/ChatController.php` to access `CHUTES_API_TOKEN`. When configuration caching is enabled in production (`php artisan config:cache`), the `env()` function will return `null` and break the AI chatbot integration, which might lead to unexpected system behaviors or information leaks depending on error handling.
+**Learning:** Using `env()` directly outside of configuration files is a bad practice and a stability/security risk. External API keys or environment variables must always be defined in configuration files (e.g., `config/services.php`).
+**Prevention:** Always define external API keys or environment variables in config files (e.g., `config/services.php`) and access them via the `config()` helper to prevent `null` credentials when configuration caching is enabled.
+
 ## 2025-02-14 - [Critical] Explicit SSL Verification in cURL
 
 **Vulnerability:** Missing explicit SSL verification settings (`CURLOPT_SSL_VERIFYPEER` and `CURLOPT_SSL_VERIFYHOST`) in cURL requests within the application, specifically in `ChatController.php` calling the Chutes API.
