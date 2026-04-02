@@ -91,7 +91,8 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
 
         try {
             // Validate API token
-            $apiToken = env('CHUTES_API_TOKEN');
+            // Sentinel Security Fix: Always use config() to retrieve credentials to avoid null values when config is cached.
+            $apiToken = config('services.chutes.api_token');
             if (empty($apiToken)) {
                 Log::error('Chutes AI API Token not configured');
                 return response()->json([
@@ -214,7 +215,8 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                 CURLOPT_SSL_VERIFYPEER => true,
                 CURLOPT_SSL_VERIFYHOST => 2,
                 CURLOPT_HTTPHEADER => [
-                    'Authorization: Bearer ' . env('CHUTES_API_TOKEN'),
+                    // Sentinel Security Fix: Always use config() to retrieve credentials to avoid null values when config is cached.
+                    'Authorization: Bearer ' . config('services.chutes.api_token'),
                     'Content-Type: application/json'
                 ],
                 CURLOPT_POSTFIELDS => json_encode([
