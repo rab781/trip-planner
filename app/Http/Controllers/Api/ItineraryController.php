@@ -417,7 +417,11 @@ class ItineraryController extends Controller
 
         $validated = $request->validate([
             'items' => 'required|array',
-            'items.*.id' => 'required|exists:itinerary_items,id',
+            'items.*.id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('itinerary_items', 'id')
+                    ->where('itinerary_id', $itinerary->id),
+            ],
             'items.*.day_number' => 'required|integer',
             'start_location' => 'nullable|array',
             'start_location.lat' => 'required_with:start_location|numeric',
