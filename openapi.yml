@@ -1,0 +1,1204 @@
+openapi: 3.1.0
+info:
+  title: Itinerary Management System API
+  version: 1.0.0
+  description: |
+    The Itinerary Management System API allows you to retrieve destinations, plan trips, and generate optimized itineraries.
+
+    ## Authentication
+    Many endpoints require authentication via Laravel Sanctum. Include your Bearer token in the `Authorization` header.
+
+    ## AI Features
+    The AI endpoints for chat and itinerary generation require specific environment configuration and might be rate-limited.
+
+    ## Rate Limiting
+    Certain endpoints, especially AI chatbot and generation routes, are subject to rate limiting.
+servers:
+  - url: /api
+    description: Current server
+components:
+  securitySchemes:
+    sanctumAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Zone:
+      type: object
+      properties:
+        id:
+          type: integer
+        city_id:
+          type: integer
+        name:
+          type: string
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Destination:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        zone_id:
+          type: integer
+        category_id:
+          type: integer
+    Itinerary:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        total_pax_count:
+          type: integer
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
+        data:
+          nullable: true
+security:
+  - {}
+paths:
+  /cities:
+    get:
+      summary: List all cities
+      description: Returns a list of all cities available in the system.
+      responses:
+        '200':
+          description: A list of cities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/City'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+              examples:
+                success:
+                  value:
+                    data: [{ id: 1, name: "Jakarta" }]
+                    message: "Cities retrieved successfully"
+                    status: 200
+  /cities/{id}:
+    get:
+      summary: Get city by ID
+      description: Returns a single city.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the city to retrieve.
+      responses:
+        '200':
+          description: A single city
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/City'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+        '404':
+          description: City not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cities/{id}/zones:
+    get:
+      summary: Get zones by city ID
+      description: Returns a list of zones associated with a specific city.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the city.
+      responses:
+        '200':
+          description: A list of zones for the city
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Zone'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+        '404':
+          description: City not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /zones:
+    get:
+      summary: List all zones
+      description: Retrieves a list of all zones in the system.
+      responses:
+        '200':
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Zone'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+  /zones/{id}:
+    get:
+      summary: Get zone by ID
+      description: Returns a specific zone.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single zone
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Zone'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+        '404':
+          description: Zone not found
+  /zones/{id}/destination:
+    get:
+      summary: Get destinations by zone ID
+      description: Retrieves destinations within a specific zone.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of destinations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Destination'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+        '404':
+          description: Zone not found
+  /categories:
+    get:
+      summary: List all categories
+      description: Retrieves all destination categories.
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+  /categories/{id}:
+    get:
+      summary: Get category by ID
+      description: Retrieves a specific category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Category'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+        '404':
+          description: Category not found
+  /destinations:
+    get:
+      summary: List all destinations
+      description: Retrieves a list of available destinations.
+      responses:
+        '200':
+          description: A list of destinations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Destination'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+  /destinations/{id}:
+    get:
+      summary: Get destination by ID
+      description: Retrieves details of a specific destination.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A destination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Destination'
+                  message:
+                    type: string
+                  status:
+                    type: integer
+        '404':
+          description: Destination not found
+  /transport-rates:
+    get:
+      summary: List transport rates
+      description: Retrieves currently configured transport cost rates.
+      responses:
+        '200':
+          description: Transport rates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  message:
+                    type: string
+                  status:
+                    type: integer
+  /chat:
+    post:
+      summary: Interact with the AI Chatbot
+      description: Send a message to the AI chatbot to get travel recommendations. Rate limited to 10 requests per minute.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The user's message
+              required:
+                - message
+            examples:
+              standard:
+                value:
+                  message: "Can you suggest some places in Jakarta?"
+      responses:
+        '200':
+          description: The chatbot response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+        '429':
+          description: Too Many Requests
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+  /chat/stream:
+    post:
+      summary: Stream interaction with the AI Chatbot
+      description: Send a message and stream the response. Rate limited.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: A stream of text
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '429':
+          description: Too Many Requests
+  /itineraries:
+    get:
+      summary: List itineraries
+      description: Retrieve a list of itineraries belonging to the authenticated user.
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: A list of user itineraries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Itinerary'
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+    post:
+      summary: Create itinerary
+      description: Manually create a new itinerary.
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+              required:
+                - title
+                - start_date
+                - end_date
+      responses:
+        '201':
+          description: Itinerary created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Itinerary'
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation Error
+  /itineraries/{id}:
+    get:
+      summary: Get itinerary
+      description: Retrieve a specific itinerary.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single itinerary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Itinerary'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+    put:
+      summary: Update itinerary
+      description: Update an existing itinerary's basic details.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Itinerary updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Itinerary'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+    delete:
+      summary: Delete itinerary
+      description: Delete an itinerary.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Itinerary deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+  /itineraries/{id}/reorder:
+    put:
+      summary: Reorder itinerary items
+      description: Manually adjust the sequence of destinations in an itinerary.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      sequence:
+                        type: integer
+      responses:
+        '200':
+          description: Items reordered successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Itinerary not found
+  /itineraries/{id}/sync-items:
+    put:
+      summary: Sync itinerary items
+      description: Sync the list of items for an itinerary.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item_ids:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Items synced successfully
+        '401':
+          description: Unauthorized
+  /itineraries/generate:
+    post:
+      summary: Generate an optimized itinerary
+      description: Uses AI to generate an optimized itinerary by grouping and sorting destinations using nearest-neighbor algorithm.
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                city_id:
+                  type: integer
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                categories:
+                  type: array
+                  items:
+                    type: string
+                destination_ids:
+                  type: array
+                  items:
+                    type: integer
+                total_pax_count:
+                  type: integer
+              required:
+                - city_id
+                - start_date
+                - end_date
+            examples:
+              standard_generation:
+                value:
+                  city_id: 1
+                  start_date: "2025-06-01"
+                  end_date: "2025-06-03"
+                  categories: ["sightseeing", "food"]
+                  destination_ids: [1, 4, 7, 12]
+                  total_pax_count: 2
+      responses:
+        '200':
+          description: Generated itinerary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Itinerary'
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation Error
+  /itineraries/regenerate-day:
+    post:
+      summary: Regenerate a specific day
+      description: Uses AI to regenerate destinations for a specific day of an itinerary.
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itinerary_id:
+                  type: integer
+                day:
+                  type: integer
+      responses:
+        '200':
+          description: Day regenerated
+        '401':
+          description: Unauthorized
+  /itineraries/suggest-replacement:
+    post:
+      summary: Suggest replacement destinations
+      description: Uses AI to suggest a replacement for a specific destination in an itinerary.
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itinerary_id:
+                  type: integer
+                item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Replacement suggested
+        '401':
+          description: Unauthorized
+  /admin/stats:
+    get:
+      summary: Dashboard stats
+      description: Retrieves high-level system statistics for the admin dashboard.
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_users:
+                    type: integer
+                  total_itineraries:
+                    type: integer
+                  total_destinations:
+                    type: integer
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden (Requires Admin Role)
+  /admin/destinations:
+    get:
+      summary: List destinations (Admin)
+      description: Retrieves a list of destinations for admin management.
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: A list of destinations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Destination'
+        '403':
+          description: Forbidden
+    post:
+      summary: Create destination
+      description: Create a new destination.
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                zone_id:
+                  type: integer
+                category_id:
+                  type: integer
+              required:
+                - name
+                - zone_id
+      responses:
+        '201':
+          description: Destination created
+        '403':
+          description: Forbidden
+  /admin/destinations/{id}:
+    get:
+      summary: Get destination (Admin)
+      description: Retrieve a specific destination.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination details
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    put:
+      summary: Update destination
+      description: Update an existing destination.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                zone_id:
+                  type: integer
+                category_id:
+                  type: integer
+      responses:
+        '200':
+          description: Destination updated
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+    patch:
+      summary: Update destination (partial)
+      description: Partially update an existing destination.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Destination updated
+        '403':
+          description: Forbidden
+    delete:
+      summary: Delete destination
+      description: Delete a destination.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Destination deleted
+        '403':
+          description: Forbidden
+  /admin/users:
+    get:
+      summary: List users (Admin)
+      description: Retrieve a list of users.
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '403':
+          description: Forbidden
+  /admin/users/{id}/role:
+    patch:
+      summary: Update user role
+      description: Update the role of a specific user.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+              required:
+                - role
+      responses:
+        '200':
+          description: Role updated
+        '403':
+          description: Forbidden
+  /admin/categories:
+    get:
+      summary: List categories (Admin)
+      description: Retrieve a list of categories.
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '403':
+          description: Forbidden
+    post:
+      summary: Create category
+      description: Create a new category.
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        '201':
+          description: Category created
+        '403':
+          description: Forbidden
+  /admin/categories/{id}:
+    get:
+      summary: Get category
+      description: Retrieve a specific category.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category details
+        '403':
+          description: Forbidden
+    put:
+      summary: Update category
+      description: Update an existing category.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Category updated
+        '403':
+          description: Forbidden
+    patch:
+      summary: Update category (partial)
+      description: Partially update an existing category.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Category updated
+        '403':
+          description: Forbidden
+    delete:
+      summary: Delete category
+      description: Delete a category.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Category deleted
+        '403':
+          description: Forbidden
+  /admin/zones:
+    get:
+      summary: List zones (Admin)
+      description: Retrieve a list of zones.
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Zone'
+        '403':
+          description: Forbidden
+    post:
+      summary: Create zone
+      description: Create a new zone.
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                city_id:
+                  type: integer
+              required:
+                - name
+                - city_id
+      responses:
+        '201':
+          description: Zone created
+        '403':
+          description: Forbidden
+  /admin/zones/{id}:
+    get:
+      summary: Get zone
+      description: Retrieve a specific zone.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone details
+        '403':
+          description: Forbidden
+    put:
+      summary: Update zone
+      description: Update an existing zone.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                city_id:
+                  type: integer
+      responses:
+        '200':
+          description: Zone updated
+        '403':
+          description: Forbidden
+    patch:
+      summary: Update zone (partial)
+      description: Partially update an existing zone.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Zone updated
+        '403':
+          description: Forbidden
+    delete:
+      summary: Delete zone
+      description: Delete a zone.
+      security:
+        - sanctumAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Zone deleted
+        '403':
+          description: Forbidden
