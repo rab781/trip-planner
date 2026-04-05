@@ -1,0 +1,3 @@
+## 2025-04-05 - Drag Handles Accessibility
+**Learning:** Visual icons like `ArrowsUpDownIcon` or `ChevronDownIcon` used as drag handles or toggle states do not inherently convey their purpose to screen readers, making interactions inaccessible for visually impaired users.
+**Action:** Always add explicit `aria-label` attributes to the wrapping `<button>` elements (e.g., `aria-label="Ubah urutan destinasi"`) and add `aria-hidden="true"` to the decorative SVG inside to prevent redundant and confusing screen reader announcements. Use dynamic `aria-expanded` and `aria-label` for collapsible sections.
