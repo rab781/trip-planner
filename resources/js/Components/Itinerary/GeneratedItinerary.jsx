@@ -48,9 +48,10 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                 <button
                     {...attributes}
                     {...listeners}
+                    aria-label="Ubah urutan destinasi"
                     className="mt-1 p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg cursor-grab active:cursor-grabbing transition-colors"
                 >
-                    <ArrowsUpDownIcon className="w-5 h-5" />
+                    <ArrowsUpDownIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
 
                 {/* Sequence Number */}
@@ -180,6 +181,7 @@ function DaySection({
             {/* Day Header */}
             <button
                 onClick={onToggle}
+                aria-expanded={isExpanded}
                 className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/40 dark:hover:bg-gray-800/40 transition-colors"
             >
                 <div className="flex items-center gap-4">
@@ -199,7 +201,7 @@ function DaySection({
                         Rp {totalTickets.toLocaleString('id-ID')}
                     </span>
                     <div className={`p-2 rounded-full transition-all duration-300 ${isExpanded ? 'bg-gray-100 dark:bg-gray-700 rotate-180' : 'bg-transparent'}`}>
-                        <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                        <ChevronDownIcon className="w-5 h-5 text-gray-500" aria-hidden="true" />
                     </div>
                 </div>
             </button>
