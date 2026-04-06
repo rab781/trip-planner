@@ -156,9 +156,10 @@ export default function DestinationDetailPanel({ destination, onClose, isSoloMod
                                     {/* Close Button */}
                                     <button
                                         onClick={onClose}
-                                        className="absolute top-4 right-4 p-2.5 bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 rounded-full text-white transition-all hover:rotate-90"
+                                        aria-label="Tutup detail destinasi"
+                                        className="absolute top-4 right-4 p-2.5 bg-black/20 hover:bg-black/40 backdrop-blur-md border border-white/10 rounded-full text-white transition-all hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
                                     >
-                                        <XMarkIcon className="w-5 h-5" />
+                                        <XMarkIcon className="w-5 h-5" aria-hidden="true" />
                                     </button>
 
                                     {/* Title Section */}
