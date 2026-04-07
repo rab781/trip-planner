@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Itinerary;
 use Illuminate\Http\Request;
 use App\Models\ItineraryItem;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\ItineraryService;
@@ -440,7 +441,10 @@ class ItineraryController extends Controller
 
         $validated = $request->validate([
             'items' => 'required|array',
-            'items.*.id' => 'required|exists:itinerary_items,id',
+            'items.*.id' => [
+                'required',
+                Rule::exists('itinerary_items', 'id')->where('itinerary_id', $id)
+            ],
             'items.*.day_number' => 'required|integer',
             'start_location' => 'nullable|array',
             'start_location.lat' => 'required_with:start_location|numeric',
