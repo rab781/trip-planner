@@ -48,9 +48,10 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                 <button
                     {...attributes}
                     {...listeners}
-                    className="mt-1 p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg cursor-grab active:cursor-grabbing transition-colors"
+                    aria-label={`Ubah urutan ${destination.name}`}
+                    className="mt-1 p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg cursor-grab active:cursor-grabbing transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800"
                 >
-                    <ArrowsUpDownIcon className="w-5 h-5" />
+                    <ArrowsUpDownIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
 
                 {/* Sequence Number */}
@@ -180,7 +181,8 @@ function DaySection({
             {/* Day Header */}
             <button
                 onClick={onToggle}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/40 dark:hover:bg-gray-800/40 transition-colors"
+                aria-expanded={isExpanded}
+                className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/40 dark:hover:bg-gray-800/40 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-inset"
             >
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-xl flex items-center justify-center font-bold font-display text-lg shadow-lg">
@@ -199,7 +201,7 @@ function DaySection({
                         Rp {totalTickets.toLocaleString('id-ID')}
                     </span>
                     <div className={`p-2 rounded-full transition-all duration-300 ${isExpanded ? 'bg-gray-100 dark:bg-gray-700 rotate-180' : 'bg-transparent'}`}>
-                        <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                        <ChevronDownIcon className="w-5 h-5 text-gray-500" aria-hidden="true" />
                     </div>
                 </div>
             </button>
