@@ -676,34 +676,16 @@ paths:
           $ref: '#/components/responses/NotFound'
   /admin/users/{id}/role:
     patch:
-      summary: Update user role
-      description: Change the role of a specific user.
+      summary: Toggle user role
+      description: Toggle the role of a specific user and redirect to the admin user listing.
       tags: [Admin Users]
       security:
         - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/IdParam'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                role:
-                  type: string
-                  enum: [user, admin]
-              required:
-                - role
       responses:
-        '200':
-          description: User role updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/ValidationError'
+        '302':
+          description: User role toggled and client redirected
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
