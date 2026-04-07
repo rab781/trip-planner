@@ -356,7 +356,9 @@ class ItineraryController extends Controller
 
                 // Pre-fetch all destinations to avoid N+1 query problem
                 $allDestIds = collect($validated['items'])->pluck('destination_id')->unique()->toArray();
-                $destinationsMap = \App\Models\Destination::whereIn('id', $allDestIds)->get()->keyBy('id');
+                $destinationsMap = empty($allDestIds)
+                    ? collect()
+                    : \App\Models\Destination::whereIn('id', $allDestIds)->get()->keyBy('id');
 
                 // Re-create items from request
                 $itemsByDay = collect($validated['items'])->groupBy('day_number');
