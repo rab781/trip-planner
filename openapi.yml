@@ -1,0 +1,1286 @@
+openapi: 3.1.0
+info:
+  title: Itinerary Management System API
+  version: 1.0.0
+  description: |
+    The Itinerary Management System API allows you to manage cities, zones, destinations, categories, itineraries, and interact with an AI chatbot.
+
+    ## Authentication
+    Protected routes require a Sanctum Bearer token in the `Authorization` header.
+    Get your token by authenticating through the standard login flow.
+
+    ## Rate Limiting
+    Chatbot endpoints are limited to prevent abuse. Rate limit headers are included in responses.
+servers:
+  - url: http://localhost:8000/api
+    description: Local development server
+paths:
+  /cities:
+    get:
+      summary: List all cities
+      description: Retrieve a list of all available cities.
+      tags: [Cities]
+      responses:
+        '200':
+          description: A list of cities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+  /cities/{id}:
+    get:
+      summary: Get a city
+      description: Retrieve details of a specific city by its ID.
+      tags: [Cities]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: City details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cities/{id}/zones:
+    get:
+      summary: Get zones for a city
+      description: Retrieve a list of all zones belonging to a specific city.
+      tags: [Cities]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: A list of zones for the city
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /zones:
+    get:
+      summary: List all zones
+      description: Retrieve a list of all available zones.
+      tags: [Zones]
+      responses:
+        '200':
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+  /zones/{id}:
+    get:
+      summary: Get a zone
+      description: Retrieve details of a specific zone by its ID.
+      tags: [Zones]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Zone details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /zones/{id}/destination:
+    get:
+      summary: Get destinations for a zone
+      description: Retrieve a list of all destinations belonging to a specific zone.
+      tags: [Zones]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Destinations in the zone
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /categories:
+    get:
+      summary: List all categories
+      description: Retrieve a list of all available categories.
+      tags: [Categories]
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+  /categories/{id}:
+    get:
+      summary: Get a category
+      description: Retrieve details of a specific category by its ID.
+      tags: [Categories]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Category details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /destinations:
+    get:
+      summary: List all destinations
+      description: Retrieve a list of all available destinations.
+      tags: [Destinations]
+      responses:
+        '200':
+          description: A list of destinations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+  /destinations/{id}:
+    get:
+      summary: Get a destination
+      description: Retrieve details of a specific destination by its ID.
+      tags: [Destinations]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Destination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /transport-rates:
+    get:
+      summary: List all transport rates
+      description: Retrieve a list of all transport cost rates.
+      tags: [Transport Rates]
+      responses:
+        '200':
+          description: A list of transport rates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransportRate'
+  /chat:
+    post:
+      summary: Interact with the AI Chatbot
+      description: Send a message to the AI chatbot and receive a response.
+      tags: [Chatbot]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "What is a good 3-day itinerary for Bali?"
+              required:
+                - message
+      responses:
+        '200':
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    example: "Bali is great! I suggest you visit Ubud, Kuta, and Seminyak."
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+  /chat/stream:
+    post:
+      summary: Interact with the AI Chatbot using stream
+      description: Send a message to the AI chatbot and receive a streamed response.
+      tags: [Chatbot]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Suggest some activities in Jakarta."
+              required:
+                - message
+      responses:
+        '200':
+          description: Streamed chat response
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+  /itineraries:
+    get:
+      summary: List itineraries
+      description: Retrieve a list of all itineraries belonging to the authenticated user.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of itineraries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Itinerary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create an itinerary
+      description: Create a new manual itinerary for the authenticated user.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateItineraryRequest'
+      responses:
+        '201':
+          description: Itinerary created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /itineraries/{id}:
+    get:
+      summary: Get an itinerary
+      description: Retrieve details of a specific itinerary by its ID.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Itinerary details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update an itinerary
+      description: Update details of a specific itinerary by its ID.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateItineraryRequest'
+      responses:
+        '200':
+          description: Itinerary updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete an itinerary
+      description: Delete a specific itinerary by its ID.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Itinerary deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Itinerary deleted successfully."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /itineraries/{id}/reorder:
+    put:
+      summary: Reorder itinerary
+      description: Reorder the items within a specific itinerary.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      sequence:
+                        type: integer
+              required:
+                - items
+      responses:
+        '200':
+          description: Itinerary reordered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /itineraries/{id}/sync-items:
+    put:
+      summary: Sync items for an itinerary
+      description: Synchronize the items within a specific itinerary, adding or removing destinations as needed.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item_ids:
+                  type: array
+                  items:
+                    type: integer
+              required:
+                - item_ids
+      responses:
+        '200':
+          description: Items synced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /itineraries/generate:
+    post:
+      summary: Generate an itinerary
+      description: AI-generate an optimized itinerary based on inputs like city, dates, pax count, and chosen destinations.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateItineraryRequest'
+      responses:
+        '200':
+          description: Itinerary generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /itineraries/regenerate-day:
+    post:
+      summary: Regenerate a day for an itinerary
+      description: Ask the AI to regenerate a specific day of an itinerary.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itinerary_id:
+                  type: integer
+                day:
+                  type: integer
+              required:
+                - itinerary_id
+                - day
+      responses:
+        '200':
+          description: Day regenerated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Itinerary'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /itineraries/suggest-replacement:
+    post:
+      summary: Suggest a replacement destination
+      description: Ask the AI to suggest a replacement for a specific destination in an itinerary.
+      tags: [Itineraries]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itinerary_id:
+                  type: integer
+                destination_id_to_replace:
+                  type: integer
+              required:
+                - itinerary_id
+                - destination_id_to_replace
+      responses:
+        '200':
+          description: Replacement suggested
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /admin/stats:
+    get:
+      summary: Dashboard stats
+      description: Retrieve high-level dashboard statistics for admins.
+      tags: [Admin]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_users:
+                    type: integer
+                  total_itineraries:
+                    type: integer
+                  total_destinations:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /admin/destinations:
+    get:
+      summary: List destinations
+      description: Retrieve a paginated list of all destinations for admin management.
+      tags: [Admin Destinations]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of destinations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      summary: Create a destination
+      description: Create a new destination entry.
+      tags: [Admin Destinations]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDestinationRequest'
+      responses:
+        '201':
+          description: Destination created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /admin/destinations/{destination}:
+    get:
+      summary: Get a destination
+      description: Retrieve admin details of a specific destination.
+      tags: [Admin Destinations]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: destination
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The destination ID
+      responses:
+        '200':
+          description: Destination details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update a destination
+      description: Update an existing destination entry.
+      tags: [Admin Destinations]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: destination
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The destination ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDestinationRequest'
+      responses:
+        '200':
+          description: Destination updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a destination
+      description: Delete a specific destination entry.
+      tags: [Admin Destinations]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: destination
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The destination ID
+      responses:
+        '200':
+          description: Destination deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Destination deleted successfully."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /admin/users/{id}/role:
+    patch:
+      summary: Toggle user role
+      description: Toggle the role of a specific user and redirect to the admin user listing.
+      tags: [Admin Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '302':
+          description: User role toggled and client redirected
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /admin/categories:
+    get:
+      summary: List categories
+      description: Retrieve a paginated list of all categories for admin management.
+      tags: [Admin Categories]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      summary: Create a category
+      description: Create a new category entry.
+      tags: [Admin Categories]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /admin/categories/{category}:
+    get:
+      summary: Get a category
+      description: Retrieve admin details of a specific category.
+      tags: [Admin Categories]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The category ID
+      responses:
+        '200':
+          description: Category details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update a category
+      description: Update an existing category entry.
+      tags: [Admin Categories]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The category ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCategoryRequest'
+      responses:
+        '200':
+          description: Category updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a category
+      description: Delete a specific category entry.
+      tags: [Admin Categories]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The category ID
+      responses:
+        '200':
+          description: Category deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Category deleted successfully."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /admin/zones:
+    get:
+      summary: List zones
+      description: Retrieve a paginated list of all zones for admin management.
+      tags: [Admin Zones]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      summary: Create a zone
+      description: Create a new zone entry.
+      tags: [Admin Zones]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateZoneRequest'
+      responses:
+        '201':
+          description: Zone created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /admin/zones/{zone}:
+    get:
+      summary: Get a zone
+      description: Retrieve admin details of a specific zone.
+      tags: [Admin Zones]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: zone
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The zone ID
+      responses:
+        '200':
+          description: Zone details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update a zone
+      description: Update an existing zone entry.
+      tags: [Admin Zones]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: zone
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The zone ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateZoneRequest'
+      responses:
+        '200':
+          description: Zone updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Delete a zone
+      description: Delete a specific zone entry.
+      tags: [Admin Zones]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: zone
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The zone ID
+      responses:
+        '200':
+          description: Zone deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Zone deleted successfully."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The resource ID
+  schemas:
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Bali"
+        description:
+          type: string
+          example: "Island of Gods"
+      required: [id, name]
+    Zone:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Ubud"
+        city_id:
+          type: integer
+          example: 1
+      required: [id, name, city_id]
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Sightseeing"
+      required: [id, name]
+    Destination:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Ubud Monkey Forest"
+        description:
+          type: string
+          example: "Nature reserve and Hindu temple complex"
+        zone_id:
+          type: integer
+          example: 1
+        category_id:
+          type: integer
+          example: 1
+      required: [id, name, zone_id, category_id]
+    TransportRate:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        vehicle_type:
+          type: string
+          example: "Car"
+        rate_per_km:
+          type: number
+          format: float
+          example: 5000.00
+      required: [id, vehicle_type, rate_per_km]
+    Itinerary:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Bali Trip 2025"
+        user_id:
+          type: integer
+          example: 1
+        city_id:
+          type: integer
+          example: 1
+        start_date:
+          type: string
+          format: date
+          example: "2025-06-01"
+        end_date:
+          type: string
+          format: date
+          example: "2025-06-03"
+        total_pax_count:
+          type: integer
+          example: 2
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              destination_id:
+                type: integer
+              sequence:
+                type: integer
+      required: [id, name, user_id, city_id, start_date, end_date, total_pax_count]
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "john@example.com"
+        role:
+          type: string
+          example: "user"
+      required: [id, name, email, role]
+    CreateItineraryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Bali Trip 2025"
+        city_id:
+          type: integer
+          example: 1
+        start_date:
+          type: string
+          format: date
+          example: "2025-06-01"
+        end_date:
+          type: string
+          format: date
+          example: "2025-06-03"
+        total_pax_count:
+          type: integer
+          example: 2
+      required: [name, city_id, start_date, end_date, total_pax_count]
+    UpdateItineraryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Updated Bali Trip"
+        total_pax_count:
+          type: integer
+          example: 3
+    GenerateItineraryRequest:
+      type: object
+      properties:
+        city_id:
+          type: integer
+          example: 1
+        start_date:
+          type: string
+          format: date
+          example: "2025-06-01"
+        end_date:
+          type: string
+          format: date
+          example: "2025-06-03"
+        categories:
+          type: array
+          items:
+            type: string
+          example: ["sightseeing", "food", "nightlife"]
+        destination_ids:
+          type: array
+          items:
+            type: integer
+          example: [1, 4, 7, 12]
+        total_pax_count:
+          type: integer
+          example: 2
+      required: [city_id, start_date, end_date, categories, destination_ids, total_pax_count]
+    CreateDestinationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "New Destination"
+        description:
+          type: string
+        zone_id:
+          type: integer
+        category_id:
+          type: integer
+      required: [name, zone_id, category_id]
+    UpdateDestinationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        zone_id:
+          type: integer
+        category_id:
+          type: integer
+    CreateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Adventure"
+      required: [name]
+    UpdateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Adventure"
+    CreateZoneRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "North"
+        city_id:
+          type: integer
+      required: [name, city_id]
+    UpdateZoneRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "North"
+        city_id:
+          type: integer
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+  responses:
+    ValidationError:
+      description: Invalid request — validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            validation_failed:
+              value:
+                message: "The given data was invalid."
+                errors:
+                  city_id: ["The city id field is required."]
+    Unauthorized:
+      description: Unauthorized — Bearer token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthenticated."
+    Forbidden:
+      description: Forbidden — You do not have permission to access this resource
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "This action is unauthorized."
+    NotFound:
+      description: Not Found — The requested resource does not exist
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "No query results for model."
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      headers:
+        Retry-After:
+          description: Seconds until rate limit resets
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Too Many Attempts."
