@@ -93,8 +93,12 @@ class ItineraryController extends Controller
                 } elseif (!empty($validated['destination_ids'])) {
                     $allDestIds = $validated['destination_ids'];
                 }
-                $destinationsMap = \App\Models\Destination::whereIn('id', array_unique($allDestIds))->get()->keyBy('id');
 
+                if (empty($allDestIds)) {
+                    $destinationsMap = collect();
+                } else {
+                    $destinationsMap = \App\Models\Destination::whereIn('id', array_unique($allDestIds))->get()->keyBy('id');
+                }
                 // Handle days format (preferred - from GeneratedItinerary)
                 if (!empty($validated['days'])) {
                     foreach ($validated['days'] as $dayData) {
