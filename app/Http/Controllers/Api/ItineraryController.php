@@ -82,6 +82,23 @@ class ItineraryController extends Controller
                     'transportation_preference' => $validated['transportation_preference'],
                 ]);
 
+                // Pre-fetch all destinations to avoid N+1 query problem
+                $allDestIds = [];
+                if (!empty($validated['days'])) {
+                    foreach ($validated['days'] as $dayData) {
+                        foreach ($dayData['destinations'] as $destData) {
+                            $allDestIds[] = is_array($destData) ? $destData['id'] : $destData;
+                        }
+                    }
+                } elseif (!empty($validated['destination_ids'])) {
+                    $allDestIds = $validated['destination_ids'];
+                }
+
+                if (empty($allDestIds)) {
+                    $destinationsMap = collect();
+                } else {
+                    $destinationsMap = \App\Models\Destination::whereIn('id', array_unique($allDestIds))->get()->keyBy('id');
+                }
                 // Handle days format (preferred - from GeneratedItinerary)
                 if (!empty($validated['days'])) {
                     foreach ($validated['days'] as $dayData) {
@@ -91,7 +108,7 @@ class ItineraryController extends Controller
 
                         foreach ($dayData['destinations'] as $destData) {
                             $destinationId = is_array($destData) ? $destData['id'] : $destData;
-                            $destination = \App\Models\Destination::find($destinationId);
+                            $destination = $destinationsMap->get($destinationId);
 
                             if (!$destination) continue;
 
@@ -136,7 +153,7 @@ class ItineraryController extends Controller
                     $prevDestination = null;
 
                     foreach ($destinations as $destId) {
-                        $destination = \App\Models\Destination::find($destId);
+                        $destination = $destinationsMap->get($destId);
                         if (!$destination) continue;
 
                         // Calculate distance from previous destination
@@ -337,6 +354,12 @@ class ItineraryController extends Controller
                 // Delete all existing items
                 $itinerary->itineraryItems()->delete();
 
+                // Pre-fetch all destinations to avoid N+1 query problem
+                $allDestIds = collect($validated['items'])->pluck('destination_id')->unique()->toArray();
+                $destinationsMap = empty($allDestIds)
+                    ? collect()
+                    : \App\Models\Destination::whereIn('id', $allDestIds)->get()->keyBy('id');
+
                 // Re-create items from request
                 $itemsByDay = collect($validated['items'])->groupBy('day_number');
                 
@@ -345,7 +368,7 @@ class ItineraryController extends Controller
                     $sequence = 1;
 
                     foreach ($dayItems->sortBy('sequence_order') as $itemData) {
-                        $destination = \App\Models\Destination::find($itemData['destination_id']);
+                        $destination = $destinationsMap->get($itemData['destination_id']);
                         if (!$destination) continue;
 
                         // Calculate distance from previous destination

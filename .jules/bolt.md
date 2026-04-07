@@ -10,3 +10,6 @@
 ## 2026-03-27 - Prevent N+1 queries in loop-mapped operations by reusing pre-calculated statistics
 **Learning:** Performing database queries (like `count()`) inside mapping functions that iterate over collections (e.g., generating badges for destinations) causes N+1 query loops.
 **Action:** When a statistic (like popularity score) is already calculated and passed to the method (or available in the context), reuse it instead of querying the database again. For example, replace `Model::where()->count()` with a simple check on the pre-calculated array value (`$scores['popularity'] >= 75`).
+## 2026-04-06 - Prevent N+1 queries in loop-mapped operations by pre-fetching relations in maps
+**Learning:** Using `Model::find($id)` inside loops (e.g. iterating over itinerary items or days in a controller request) causes a severe N+1 query problem, because a separate DB query is executed for each item.
+**Action:** Always pre-fetch the required models outside the loop by extracting all necessary IDs into an array, executing a single query like `Model::whereIn('id', $ids)->get()->keyBy('id')`, and then querying from that Map/Dictionary inside the loop.
