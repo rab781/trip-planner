@@ -9,3 +9,6 @@
 ## 2025-06-05 - Drag Handles Accessibility
 **Learning:** Drag handles (like sortable list buttons) require explicit `aria-label` attributes since visual icons like `ArrowsUpDownIcon` do not inherently convey their purpose to screen readers.
 **Action:** Ensure drag handles have `aria-label`s like "Ubah urutan [Item Name]". Add `aria-hidden="true"` to decorative icons. Pair interaction with explicit `focus:ring-2` focus states.
+## 2025-06-15 - Containers with Hover-Revealed Actions
+**Learning:** When multiple interactive elements are wrapped inside a container hidden by `opacity-0 group-hover:opacity-100`, adding focus states to individual elements is not enough because their parent container remains invisible unless hovered.
+**Action:** Always add `focus-within:opacity-100` to parent containers that reveal actions on hover, allowing the entire block of actions to become visible when any child element receives keyboard focus.
