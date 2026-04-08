@@ -99,6 +99,9 @@ class ItineraryController extends Controller
                 } else {
                     $destinationsMap = \App\Models\Destination::whereIn('id', array_unique($allDestIds))->get()->keyBy('id');
                 }
+                $insertData = [];
+                $now = now();
+
                 // Handle days format (preferred - from GeneratedItinerary)
                 if (!empty($validated['days'])) {
                     foreach ($validated['days'] as $dayData) {
@@ -128,14 +131,17 @@ class ItineraryController extends Controller
                                 $estTransportCost = $distFromPrev * $costPerKm;
                             }
 
-                            ItineraryItem::create([
+                            // ⚡ Bolt: Collect data for bulk insert to prevent N+1 query loops
+                            $insertData[] = [
                                 'itinerary_id' => $itinerary->id,
                                 'destination_id' => $destinationId,
                                 'day_number' => $dayNumber,
                                 'sequence_order' => $sequence,
                                 'dist_from_prev_km' => $distFromPrev,
                                 'est_transport_cost' => $estTransportCost,
-                            ]);
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ];
 
                             $prevDestination = $destination;
                             $sequence++;
@@ -172,14 +178,17 @@ class ItineraryController extends Controller
                             $estTransportCost = $distFromPrev * $costPerKm;
                         }
 
-                        ItineraryItem::create([
+                        // ⚡ Bolt: Collect data for bulk insert to prevent N+1 query loops
+                        $insertData[] = [
                             'itinerary_id' => $itinerary->id,
                             'destination_id' => $destId,
                             'day_number' => $dayNumber,
                             'sequence_order' => $sequence,
                             'dist_from_prev_km' => $distFromPrev,
                             'est_transport_cost' => $estTransportCost,
-                        ]);
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
 
                         $prevDestination = $destination;
                         $itemsInCurrentDay++;
@@ -193,6 +202,10 @@ class ItineraryController extends Controller
                             $prevDestination = null; // Reset for new day
                         }
                     }
+                }
+
+                if (!empty($insertData)) {
+                    ItineraryItem::insert($insertData);
                 }
 
                 return $itinerary;
@@ -362,6 +375,8 @@ class ItineraryController extends Controller
 
                 // Re-create items from request
                 $itemsByDay = collect($validated['items'])->groupBy('day_number');
+                $insertData = [];
+                $now = now();
                 
                 foreach ($itemsByDay as $dayNumber => $dayItems) {
                     $prevDestination = null;
@@ -387,18 +402,25 @@ class ItineraryController extends Controller
                             $estTransportCost = $distFromPrev * $costPerKm;
                         }
 
-                        ItineraryItem::create([
+                        // ⚡ Bolt: Collect data for bulk insert to prevent N+1 query loops
+                        $insertData[] = [
                             'itinerary_id' => $itinerary->id,
                             'destination_id' => $itemData['destination_id'],
                             'day_number' => $dayNumber,
                             'sequence_order' => $sequence,
                             'dist_from_prev_km' => $distFromPrev,
                             'est_transport_cost' => $estTransportCost,
-                        ]);
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
 
                         $prevDestination = $destination;
                         $sequence++;
                     }
+                }
+
+                if (!empty($insertData)) {
+                    ItineraryItem::insert($insertData);
                 }
             });
 

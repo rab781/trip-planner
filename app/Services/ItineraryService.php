@@ -108,9 +108,11 @@ class ItineraryService
         // Flatten to single sorted list (all zones)
         $sortedDestinations = $groupedDestinations->flatten(1);
 
-        $items = collect();
+        $insertData = [];
         $sequence = 1;
         $previousLocation = $startLocation;
+        $now = now();
+        $destinationIdsToFetch = [];
 
         foreach ($sortedDestinations as $destination) {
             $distanceFromPrev = null;
@@ -135,8 +137,8 @@ class ItineraryService
                 $transportMode = $transportCalc['vehicle_type'];
             }
 
-            // Create itinerary item
-            $item = ItineraryItem::create([
+            // ⚡ Bolt: Collect data for bulk insert to prevent N+1 query loops
+            $insertData[] = [
                 'itinerary_id' => $itinerary->id,
                 'destination_id' => $destination->id,
                 'day_number' => $dayNumber,
@@ -144,9 +146,10 @@ class ItineraryService
                 'dist_from_prev_km' => $distanceFromPrev,
                 'est_transport_cost' => $transportCost,
                 'transportation_mode' => $transportMode,
-            ]);
-
-            $items->push($item);
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+            $destinationIdsToFetch[] = $destination->id;
 
             // Update for next iteration
             $previousLocation = [
@@ -156,7 +159,15 @@ class ItineraryService
             $sequence++;
         }
 
-        return $items;
+        if (!empty($insertData)) {
+            ItineraryItem::insert($insertData);
+        }
+
+        return ItineraryItem::where('itinerary_id', $itinerary->id)
+            ->where('day_number', $dayNumber)
+            ->whereIn('destination_id', $destinationIdsToFetch)
+            ->orderBy('sequence_order')
+            ->get();
     }
 
     /**
