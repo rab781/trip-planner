@@ -13,3 +13,7 @@
 ## 2026-04-06 - Prevent N+1 queries in loop-mapped operations by pre-fetching relations in maps
 **Learning:** Using `Model::find($id)` inside loops (e.g. iterating over itinerary items or days in a controller request) causes a severe N+1 query problem, because a separate DB query is executed for each item.
 **Action:** Always pre-fetch the required models outside the loop by extracting all necessary IDs into an array, executing a single query like `Model::whereIn('id', $ids)->get()->keyBy('id')`, and then querying from that Map/Dictionary inside the loop.
+
+## 2026-04-09 - Optimize database inserts with bulk Model::insert()
+**Learning:** Using `Model::create()` inside loops generates an individual INSERT query per iteration, which creates a significant bottleneck when syncing or creating bulk collections (like itinerary items).
+**Action:** Use a single bulk `Model::insert()` with an array of data instead. Since `insert()` uses the Query Builder, manually provide explicit timestamps like `'created_at' => now()` in the array data.
