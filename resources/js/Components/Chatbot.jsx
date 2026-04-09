@@ -142,10 +142,10 @@ export default function Chatbot() {
                 }`}
             >
                 {isOpen ? (
-                    <XMarkIcon className="h-6 w-6 text-white" />
+                    <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
                 ) : (
                     <div className="relative">
-                        <ChatBubbleLeftRightIcon className="h-6 w-6 text-white" />
+                        <ChatBubbleLeftRightIcon className="h-6 w-6 text-white" aria-hidden="true" />
                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-tertiary rounded-full animate-ping"></span>
                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-tertiary rounded-full"></span>
                     </div>
@@ -242,16 +242,16 @@ export default function Chatbot() {
                             value={inputMessage}
                             onChange={(e) => setInputMessage(e.target.value)}
                             placeholder="Ketik pertanyaan Anda..."
+                            aria-label="Pesan"
                             className="flex-1 px-4 py-2 border-2 border-secondary rounded-full focus:ring-2 focus:ring-button focus:border-button outline-none text-sm"
                         />
                         <button
                             type="submit"
-                            aria-label="Send message"
                             disabled={!inputMessage.trim()}
                             aria-label="Kirim pesan"
                             className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
-                            <PaperAirplaneIcon className="h-5 w-5" />
+                            <PaperAirplaneIcon className="h-5 w-5" aria-hidden="true" />
                         </button>
                     </div>
                 </form>
