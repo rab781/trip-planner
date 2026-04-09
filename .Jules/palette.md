@@ -9,3 +9,6 @@
 ## 2025-06-05 - Drag Handles Accessibility
 **Learning:** Drag handles (like sortable list buttons) require explicit `aria-label` attributes since visual icons like `ArrowsUpDownIcon` do not inherently convey their purpose to screen readers.
 **Action:** Ensure drag handles have `aria-label`s like "Ubah urutan [Item Name]". Add `aria-hidden="true"` to decorative icons. Pair interaction with explicit `focus:ring-2` focus states.
+## 2026-04-09 - Accessible Inputs and Duplicated ARIA Labels
+**Learning:** Screen readers announce forms poorly if inputs lack associated labels (either `id`/`htmlFor`, `aria-label`, or `aria-labelledby`). Furthermore, multiple `aria-label` attributes on the same element will override each other, causing bugs or localization issues if one overrides a localized one. Finally, icons inside an interactive button must be hidden (`aria-hidden="true"`) to prevent redundant announcements if the button already has text or an `aria-label`.
+**Action:** Always provide an `aria-label` for inputs without a visible label. Make sure interactive buttons only have one descriptive `aria-label` and that all purely decorative icons within them have `aria-hidden="true"`.
