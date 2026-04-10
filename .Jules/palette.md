@@ -9,3 +9,6 @@
 ## 2025-06-05 - Drag Handles Accessibility
 **Learning:** Drag handles (like sortable list buttons) require explicit `aria-label` attributes since visual icons like `ArrowsUpDownIcon` do not inherently convey their purpose to screen readers.
 **Action:** Ensure drag handles have `aria-label`s like "Ubah urutan [Item Name]". Add `aria-hidden="true"` to decorative icons. Pair interaction with explicit `focus:ring-2` focus states.
+## 2026-04-10 - Screen Reader Redundancy in Icon-Only Buttons
+**Learning:** Icon-only buttons with nested SVG icons (like Heroicons) often cause screen readers to announce both the `aria-label` on the button AND attempt to read the SVG contents, creating noisy, redundant announcements. Additionally, input fields lacking a visible label or `id`/`htmlFor` association are completely inaccessible without an explicit `aria-label`.
+**Action:** When implementing icon-only buttons, always add `aria-hidden="true"` directly to the `<svg>` or icon component to hide it from the accessibility tree, while ensuring the parent `<button>` has a descriptive `aria-label`. Always provide an `aria-label` for standalone inputs like chat text boxes.

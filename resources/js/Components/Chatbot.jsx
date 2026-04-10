@@ -142,10 +142,10 @@ export default function Chatbot() {
                 }`}
             >
                 {isOpen ? (
-                    <XMarkIcon className="h-6 w-6 text-white" />
+                    <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
                 ) : (
                     <div className="relative">
-                        <ChatBubbleLeftRightIcon className="h-6 w-6 text-white" />
+                        <ChatBubbleLeftRightIcon className="h-6 w-6 text-white" aria-hidden="true" />
                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-tertiary rounded-full animate-ping"></span>
                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-tertiary rounded-full"></span>
                     </div>
@@ -163,7 +163,7 @@ export default function Chatbot() {
                     <div className="flex items-center space-x-3">
                         <div className="relative">
                             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                <SparklesIcon className="h-6 w-6 text-button" />
+                                <SparklesIcon className="h-6 w-6 text-button" aria-hidden="true" />
                             </div>
                             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></span>
                         </div>
@@ -239,6 +239,7 @@ export default function Chatbot() {
                     <div className="flex items-center space-x-2">
                         <input
                             type="text"
+                            aria-label="Ketik pertanyaan Anda"
                             value={inputMessage}
                             onChange={(e) => setInputMessage(e.target.value)}
                             placeholder="Ketik pertanyaan Anda..."
@@ -246,12 +247,11 @@ export default function Chatbot() {
                         />
                         <button
                             type="submit"
-                            aria-label="Send message"
                             disabled={!inputMessage.trim()}
                             aria-label="Kirim pesan"
                             className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
-                            <PaperAirplaneIcon className="h-5 w-5" />
+                            <PaperAirplaneIcon className="h-5 w-5" aria-hidden="true" />
                         </button>
                     </div>
                 </form>
