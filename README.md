@@ -16,8 +16,8 @@ You can get the application running locally in under five minutes.
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd <repository-directory>
+git clone https://github.com/rab781/trip-planner.git
+cd trip-planner
 
 # Install PHP dependencies
 composer install
