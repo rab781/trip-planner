@@ -13,3 +13,6 @@
 ## 2026-04-06 - Prevent N+1 queries in loop-mapped operations by pre-fetching relations in maps
 **Learning:** Using `Model::find($id)` inside loops (e.g. iterating over itinerary items or days in a controller request) causes a severe N+1 query problem, because a separate DB query is executed for each item.
 **Action:** Always pre-fetch the required models outside the loop by extracting all necessary IDs into an array, executing a single query like `Model::whereIn('id', $ids)->get()->keyBy('id')`, and then querying from that Map/Dictionary inside the loop.
+## 2026-05-18 - Prevent N+1 queries in loop-mapped updates via Upsert
+**Learning:** Performing `Model->update()` inside a `foreach` loop (such as in `ItineraryService` recalculations after reordering items) causes severe N+1 query problems by creating multiple separate database `UPDATE` statements for each row being updated.
+**Action:** Replace `foreach` update loops with a single bulk update using `Model::upsert()`. Ensure all required context and constraint fields (e.g., `id`, `itinerary_id`, `destination_id`, `day_number`, `sequence_order`) are explicitly included in the values array, even if they aren't the primary targets for modification.
