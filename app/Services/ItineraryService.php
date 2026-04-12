@@ -182,6 +182,7 @@ class ItineraryService
 
         $previousLocation = $startLocation;
         $sequence = 1;
+        $upsertData = [];
 
         foreach ($items as $item) {
             $distanceFromPrev = null;
@@ -205,19 +206,32 @@ class ItineraryService
                 $transportMode = $transportCalc['vehicle_type'];
             }
 
-            // Update item
-            $item->update([
+            // Add to upsert array instead of executing update query
+            $upsertData[] = [
+                'id' => $item->id,
+                'itinerary_id' => $item->itinerary_id,
+                'destination_id' => $item->destination_id,
+                'day_number' => $item->day_number,
                 'sequence_order' => $sequence,
                 'dist_from_prev_km' => $distanceFromPrev,
-                'est_transport_cost' => $transportCost,
                 'transportation_mode' => $transportMode,
-            ]);
+                'est_transport_cost' => $transportCost,
+            ];
 
             $previousLocation = [
                 'lat' => $item->destination->latitude,
                 'lng' => $item->destination->longitude,
             ];
             $sequence++;
+        }
+
+        if (!empty($upsertData)) {
+            // ⚡ Bolt: Use bulk upsert to prevent N+1 update queries
+            ItineraryItem::upsert(
+                $upsertData,
+                ['id'],
+                ['sequence_order', 'dist_from_prev_km', 'transportation_mode', 'est_transport_cost']
+            );
         }
 
         return $items->fresh();

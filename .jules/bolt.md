@@ -13,3 +13,6 @@
 ## 2026-04-06 - Prevent N+1 queries in loop-mapped operations by pre-fetching relations in maps
 **Learning:** Using `Model::find($id)` inside loops (e.g. iterating over itinerary items or days in a controller request) causes a severe N+1 query problem, because a separate DB query is executed for each item.
 **Action:** Always pre-fetch the required models outside the loop by extracting all necessary IDs into an array, executing a single query like `Model::whereIn('id', $ids)->get()->keyBy('id')`, and then querying from that Map/Dictionary inside the loop.
+## 2026-04-12 - Replacing Sequential Updates with Bulk Upsert
+**Learning:** When resolving N+1 update query bottlenecks by replacing `$model->update()` with `Model::upsert()`, be cautious that bulk operations bypass Eloquent lifecycle events (`saving`, `updated`, `touches`). I learned to explicitly check for `Observers` and `$touches` configurations on the target model before proceeding with this optimization to ensure no side effects are missed.
+**Action:** Always run `grep -rn "Observer" app/` and check the model file for `$touches` before refactoring loops containing Eloquent create/update calls into bulk `insert()` or `upsert()`.
