@@ -1,0 +1,3 @@
+## 2026-04-13 - [Floating Map Control Accessibility]
+**Learning:** Absolute positioned floating icon buttons over maps (like the map center/control button in `Show.jsx`) frequently lack `aria-label`s, focus states, and screen reader hiding (`aria-hidden="true"`) for their internal SVGs. Because they are floating and icon-only, they are completely invisible to screen readers without labels, and inaccessible to keyboard users without focus rings.
+**Action:** Always verify that absolute positioned floating action buttons (FABs) or map controls have `aria-label`, visible focus states (`focus:ring`), and hide purely decorative SVGs from screen readers using `aria-hidden="true"`.

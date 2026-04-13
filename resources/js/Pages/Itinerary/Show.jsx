@@ -231,8 +231,11 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
 
                                     {/* Map Control overlay */}
                                     <div className="absolute bottom-6 right-6 flex flex-col gap-2">
-                                        <button className="p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 hover:scale-110 transition-all border border-gray-100 dark:border-gray-700">
-                                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <button
+                                            aria-label="Pusatkan peta"
+                                            className="p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 hover:scale-110 transition-all border border-gray-100 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800"
+                                        >
+                                            <svg className="w-6 h-6" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                                             </svg>
                                         </button>
