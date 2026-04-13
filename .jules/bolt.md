@@ -9,10 +9,10 @@
 **Action:** Always memoize DB lookups inside utility services using class-level properties when the data (like transport rates) doesn't change during the lifecycle of the request.
 ## 2026-03-27 - Prevent N+1 queries in loop-mapped operations by reusing pre-calculated statistics
 **Learning:** Performing database queries (like `count()`) inside mapping functions that iterate over collections (e.g., generating badges for destinations) causes N+1 query loops.
-**Action:** When a statistic (like popularity score) is already calculated and passed to the method (or available in the context), reuse it instead of querying the database again. For example, replace `Model::where()->count()` with a simple check on the pre-calculated array value (`$scores['popularity'] >= 75`).
-## 2026-04-06 - Prevent N+1 queries in loop-mapped operations by pre-fetching relations in maps
-**Learning:** Using `Model::find($id)` inside loops (e.g. iterating over itinerary items or days in a controller request) causes a severe N+1 query problem, because a separate DB query is executed for each item.
 **Action:** Always pre-fetch the required models outside the loop by extracting all necessary IDs into an array, executing a single query like `Model::whereIn('id', $ids)->get()->keyBy('id')`, and then querying from that Map/Dictionary inside the loop.
 ## 2026-04-12 - Replacing Sequential Updates with Bulk Upsert
 **Learning:** When resolving N+1 update query bottlenecks by replacing `$model->update()` with `Model::upsert()`, be cautious that bulk operations bypass Eloquent lifecycle events (`saving`, `updated`, `touches`). I learned to explicitly check for `Observers` and `$touches` configurations on the target model before proceeding with this optimization to ensure no side effects are missed.
 **Action:** Always run `grep -rn "Observer" app/` and check the model file for `$touches` before refactoring loops containing Eloquent create/update calls into bulk `insert()` or `upsert()`.
+## 2024-05-24 - Prevent N+1 update queries using bulk whereIn updates
+**Learning:** When looping over grouped collections (like items grouped by day number) to update a shared attribute, executing individual `Model::where('id', $id)->update(...)` queries causes an N+1 performance bottleneck.
+**Action:** Extract all IDs in the group and perform a single bulk update using `Model::whereIn('id', $ids)->update(['attribute' => $sharedValue]);` to significantly reduce database query count.
