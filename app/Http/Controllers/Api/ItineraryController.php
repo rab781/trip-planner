@@ -480,12 +480,10 @@ class ItineraryController extends Controller
                 // Extract item IDs in new order
                 $newOrder = $dayItems->pluck('id')->toArray();
 
-                // Update day_number for each item first
-                foreach ($dayItems as $itemData) {
-                    ItineraryItem::where('id', $itemData['id'])->update([
-                        'day_number' => $itemData['day_number'],
-                    ]);
-                }
+                // ⚡ Bolt: Bulk update day_number to prevent N+1 queries from executing update per item
+                ItineraryItem::whereIn('id', $newOrder)->update([
+                    'day_number' => $dayNumber,
+                ]);
 
                 // Use ItineraryService to recalculate distances and transport costs
                 $recalculated = $itineraryService->recalculateAfterReorder(
