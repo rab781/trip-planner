@@ -176,9 +176,10 @@ export default function DestinationReplacementModal({
                                     </div>
                                     <button
                                         onClick={onClose}
-                                        className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90"
+                                        aria-label="Tutup"
+                                        className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-teal-500"
                                     >
-                                        <XMarkIcon className="w-6 h-6" />
+                                        <XMarkIcon className="w-6 h-6" aria-hidden="true" />
                                     </button>
                                 </div>
 
