@@ -79,6 +79,8 @@ export default function BudgetSummary({
                 {/* Header */}
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
+                    aria-expanded={isExpanded}
+                    aria-controls="budget-summary-content"
                     className="w-full flex items-center justify-between p-4 bg-button text-button-text"
                 >
                     <div>
@@ -99,7 +101,7 @@ export default function BudgetSummary({
 
                 {/* Collapsible Content */}
                 {isExpanded && (
-                    <div className="p-4 space-y-4">
+                    <div id="budget-summary-content" className="p-4 space-y-4">
                         {/* Visual Progress Bar */}
                         <div className="h-4 rounded-full overflow-hidden flex bg-gray-100">
                             {categories.map((cat, index) => (
