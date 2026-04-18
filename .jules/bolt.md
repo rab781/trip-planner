@@ -16,3 +16,6 @@
 ## 2026-04-12 - Replacing Sequential Updates with Bulk Upsert
 **Learning:** When resolving N+1 update query bottlenecks by replacing `$model->update()` with `Model::upsert()`, be cautious that bulk operations bypass Eloquent lifecycle events (`saving`, `updated`, `touches`). I learned to explicitly check for `Observers` and `$touches` configurations on the target model before proceeding with this optimization to ensure no side effects are missed.
 **Action:** Always run `grep -rn "Observer" app/` and check the model file for `$touches` before refactoring loops containing Eloquent create/update calls into bulk `insert()` or `upsert()`.
+## 2026-04-18 - Prevent N+1 Update Queries with Bulk whereIn
+**Learning:** Performing multiple individual `Model::where('id', $id)->update(...)` queries inside a loop to update a shared value (like a specific `day_number` for multiple items) causes an N+1 query bottleneck for database writes.
+**Action:** Extract the target entity IDs (e.g. using `$collection->pluck('id')->toArray()`) and execute a single bulk update query `Model::whereIn('id', $ids)->update(['attribute' => $sharedValue])`. This keeps writes highly efficient while maintaining data integrity.
