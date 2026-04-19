@@ -19,3 +19,6 @@
 ## 2026-04-18 - Prevent N+1 Update Queries with Bulk whereIn
 **Learning:** Performing multiple individual `Model::where('id', $id)->update(...)` queries inside a loop to update a shared value (like a specific `day_number` for multiple items) causes an N+1 query bottleneck for database writes.
 **Action:** Extract the target entity IDs (e.g. using `$collection->pluck('id')->toArray()`) and execute a single bulk update query `Model::whereIn('id', $ids)->update(['attribute' => $sharedValue])`. This keeps writes highly efficient while maintaining data integrity.
+## 2025-04-19 - Bulk Insert Bypass and Deletion Sequence
+**Learning:** Using `insert()` bypasses Eloquent model events and automatic timestamping, meaning `created_at` and `updated_at` must be set manually. More importantly, when replacing an N+1 `create()` loop during a synchronization update (where removed items are deleted), executing the `whereNotIn('id', $existingIds)->delete()` *before* the bulk insert prevents the accidental deletion of the newly inserted records which lack IDs in the `$existingIds` array.
+**Action:** When replacing N+1 `create()` calls inside a sync loop with a bulk `insert()`, ensure timestamps are manually populated and run the deletion of obsolete records before the insertion of new records to avoid deleting what you just created.
