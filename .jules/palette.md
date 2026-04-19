@@ -1,0 +1,3 @@
+## 2024-04-19 - Accessible Form Controls in Replacement Modal
+**Learning:** Found that custom search inputs and select dropdowns without explicit `aria-label`s were hindering screen readers in the `DestinationReplacementModal`. Also, icon-only close buttons lacked explicit focus states (`focus:ring-2`, `focus:outline-none`) and accessible labels.
+**Action:** When adding search inputs or filter selects in modal components, always provide an `aria-label` since visual space is tight and explicit `<label>` elements are often omitted. Ensure all close buttons have both an `aria-label` and explicit visible focus states.
