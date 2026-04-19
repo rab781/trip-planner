@@ -176,9 +176,10 @@ export default function DestinationReplacementModal({
                                     </div>
                                     <button
                                         onClick={onClose}
-                                        className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90"
+                                        aria-label="Tutup modal"
+                                        className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800"
                                     >
-                                        <XMarkIcon className="w-6 h-6" />
+                                        <XMarkIcon className="w-6 h-6" aria-hidden="true" />
                                     </button>
                                 </div>
 
@@ -228,6 +229,7 @@ export default function DestinationReplacementModal({
                                                     <MagnifyingGlassIcon className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal-600 transition-colors" />
                                                     <input
                                                         type="text"
+                                                        aria-label="Cari destinasi"
                                                         placeholder="Cari destinasi..."
                                                         value={searchQuery}
                                                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -237,6 +239,7 @@ export default function DestinationReplacementModal({
                                                 <div className="relative">
                                                     <FunnelIcon className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                                                     <select
+                                                        aria-label="Filter kategori"
                                                         value={selectedCategory}
                                                         onChange={(e) => setSelectedCategory(e.target.value)}
                                                         className="pl-11 pr-8 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-sm appearance-none cursor-pointer"
@@ -311,11 +314,12 @@ export default function DestinationReplacementModal({
                                             <div className="space-y-6">
                                                 {/* Reason Input */}
                                                 <div>
-                                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">
+                                                    <label htmlFor="aiReasonInput" className="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">
                                                         Alasan Mengganti (Opsional)
                                                     </label>
                                                     <div className="relative">
                                                         <textarea
+                                                            id="aiReasonInput"
                                                             value={aiReason}
                                                             onChange={(e) => setAiReason(e.target.value)}
                                                             placeholder="Contoh: Terlalu mahal, ingin wisata alam yang sejuk, atau cari tempat makan..."
