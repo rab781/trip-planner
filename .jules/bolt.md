@@ -19,3 +19,8 @@
 ## 2026-04-18 - Prevent N+1 Update Queries with Bulk whereIn
 **Learning:** Performing multiple individual `Model::where('id', $id)->update(...)` queries inside a loop to update a shared value (like a specific `day_number` for multiple items) causes an N+1 query bottleneck for database writes.
 **Action:** Extract the target entity IDs (e.g. using `$collection->pluck('id')->toArray()`) and execute a single bulk update query `Model::whereIn('id', $ids)->update(['attribute' => $sharedValue])`. This keeps writes highly efficient while maintaining data integrity.
+## 2026-04-21 - Bulk Insert optimization for Itinerary Service
+
+**Learning:** Optimizing repeated database writes in loops, particularly in data synchronization methods, provides a significant performance boost. Replacing individual `Model::create()` calls with `Model::insert()` avoids the N+1 query problem on writes. However, `Model::insert()` doesn't fire model events like `saving` or `created` or update timestamps (`created_at`, `updated_at`) automatically. Always manually populate timestamps if the table requires them. Also, `insert` returns boolean, not collection of models, so you need to manually fetch the newly created data or construct it in memory if the response requires models.
+
+**Action:** Before changing `create()` in loops to `insert()`, verify the model doesn't rely on observers, explicitly add `created_at` and `updated_at` timestamps, and ensure the method's return type is preserved either by querying the created records or returning boolean if appropriate.
