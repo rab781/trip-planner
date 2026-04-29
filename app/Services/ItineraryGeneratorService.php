@@ -196,7 +196,7 @@ class ItineraryGeneratorService
     protected function getPopularityData(): Collection
     {
         return Cache::remember('destination_popularity', 3600, function () {
-            return ItineraryItem::select('destination_id', DB::raw('COUNT(*) as usage_count'))
+            return ItineraryItem::selectRaw('destination_id, COUNT(*) as usage_count')
                 ->groupBy('destination_id')
                 ->pluck('usage_count', 'destination_id');
         });

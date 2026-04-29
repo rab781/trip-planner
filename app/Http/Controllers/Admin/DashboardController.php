@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $data = [
             'itineraries_per_destination' => \App\Models\Destination::withCount('itineraries')->get(),
             'users_with_most_itineraries' => \App\Models\User::withCount('itineraries')->orderBy('itineraries_count', 'desc')->take(5)->get(),
-            'popular_destinations' => \App\Models\Itinerary::select('destination_id', DB::raw('count(*) as total'))->groupBy('destination_id')->orderBy('total', 'desc')->with('destination')->take(5)->get(),
+            'popular_destinations' => \App\Models\Itinerary::selectRaw('destination_id, count(*) as total')->groupBy('destination_id')->orderBy('total', 'desc')->with('destination')->take(5)->get(),
             'active_users_last_month' => \App\Models\User::whereHas('itineraries', function ($query) {
                 $query->where('created_at', '>=', now()->subMonth());
             })->count(),
