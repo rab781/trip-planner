@@ -79,7 +79,9 @@ export default function BudgetSummary({
                 {/* Header */}
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="w-full flex items-center justify-between p-4 bg-button text-button-text"
+                    aria-expanded={isExpanded}
+                    aria-label={isExpanded ? "Tutup estimasi budget" : "Buka estimasi budget"}
+                    className="w-full flex items-center justify-between p-4 bg-button text-button-text focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                 >
                     <div>
                         <h3 className="font-semibold text-lg">Estimasi Budget</h3>
