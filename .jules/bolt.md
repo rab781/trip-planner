@@ -19,3 +19,6 @@
 ## 2026-04-18 - Prevent N+1 Update Queries with Bulk whereIn
 **Learning:** Performing multiple individual `Model::where('id', $id)->update(...)` queries inside a loop to update a shared value (like a specific `day_number` for multiple items) causes an N+1 query bottleneck for database writes.
 **Action:** Extract the target entity IDs (e.g. using `$collection->pluck('id')->toArray()`) and execute a single bulk update query `Model::whereIn('id', $ids)->update(['attribute' => $sharedValue])`. This keeps writes highly efficient while maintaining data integrity.
+## 2026-04-29 - Securing Bulk Upsert against IDOR
+**Learning:** When refactoring loop-based Eloquent `update()` and `create()` calls into a bulk `Model::upsert()` to eliminate N+1 query bottlenecks, `upsert` inherently lacks the relationship-scoping of `$parent->children()->where('id', ...)->update()`. If arbitrary IDs from user input are directly passed into `upsert`, it creates a critical IDOR (Insecure Direct Object Reference) vulnerability where a user can modify records belonging to other parent models.
+**Action:** Always fetch the valid child IDs scoped to the parent model first (e.g., `$validIds = $parent->children()->pluck('id')->toArray()`) and enforce an `in_array($input['id'], $validIds)` check before adding an existing record to the bulk update array.
