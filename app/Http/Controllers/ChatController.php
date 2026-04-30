@@ -211,8 +211,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                 CURLOPT_SSL_VERIFYPEER => true,
                 CURLOPT_SSL_VERIFYHOST => 2,
                 CURLOPT_POST => true,
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_SSL_VERIFYHOST => 2,
+                CURLOPT_TIMEOUT => 30, // Security: Add timeout to prevent indefinite hanging (DoS risk)
                 CURLOPT_HTTPHEADER => [
                     'Authorization: Bearer ' . config('services.chutes.api_token'),
                     'Content-Type: application/json'
