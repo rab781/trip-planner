@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useId } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 /**
@@ -17,6 +17,7 @@ export default function BudgetSummary({
     className = '',
 }) {
     const [isExpanded, setIsExpanded] = useState(true);
+    const contentId = useId();
 
     const {
         transport_cost = 0,
@@ -79,7 +80,9 @@ export default function BudgetSummary({
                 {/* Header */}
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="w-full flex items-center justify-between p-4 bg-button text-button-text"
+                    aria-expanded={isExpanded}
+                    aria-controls={`budget-summary-content-${contentId}`}
+                    className="w-full flex items-center justify-between p-4 bg-button text-button-text focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-button transition-shadow rounded-t-xl"
                 >
                     <div>
                         <h3 className="font-semibold text-lg">Estimasi Budget</h3>
@@ -99,7 +102,7 @@ export default function BudgetSummary({
 
                 {/* Collapsible Content */}
                 {isExpanded && (
-                    <div className="p-4 space-y-4">
+                    <div id={`budget-summary-content-${contentId}`} className="p-4 space-y-4">
                         {/* Visual Progress Bar */}
                         <div className="h-4 rounded-full overflow-hidden flex bg-gray-100">
                             {categories.map((cat, index) => (
@@ -179,7 +182,7 @@ export default function BudgetSummary({
 
                 {/* Collapsed View */}
                 {!isExpanded && (
-                    <div className="p-3 bg-gray-50 border-t border-gray-100">
+                    <div id={`budget-summary-content-${contentId}`} className="p-3 bg-gray-50 border-t border-gray-100">
                         <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
                             {categories.slice(0, 3).map(cat => (
                                 <span key={cat.label} className="flex items-center gap-1">
