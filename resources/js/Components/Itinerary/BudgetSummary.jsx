@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useId } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 /**
@@ -73,13 +73,18 @@ export default function BudgetSummary({
     // Per person cost
     const perPersonCost = paxCount > 0 ? total_budget / paxCount : total_budget;
 
+    const contentId = useId();
+
     return (
         <div className={`${isSticky ? 'lg:sticky lg:top-4' : ''} ${className}`}>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 {/* Header */}
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="w-full flex items-center justify-between p-4 bg-button text-button-text"
+                    aria-expanded={isExpanded}
+                    aria-controls={contentId}
+                    aria-label={isExpanded ? 'Tutup estimasi budget' : 'Buka estimasi budget'}
+                    className="w-full flex items-center justify-between p-4 bg-button text-button-text focus:outline-none focus:ring-2 focus:ring-button focus:ring-offset-2"
                 >
                     <div>
                         <h3 className="font-semibold text-lg">Estimasi Budget</h3>
@@ -99,7 +104,7 @@ export default function BudgetSummary({
 
                 {/* Collapsible Content */}
                 {isExpanded && (
-                    <div className="p-4 space-y-4">
+                    <div id={contentId} className="p-4 space-y-4" aria-hidden={!isExpanded}>
                         {/* Visual Progress Bar */}
                         <div className="h-4 rounded-full overflow-hidden flex bg-gray-100">
                             {categories.map((cat, index) => (
