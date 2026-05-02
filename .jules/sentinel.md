@@ -19,3 +19,8 @@
 **Vulnerability:** The `reorder` method in `ItineraryController` validated that `itinerary_items` existed globally using `exists:itinerary_items,id`, but failed to ensure they belonged to the specific `itinerary_id` being updated. This allowed an attacker to reorder or move items belonging to other users' itineraries.
 **Learning:** Validating that an ID exists in a database table is insufficient for child resources. The validation must always be scoped to the parent resource to prevent Insecure Direct Object Reference (IDOR) vulnerabilities.
 **Prevention:** Always use `Rule::exists('table', 'id')->where('parent_id', $parentId)` when validating IDs of child resources in a request array.
+
+## 2025-05-02 - [MEDIUM] Missing Timeout on External API Calls
+**Vulnerability:** The cURL request to the external LLM service (`https://llm.chutes.ai/v1/chat/completions`) in `ChatController@sendMessageStream` lacked a `CURLOPT_TIMEOUT`. If the third-party API becomes unresponsive or hangs, the server process would wait indefinitely, potentially leading to resource exhaustion (Denial of Service).
+**Learning:** External API integrations should always have strict timeout configurations, particularly when implemented via raw cURL or Guzzle without default timeouts.
+**Prevention:** Always explicitly define `CURLOPT_TIMEOUT` in `curl_setopt_array` when making external API calls to prevent blocking operations from consuming server resources indefinitely.
