@@ -211,8 +211,10 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                 CURLOPT_SSL_VERIFYPEER => true,
                 CURLOPT_SSL_VERIFYHOST => 2,
                 CURLOPT_POST => true,
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_SSL_VERIFYHOST => 2,
+                // Use connect/stall timeouts for streaming requests instead of a hard total deadline
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_LOW_SPEED_LIMIT => 1,
+                CURLOPT_LOW_SPEED_TIME => 30,
                 CURLOPT_HTTPHEADER => [
                     'Authorization: Bearer ' . config('services.chutes.api_token'),
                     'Content-Type: application/json'
