@@ -366,16 +366,19 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Jumlah Peserta</label>
+                                                    <label htmlFor="total_pax_count" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Jumlah Peserta</label>
                                                     <div className="flex items-center bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-1">
                                                         <button
                                                             type="button"
+                                                            aria-label="Kurangi jumlah peserta"
+                                                            disabled={data.total_pax_count <= 1}
                                                             onClick={() => setData('total_pax_count', Math.max(1, data.total_pax_count - 1))}
-                                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm rounded-lg transition-all"
+                                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                                         >
                                                             -
                                                         </button>
                                                         <input
+                                                            id="total_pax_count"
                                                             type="number"
                                                             value={data.total_pax_count}
                                                             onChange={(e) => setData('total_pax_count', parseInt(e.target.value) || 1)}
@@ -383,8 +386,9 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                                                         />
                                                         <button
                                                             type="button"
+                                                            aria-label="Tambah jumlah peserta"
                                                             onClick={() => setData('total_pax_count', data.total_pax_count + 1)}
-                                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm rounded-lg transition-all"
+                                                            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-teal-500"
                                                         >
                                                             +
                                                         </button>
