@@ -192,8 +192,9 @@ export default function Index({ users, filters }) {
                                                     ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                     : 'bg-gray-50 text-gray-400 cursor-not-allowed'
                                             }`}
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
-                                        />
+                                        >
+                                            {link.label.replace(/&laquo;/g, '«').replace(/&raquo;/g, '»')}
+                                        </Link>
                                     ))}
                                 </div>
                             </div>
