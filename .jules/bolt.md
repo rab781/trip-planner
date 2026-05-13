@@ -19,3 +19,7 @@
 ## 2026-04-18 - Prevent N+1 Update Queries with Bulk whereIn
 **Learning:** Performing multiple individual `Model::where('id', $id)->update(...)` queries inside a loop to update a shared value (like a specific `day_number` for multiple items) causes an N+1 query bottleneck for database writes.
 **Action:** Extract the target entity IDs (e.g. using `$collection->pluck('id')->toArray()`) and execute a single bulk update query `Model::whereIn('id', $ids)->update(['attribute' => $sharedValue])`. This keeps writes highly efficient while maintaining data integrity.
+
+## 2024-05-18 - [Bulk Database Updates] Order of Operations in Sync Refactoring
+**Learning:** When refactoring a database synchronization loop (e.g., sync ticket variants) to use bulk `insert()` for new records instead of sequential `create()`, the deletion of removed records (`whereNotIn('id', $existingIds)->delete()`) must be executed BEFORE the bulk insert. If executed afterwards, it will accidentally delete the newly inserted records because their generated IDs are not present in the `$existingIds` tracking array.
+**Action:** Always perform the delete step first using the tracked IDs from the request array before triggering the bulk insert for new items.
