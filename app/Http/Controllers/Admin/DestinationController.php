@@ -197,29 +197,54 @@ class DestinationController extends Controller
         // Sync ticket variants
         if (isset($validated['ticket_variants'])) {
             $existingIds = [];
+            $newVariants = [];
+            $upsertVariants = [];
 
+            // Prevent IDOR by ensuring we only update variants belonging to this destination
+            $validVariantIds = $destination->ticketVariants()->pluck('id')->toArray();
+
+            // ⚡ Bolt: Bulk insert/upsert to prevent N+1 queries from executing create/update inside loops
             foreach ($validated['ticket_variants'] as $variant) {
                 if (!empty($variant['id'])) {
-                    // Update existing
-                    $destination->ticketVariants()->where('id', $variant['id'])->update([
-                        'name' => $variant['name'],
-                        'price' => $variant['price'],
-                        'is_mandatory' => $variant['is_mandatory'] ?? false,
-                    ]);
-                    $existingIds[] = $variant['id'];
+                    // Validate ID belongs to parent to prevent IDOR via upsert
+                    if (in_array($variant['id'], $validVariantIds)) {
+                        $upsertVariants[] = [
+                            'id' => $variant['id'],
+                            'destination_id' => $destination->id,
+                            'name' => $variant['name'],
+                            'price' => $variant['price'],
+                            'is_mandatory' => $variant['is_mandatory'] ?? false,
+                            'created_at' => now(), // Required in case upsert falls back to insert
+                            'updated_at' => now(),
+                        ];
+                        $existingIds[] = $variant['id'];
+                    }
                 } else {
-                    // Create new
-                    $newVariant = $destination->ticketVariants()->create([
+                    // Collect for bulk insert
+                    $newVariants[] = [
+                        'destination_id' => $destination->id,
                         'name' => $variant['name'],
                         'price' => $variant['price'],
                         'is_mandatory' => $variant['is_mandatory'] ?? false,
-                    ]);
-                    $existingIds[] = $newVariant->id;
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
                 }
             }
 
-            // Delete removed variants
+            // Delete removed variants FIRST!
+            // If we delete after bulk insert, we'd delete the newly inserted ones because they aren't in $existingIds
             $destination->ticketVariants()->whereNotIn('id', $existingIds)->delete();
+
+            // Bulk update existing
+            if (!empty($upsertVariants)) {
+                \App\Models\TicketVariant::upsert($upsertVariants, ['id'], ['name', 'price', 'is_mandatory']);
+            }
+
+            // Bulk insert new
+            if (!empty($newVariants)) {
+                \App\Models\TicketVariant::insert($newVariants);
+            }
         }
 
         return redirect()
