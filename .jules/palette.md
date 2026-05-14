@@ -1,3 +1,6 @@
 ## 2026-05-01 - [Budget Summary Accessibility]
 **Learning:** Adding accessibility to collapsible summary sections in React components requires standard WAI-ARIA disclosure attributes (`aria-expanded`, `aria-controls` on the button, and matching `id` on the content). It also requires using the `useId()` hook to generate unique DOM IDs and prevent collisions across multiple instances of the component.
 **Action:** Apply this WAI-ARIA disclosure pattern with `useId()` consistently whenever implementing accordion-style or collapsible UI elements to ensure they are accessible.
+## 2024-05-14 - [Improve FAB Accessibility with `useId`]
+**Learning:** React components containing togglable panels or popups (like Floating Action Buttons) need unique ID associations to be accessible. By using React's `useId()` hook, we can dynamically generate an ID for the chat window container and link the toggle button to it using `aria-controls` and `aria-expanded`.
+**Action:** Always map toggle buttons to their target panels using `aria-controls` (and reflect state with `aria-expanded`) and ensure the target has the matching `id`. Also ensure FAB buttons have focus-visible styles (e.g., `focus:ring-2 focus:ring-offset-2`).
