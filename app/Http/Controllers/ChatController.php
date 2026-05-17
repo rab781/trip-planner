@@ -153,10 +153,10 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                     'usage' => $data['usage'] ?? null
                 ]);
             } else {
+                $errorBody = json_decode($response->body(), true);
                 Log::error('Chutes AI API Error', [
                     'status' => $response->status(),
-                    'body' => $response->body(),
-                    'headers' => $response->headers()
+                    'data_keys' => is_array($errorBody) ? array_keys($errorBody) : null
                 ]);
 
                 return response()->json([
