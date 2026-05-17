@@ -17,7 +17,8 @@ class ItineraryController extends Controller
     public function index(Request $request)
     {
         $itineraries = Itinerary::where('user_id', $request->user()->id)
-            ->with(['city', 'itineraryItems.destination'])
+            // ⚡ Bolt: Eager load itineraryLodgings to prevent N+1 queries during serialization due to getEstimatedBudgetAttribute
+            ->with(['city', 'itineraryItems.destination', 'itineraryLodgings'])
             ->orderBy('created_at', 'desc')
             ->get();
 
