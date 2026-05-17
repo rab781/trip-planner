@@ -104,12 +104,20 @@ class DestinationController extends Controller
 
         // Create ticket variants
         if (!empty($validated['ticket_variants'])) {
+            $variantsToInsert = [];
+            $now = now();
             foreach ($validated['ticket_variants'] as $variant) {
-                $destination->ticketVariants()->create([
+                $variantsToInsert[] = [
+                    'destination_id' => $destination->id,
                     'name' => $variant['name'],
                     'price' => $variant['price'],
                     'is_mandatory' => $variant['is_mandatory'] ?? false,
-                ]);
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+            if (!empty($variantsToInsert)) {
+                $destination->ticketVariants()->insert($variantsToInsert);
             }
         }
 
@@ -197,6 +205,8 @@ class DestinationController extends Controller
         // Sync ticket variants
         if (isset($validated['ticket_variants'])) {
             $existingIds = [];
+            $variantsToInsert = [];
+            $now = now();
 
             foreach ($validated['ticket_variants'] as $variant) {
                 if (!empty($variant['id'])) {
@@ -208,18 +218,25 @@ class DestinationController extends Controller
                     ]);
                     $existingIds[] = $variant['id'];
                 } else {
-                    // Create new
-                    $newVariant = $destination->ticketVariants()->create([
+                    // Collect new variant for bulk insert
+                    $variantsToInsert[] = [
+                        'destination_id' => $destination->id,
                         'name' => $variant['name'],
                         'price' => $variant['price'],
                         'is_mandatory' => $variant['is_mandatory'] ?? false,
-                    ]);
-                    $existingIds[] = $newVariant->id;
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
                 }
             }
 
-            // Delete removed variants
+            // Delete removed variants (MUST happen before bulk insert to avoid deleting new items)
             $destination->ticketVariants()->whereNotIn('id', $existingIds)->delete();
+
+            // Insert new variants
+            if (!empty($variantsToInsert)) {
+                $destination->ticketVariants()->insert($variantsToInsert);
+            }
         }
 
         return redirect()
