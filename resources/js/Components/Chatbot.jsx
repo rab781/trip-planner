@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { ChatBubbleLeftRightIcon, XMarkIcon, PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
+    const chatWindowId = useId();
     const [messages, setMessages] = useState([
         {
             id: 1,
@@ -135,7 +136,9 @@ export default function Chatbot() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? "Tutup chat" : "Buka chat"}
-                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
+                aria-expanded={isOpen}
+                aria-controls={chatWindowId}
+                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-button focus:ring-offset-2 ${
                     isOpen
                         ? 'bg-gradient-to-r from-red-500 to-red-600'
                         : 'bg-gradient-to-r from-button to-highlight'
@@ -154,6 +157,7 @@ export default function Chatbot() {
 
             {/* Chat Window */}
             <div
+                id={chatWindowId}
                 className={`fixed bottom-24 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl transition-all duration-300 transform ${
                     isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
                 }`}
@@ -225,7 +229,7 @@ export default function Chatbot() {
                                 <button
                                     key={index}
                                     onClick={() => handleQuickQuestion(question)}
-                                    className="text-xs px-3 py-1.5 bg-background text-button rounded-full hover:bg-gradient-to-r hover:from-button hover:to-highlight hover:text-white transition-all"
+                                    className="text-xs px-3 py-1.5 bg-background text-button rounded-full hover:bg-gradient-to-r hover:from-button hover:to-highlight hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-button focus:ring-offset-2"
                                 >
                                     {question}
                                 </button>
@@ -249,7 +253,7 @@ export default function Chatbot() {
                             type="submit"
                             disabled={!inputMessage.trim()}
                             aria-label="Kirim pesan"
-                            className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="p-2 bg-gradient-to-r from-button to-highlight text-white rounded-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all focus:outline-none focus:ring-2 focus:ring-button focus:ring-offset-2"
                         >
                             <PaperAirplaneIcon className="h-5 w-5" aria-hidden="true" />
                         </button>
