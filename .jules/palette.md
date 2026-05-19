@@ -1,3 +1,6 @@
 ## 2026-05-01 - [Budget Summary Accessibility]
 **Learning:** Adding accessibility to collapsible summary sections in React components requires standard WAI-ARIA disclosure attributes (`aria-expanded`, `aria-controls` on the button, and matching `id` on the content). It also requires using the `useId()` hook to generate unique DOM IDs and prevent collisions across multiple instances of the component.
 **Action:** Apply this WAI-ARIA disclosure pattern with `useId()` consistently whenever implementing accordion-style or collapsible UI elements to ensure they are accessible.
+## 2026-05-19 - Accessible Chatbot Trigger
+**Learning:** For dynamic components like the Floating Action Button (FAB) that toggles a chat window, ARIA connections (`aria-expanded`, `aria-controls`) must be explicitly managed, and React's `useId()` is the safest way to prevent DOM ID collisions for the target container. Furthermore, interactive icon-only elements in this application's custom UI often lack visible focus states entirely until explicitly added with Tailwind classes like `focus:ring-2 focus:ring-button`.
+**Action:** When creating or modifying custom toggles or FABs, always generate unique IDs with `useId` for the `aria-controls` relationship and explicitly implement visible `:focus` or `:focus-visible` ring states to support keyboard-only navigation.
