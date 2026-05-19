@@ -155,8 +155,6 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
             } else {
                 Log::error('Chutes AI API Error', [
                     'status' => $response->status(),
-                    'body' => $response->body(),
-                    'headers' => $response->headers()
                 ]);
 
                 return response()->json([
