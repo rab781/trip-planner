@@ -28,3 +28,11 @@
 **Vulnerability:** Admin pages (Users, Destinations, Categories, Zones) were using `dangerouslySetInnerHTML={{ __html: link.label }}` to render Laravel's default pagination links. This exposed the application to potential XSS if user input or un-sanitized data somehow influenced the pagination label.
 **Learning:** Laravel's paginator often returns HTML entities (like `&laquo;` for `«`) which tempts developers to use `dangerouslySetInnerHTML` in React instead of safe replacement.
 **Prevention:** Avoid `dangerouslySetInnerHTML` for basic text entities. Use safe string replacement instead: `{link.label.replace(/&laquo;/g, '«').replace(/&raquo;/g, '»')}`.
+## 2025-02-15 - [Medium] Add timeout to external API calls
+**Vulnerability:** External API calls to the LLM service in `ChatController::sendMessageStream` did not explicitly configure a maximum total timeout, posing a DoS risk if the service hangs indefinitely.
+**Learning:** Relying solely on low-speed limits and connect timeouts for cURL requests might not protect against a connection that remains alive but transmits data extremely slowly over an indefinite period.
+**Prevention:** Always enforce a hard  (e.g., 120s for long-running streaming responses) for external API calls, especially those returning stream resources, to prevent PHP worker starvation.
+## 2025-02-15 - [Medium] Add timeout to external API calls
+**Vulnerability:** External API calls to the LLM service in `ChatController::sendMessageStream` did not explicitly configure a maximum total timeout, posing a DoS risk if the service hangs indefinitely.
+**Learning:** Relying solely on low-speed limits and connect timeouts for cURL requests might not protect against a connection that remains alive but transmits data extremely slowly over an indefinite period.
+**Prevention:** Always enforce a hard CURLOPT_TIMEOUT (e.g., 120s for long-running streaming responses) for external API calls, especially those returning stream resources, to prevent PHP worker starvation.
