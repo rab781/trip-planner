@@ -215,6 +215,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                 CURLOPT_CONNECTTIMEOUT => 10,
                 CURLOPT_LOW_SPEED_LIMIT => 1,
                 CURLOPT_LOW_SPEED_TIME => 30,
+                CURLOPT_TIMEOUT => 120,
                 CURLOPT_HTTPHEADER => [
                     'Authorization: Bearer ' . config('services.chutes.api_token'),
                     'Content-Type: application/json'
