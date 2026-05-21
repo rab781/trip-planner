@@ -135,6 +135,8 @@ export default function Chatbot() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? "Tutup chat" : "Buka chat"}
+                aria-expanded={isOpen}
+                aria-controls="chatbot-window"
                 className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
                     isOpen
                         ? 'bg-gradient-to-r from-red-500 to-red-600'
@@ -154,6 +156,7 @@ export default function Chatbot() {
 
             {/* Chat Window */}
             <div
+                id="chatbot-window"
                 className={`fixed bottom-24 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl transition-all duration-300 transform ${
                     isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
                 }`}
