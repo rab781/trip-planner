@@ -104,12 +104,20 @@ class DestinationController extends Controller
 
         // Create ticket variants
         if (!empty($validated['ticket_variants'])) {
+            $variantsToInsert = [];
+            $now = now();
             foreach ($validated['ticket_variants'] as $variant) {
-                $destination->ticketVariants()->create([
+                $variantsToInsert[] = [
+                    'destination_id' => $destination->id,
                     'name' => $variant['name'],
                     'price' => $variant['price'],
                     'is_mandatory' => $variant['is_mandatory'] ?? false,
-                ]);
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+            if (!empty($variantsToInsert)) {
+                \App\Models\TicketVariant::insert($variantsToInsert);
             }
         }
 
@@ -197,29 +205,52 @@ class DestinationController extends Controller
         // Sync ticket variants
         if (isset($validated['ticket_variants'])) {
             $existingIds = [];
+            $variantsToUpdate = [];
+            $variantsToInsert = [];
+            $now = now();
+
+            // ⚡ Bolt: Fetch valid existing variant IDs to prevent IDOR vulnerability during upsert
+            $validVariantIds = $destination->ticketVariants()->pluck('id')->toArray();
 
             foreach ($validated['ticket_variants'] as $variant) {
-                if (!empty($variant['id'])) {
-                    // Update existing
-                    $destination->ticketVariants()->where('id', $variant['id'])->update([
-                        'name' => $variant['name'],
-                        'price' => $variant['price'],
-                        'is_mandatory' => $variant['is_mandatory'] ?? false,
-                    ]);
+                if (!empty($variant['id']) && in_array($variant['id'], $validVariantIds)) {
                     $existingIds[] = $variant['id'];
-                } else {
-                    // Create new
-                    $newVariant = $destination->ticketVariants()->create([
+                    $variantsToUpdate[] = [
+                        'id' => $variant['id'],
+                        'destination_id' => $destination->id,
                         'name' => $variant['name'],
                         'price' => $variant['price'],
                         'is_mandatory' => $variant['is_mandatory'] ?? false,
-                    ]);
-                    $existingIds[] = $newVariant->id;
+                        'updated_at' => $now,
+                    ];
+                } else {
+                    $variantsToInsert[] = [
+                        'destination_id' => $destination->id,
+                        'name' => $variant['name'],
+                        'price' => $variant['price'],
+                        'is_mandatory' => $variant['is_mandatory'] ?? false,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
                 }
             }
 
-            // Delete removed variants
-            $destination->ticketVariants()->whereNotIn('id', $existingIds)->delete();
+            // ⚡ Bolt: Execute delete first before insert to avoid deleting new variants
+            if (!empty($existingIds)) {
+                $destination->ticketVariants()->whereNotIn('id', $existingIds)->delete();
+            } else {
+                $destination->ticketVariants()->delete();
+            }
+
+            // ⚡ Bolt: Bulk upsert existing variants instead of looping
+            if (!empty($variantsToUpdate)) {
+                \App\Models\TicketVariant::upsert($variantsToUpdate, ['id'], ['name', 'price', 'is_mandatory', 'updated_at']);
+            }
+
+            // ⚡ Bolt: Bulk insert new variants instead of looping
+            if (!empty($variantsToInsert)) {
+                \App\Models\TicketVariant::insert($variantsToInsert);
+            }
         }
 
         return redirect()
