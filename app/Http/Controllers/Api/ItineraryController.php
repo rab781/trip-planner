@@ -16,8 +16,9 @@ class ItineraryController extends Controller
     // Get /api/itineraries
     public function index(Request $request)
     {
+        // ⚡ Bolt: Prevent N+1 queries by eager-loading deep nested relationships
         $itineraries = Itinerary::where('user_id', $request->user()->id)
-            ->with(['city', 'itineraryItems.destination'])
+            ->with(['city', 'itineraryItems.destination.ticketVariants'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -210,7 +211,8 @@ class ItineraryController extends Controller
             });
 
             // Load the itinerary with items
-            $itinerary->load(['itineraryItems.destination', 'city']);
+            // ⚡ Bolt: Use load and eager-load nested relationships to refresh data and prevent N+1 queries later on
+            $itinerary->load(['itineraryItems.destination.ticketVariants', 'city']);
 
             return response()->json([
                 'success' => true,
@@ -233,8 +235,9 @@ class ItineraryController extends Controller
     // Get /api/itineraries/{id}
     public function show(Request $request, $id)
     {
+        // ⚡ Bolt: Prevent N+1 queries by eager-loading deep nested relationships
         $itinerary = Itinerary::where('user_id', $request->user()->id)
-            ->with(['city', 'itineraryItems.destination', 'itineraryLodgings', 'itineraryItems.itineraryItemDetails'])
+            ->with(['city', 'itineraryItems.destination.ticketVariants', 'itineraryLodgings', 'itineraryItems.itineraryItemDetails'])
             ->find($id);
 
         if ($itinerary) {
@@ -422,7 +425,8 @@ class ItineraryController extends Controller
             });
 
             // Reload with items
-            $itinerary->load(['itineraryItems.destination']);
+            // ⚡ Bolt: Use load and eager-load nested relationships to refresh data and prevent N+1 queries in services
+            $itinerary->load(['itineraryItems.destination.ticketVariants']);
             $budget = $itineraryService->calculateBudgetBreakdown($itinerary);
 
             return response()->json([
@@ -498,7 +502,8 @@ class ItineraryController extends Controller
         });
 
         // Reload itinerary with updated items and budget
-        $itinerary->load(['itineraryItems.destination', 'itineraryItems.itineraryItemDetails']);
+        // ⚡ Bolt: Use load and eager-load nested relationships to refresh data and prevent N+1 queries in services
+        $itinerary->load(['itineraryItems.destination.ticketVariants', 'itineraryItems.itineraryItemDetails']);
         $budgetBreakdown = $itineraryService->calculateBudgetBreakdown($itinerary);
 
         return response()->json(
