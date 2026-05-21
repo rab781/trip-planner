@@ -1,3 +1,6 @@
 ## 2026-05-01 - [Budget Summary Accessibility]
 **Learning:** Adding accessibility to collapsible summary sections in React components requires standard WAI-ARIA disclosure attributes (`aria-expanded`, `aria-controls` on the button, and matching `id` on the content). It also requires using the `useId()` hook to generate unique DOM IDs and prevent collisions across multiple instances of the component.
 **Action:** Apply this WAI-ARIA disclosure pattern with `useId()` consistently whenever implementing accordion-style or collapsible UI elements to ensure they are accessible.
+## 2024-05-18 - [Accessibility] Improve Participant Counter Form Control
+**Learning:** Custom increment/decrement form controls (like participant counters) often lack native browser accessibility features out of the box. They need manual implementation of ARIA labels on buttons, explicit ID mapping connecting the visual label to the input (`htmlFor` / `id`), appropriate explicit disabled states when reaching boundaries, and most importantly, visible focus rings to support seamless keyboard navigation.
+**Action:** Always ensure custom inputs or increment/decrement counter UI components have fully linked labels, `aria-label`s on their functional buttons, appropriate disabled states to prevent out-of-bounds user errors, and `focus:ring` classes so keyboard users know exactly where they are.
