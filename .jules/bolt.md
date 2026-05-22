@@ -19,3 +19,6 @@
 ## 2026-04-18 - Prevent N+1 Update Queries with Bulk whereIn
 **Learning:** Performing multiple individual `Model::where('id', $id)->update(...)` queries inside a loop to update a shared value (like a specific `day_number` for multiple items) causes an N+1 query bottleneck for database writes.
 **Action:** Extract the target entity IDs (e.g. using `$collection->pluck('id')->toArray()`) and execute a single bulk update query `Model::whereIn('id', $ids)->update(['attribute' => $sharedValue])`. This keeps writes highly efficient while maintaining data integrity.
+## 2026-05-22 - Prevent N+1 queries during JSON serialization via $appends
+**Learning:** When a Laravel Model has computed attributes in its `$appends` array (like `estimated_budget`), these attributes are evaluated during JSON serialization (e.g., when a Controller returns the Collection). If the computed attribute accesses a relationship (like `$this->itineraryLodgings`), it will lazy-load that relationship for *every* model in the collection, causing a severe N+1 query problem.
+**Action:** Always verify that any relationships accessed by attributes listed in `$appends` are explicitly eager-loaded using `with()` in the controller that retrieves the collection.
