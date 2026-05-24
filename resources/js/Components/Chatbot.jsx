@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { ChatBubbleLeftRightIcon, XMarkIcon, PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
 export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
+    const chatWindowId = useId();
     const [messages, setMessages] = useState([
         {
             id: 1,
@@ -134,8 +135,10 @@ export default function Chatbot() {
             {/* Floating Chat Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
+                aria-expanded={isOpen}
+                aria-controls={chatWindowId}
                 aria-label={isOpen ? "Tutup chat" : "Buka chat"}
-                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 ${
+                className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-button focus:ring-offset-2 ${
                     isOpen
                         ? 'bg-gradient-to-r from-red-500 to-red-600'
                         : 'bg-gradient-to-r from-button to-highlight'
@@ -154,6 +157,7 @@ export default function Chatbot() {
 
             {/* Chat Window */}
             <div
+                id={chatWindowId}
                 className={`fixed bottom-24 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl transition-all duration-300 transform ${
                     isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
                 }`}
