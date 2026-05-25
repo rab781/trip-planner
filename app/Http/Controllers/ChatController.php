@@ -154,9 +154,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                 ]);
             } else {
                 Log::error('Chutes AI API Error', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
-                    'headers' => $response->headers()
+                    'status' => $response->status()
                 ]);
 
                 return response()->json([
@@ -166,8 +164,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
             }
         } catch (\Exception $e) {
             Log::error('Chat API Exception', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'error' => $e->getMessage()
             ]);
 
             return response()->json([
