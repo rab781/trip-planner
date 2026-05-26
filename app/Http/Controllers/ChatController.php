@@ -153,10 +153,13 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                     'usage' => $data['usage'] ?? null
                 ]);
             } else {
+                $bodyData = json_decode($response->body(), true);
+                $headers = $response->headers();
+
                 Log::error('Chutes AI API Error', [
                     'status' => $response->status(),
-                    'body' => $response->body(),
-                    'headers' => $response->headers()
+                    'body_keys' => is_array($bodyData) ? array_keys($bodyData) : gettype($bodyData),
+                    'header_keys' => is_array($headers) ? array_keys($headers) : gettype($headers)
                 ]);
 
                 return response()->json([
@@ -166,8 +169,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
             }
         } catch (\Exception $e) {
             Log::error('Chat API Exception', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'error' => $e->getMessage()
             ]);
 
             return response()->json([
