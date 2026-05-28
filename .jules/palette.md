@@ -4,3 +4,6 @@
 ## 2024-05-23 - Accessibility for Absolute Positioned Floating Action Buttons
 **Learning:** Absolute positioned floating action buttons (FABs) that act as toggles (like the chatbot toggle) require explicit state and target mapping (`aria-expanded` and `aria-controls`) to be properly understood by screen readers, along with visible focus styles for keyboard navigation.
 **Action:** Always include `aria-expanded`, `aria-controls`, and visible focus rings (e.g., `focus:outline-none focus:ring-2`) on absolute positioned FABs or icon-only controls in the design system.
+## 2026-05-28 - Dynamic ID Generation for ARIA attributes
+**Learning:** When using ARIA attributes like `aria-controls` or `aria-labelledby` in React components that might be rendered multiple times on a page (like cards in a list), using static IDs will cause accessibility issues and invalid HTML.
+**Action:** Always utilize React's `useId()` hook to generate unique, stable DOM IDs for these linking attributes to prevent collisions across multiple instances of the component.
