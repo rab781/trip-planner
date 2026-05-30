@@ -4,3 +4,6 @@
 ## 2024-05-23 - Accessibility for Absolute Positioned Floating Action Buttons
 **Learning:** Absolute positioned floating action buttons (FABs) that act as toggles (like the chatbot toggle) require explicit state and target mapping (`aria-expanded` and `aria-controls`) to be properly understood by screen readers, along with visible focus styles for keyboard navigation.
 **Action:** Always include `aria-expanded`, `aria-controls`, and visible focus rings (e.g., `focus:outline-none focus:ring-2`) on absolute positioned FABs or icon-only controls in the design system.
+## 2026-05-30 - Missing aria-controls in Collapsible Components
+**Learning:** Collapsible sections and toggle buttons (like those in GeneratedItinerary and ItineraryCard) lacked the `aria-controls` attribute, reducing accessibility for screen reader users who need to know which content block is being toggled.
+**Action:** Use React's `useId()` hook to generate unique IDs for content containers and link them to their respective toggle buttons using `aria-controls`.
