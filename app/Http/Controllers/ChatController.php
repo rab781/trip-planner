@@ -119,7 +119,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
                 $data = $response->json();
 
                 // Log full response structure for debugging
-                Log::info('Chutes AI Response Data', ['data_keys' => array_keys($data)]);
+                Log::info('Chutes AI Response Data', ['data_keys' => is_array($data) ? array_keys($data) : gettype($data)]);
 
                 // Try to extract message with multiple fallbacks
                 $rawMessage = null;
@@ -136,7 +136,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
 
                 if (empty($rawMessage)) {
                     Log::error('Chutes AI - No message content found', [
-                        'response_structure' => json_encode($data)
+                        'response_structure' => is_array($data) ? json_encode(array_keys($data)) : gettype($data)
                     ]);
                     return response()->json([
                         'success' => false,
@@ -155,8 +155,6 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
             } else {
                 Log::error('Chutes AI API Error', [
                     'status' => $response->status(),
-                    'body' => $response->body(),
-                    'headers' => $response->headers()
                 ]);
 
                 return response()->json([
@@ -166,8 +164,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
             }
         } catch (\Exception $e) {
             Log::error('Chat API Exception', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'error' => $e->getMessage()
             ]);
 
             return response()->json([
