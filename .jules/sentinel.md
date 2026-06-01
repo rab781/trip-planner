@@ -28,3 +28,8 @@
 **Vulnerability:** Admin pages (Users, Destinations, Categories, Zones) were using `dangerouslySetInnerHTML={{ __html: link.label }}` to render Laravel's default pagination links. This exposed the application to potential XSS if user input or un-sanitized data somehow influenced the pagination label.
 **Learning:** Laravel's paginator often returns HTML entities (like `&laquo;` for `«`) which tempts developers to use `dangerouslySetInnerHTML` in React instead of safe replacement.
 **Prevention:** Avoid `dangerouslySetInnerHTML` for basic text entities. Use safe string replacement instead: `{link.label.replace(/&laquo;/g, '«').replace(/&raquo;/g, '»')}`.
+
+## 2026-06-01 - Prevent Sensitive Data Exposure in Logs
+**Vulnerability:** Full API response bodies, headers, and exception stack traces were being logged in ChatController.
+**Learning:** This exposes sensitive internal data and potentially user information to logs, violating security principles.
+**Prevention:** Sanitize log context by extracting only non-sensitive fields like status codes, array keys, or error messages instead of full payloads.
