@@ -47,6 +47,7 @@ export default function Create() {
                                         <button
                                             key={emoji}
                                             type="button"
+                                            aria-label={`Pilih ikon ${emoji}`}
                                             onClick={() => setData('icon', emoji)}
                                             className={`w-12 h-12 text-2xl rounded-lg border-2 transition ${
                                                 data.icon === emoji

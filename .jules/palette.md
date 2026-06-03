@@ -4,3 +4,7 @@
 ## 2024-05-23 - Accessibility for Absolute Positioned Floating Action Buttons
 **Learning:** Absolute positioned floating action buttons (FABs) that act as toggles (like the chatbot toggle) require explicit state and target mapping (`aria-expanded` and `aria-controls`) to be properly understood by screen readers, along with visible focus styles for keyboard navigation.
 **Action:** Always include `aria-expanded`, `aria-controls`, and visible focus rings (e.g., `focus:outline-none focus:ring-2`) on absolute positioned FABs or icon-only controls in the design system.
+
+## 2026-06-03 - Added ARIA Label to Emoji Icon-Only Buttons
+**Learning:** Icon-only buttons used for category selection (emoji pickers) were lacking accessible names, making them difficult to use for screen reader users.
+**Action:** When implementing icon or emoji-only interactive elements, always ensure they have an explicit `aria-label` describing their function or the specific selection they represent.
