@@ -1,7 +1,20 @@
-import { useState } from 'react';
-import { useDraggable, useDroppable, DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { useState, useId } from "react";
+import {
+    useDraggable,
+    useDroppable,
+    DndContext,
+    closestCenter,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from "@dnd-kit/core";
+import {
+    SortableContext,
+    arrayMove,
+    verticalListSortingStrategy,
+    useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
     MapPinIcon,
     ClockIcon,
@@ -13,15 +26,21 @@ import {
     ChevronUpIcon,
     InformationCircleIcon,
     ExclamationTriangleIcon,
-} from '@heroicons/react/24/outline';
-import DestinationBadges from './DestinationBadges';
-import DestinationDetailPanel from './DestinationDetailPanel';
-import DestinationReplacementModal from './DestinationReplacementModal';
+} from "@heroicons/react/24/outline";
+import DestinationBadges from "./DestinationBadges";
+import DestinationDetailPanel from "./DestinationDetailPanel";
+import DestinationReplacementModal from "./DestinationReplacementModal";
 
 /**
  * Sortable Destination Card
  */
-function SortableDestinationCard({ destination, index, onViewDetail, onReplace, onRemove }) {
+function SortableDestinationCard({
+    destination,
+    index,
+    onViewDetail,
+    onReplace,
+    onRemove,
+}) {
     const {
         attributes,
         listeners,
@@ -40,8 +59,11 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
         <div
             ref={setNodeRef}
             style={style}
-            className={`group relative glass-card p-4 rounded-2xl transition-all duration-300 hover:shadow-lg border border-white/20 ${isDragging ? 'shadow-2xl scale-105 z-50 ring-2 ring-teal-500/50 bg-white/90 dark:bg-gray-800/90' : 'hover:bg-white/40 dark:hover:bg-gray-800/40'
-                }`}
+            className={`group relative glass-card p-4 rounded-2xl transition-all duration-300 hover:shadow-lg border border-white/20 ${
+                isDragging
+                    ? "shadow-2xl scale-105 z-50 ring-2 ring-teal-500/50 bg-white/90 dark:bg-gray-800/90"
+                    : "hover:bg-white/40 dark:hover:bg-gray-800/40"
+            }`}
         >
             <div className="flex items-start gap-4">
                 {/* Drag Handle */}
@@ -83,7 +105,10 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                         {/* Price */}
                         <div className="text-right flex-shrink-0">
                             <p className="text-sm font-bold text-teal-600 dark:text-teal-400">
-                                Rp {(destination.min_ticket_price || 0).toLocaleString('id-ID')}
+                                Rp{" "}
+                                {(
+                                    destination.min_ticket_price || 0
+                                ).toLocaleString("id-ID")}
                             </p>
                             {destination.avg_duration && (
                                 <p className="text-[10px] text-gray-500 flex items-center justify-end gap-1 mt-0.5 bg-gray-50 dark:bg-gray-800 px-1.5 py-0.5 rounded-md inline-block">
@@ -97,7 +122,10 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                     {/* Badges */}
                     {destination.badges && destination.badges.length > 0 && (
                         <div className="mt-3">
-                            <DestinationBadges badges={destination.badges} size="xs" />
+                            <DestinationBadges
+                                badges={destination.badges}
+                                size="xs"
+                            />
                         </div>
                     )}
 
@@ -105,7 +133,10 @@ function SortableDestinationCard({ destination, index, onViewDetail, onReplace, 
                     {destination.distance_from_prev && (
                         <div className="flex items-center gap-2 mt-3 text-xs text-gray-400 dark:text-gray-500">
                             <div className="h-4 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
-                            <span>{destination.distance_from_prev.toFixed(1)} km dari sebelumnya</span>
+                            <span>
+                                {destination.distance_from_prev.toFixed(1)} km
+                                dari sebelumnya
+                            </span>
                         </div>
                     )}
 
@@ -152,29 +183,41 @@ function DaySection({
     onViewDetail,
     onReplace,
     onRemove,
-    onReorder
+    onReorder,
 }) {
+    const dayContentId = useId();
+
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
                 distance: 8,
             },
-        })
+        }),
     );
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
 
         if (active.id !== over?.id) {
-            const oldIndex = day.destinations.findIndex(d => d.id === active.id);
-            const newIndex = day.destinations.findIndex(d => d.id === over.id);
+            const oldIndex = day.destinations.findIndex(
+                (d) => d.id === active.id,
+            );
+            const newIndex = day.destinations.findIndex(
+                (d) => d.id === over.id,
+            );
             const newOrder = arrayMove(day.destinations, oldIndex, newIndex);
             onReorder(day.day, newOrder);
         }
     };
 
-    const totalDuration = day.destinations.reduce((sum, d) => sum + (d.avg_duration || 60), 0);
-    const totalTickets = day.destinations.reduce((sum, d) => sum + (d.min_ticket_price || 0), 0);
+    const totalDuration = day.destinations.reduce(
+        (sum, d) => sum + (d.avg_duration || 60),
+        0,
+    );
+    const totalTickets = day.destinations.reduce(
+        (sum, d) => sum + (d.min_ticket_price || 0),
+        0,
+    );
 
     return (
         <div className="glass-card rounded-2xl overflow-hidden border border-white/20 shadow-sm hover:shadow-md transition-all">
@@ -182,6 +225,7 @@ function DaySection({
             <button
                 onClick={onToggle}
                 aria-expanded={isExpanded}
+                aria-controls={dayContentId}
                 className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/40 dark:hover:bg-gray-800/40 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-inset"
             >
                 <div className="flex items-center gap-4">
@@ -189,26 +233,40 @@ function DaySection({
                         {day.day}
                     </div>
                     <div className="text-left">
-                        <h3 className="font-bold text-lg text-gray-900 dark:text-white">Hari {day.day}</h3>
+                        <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+                            Hari {day.day}
+                        </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                            {day.destinations.length} destinasi • ~{Math.round(totalDuration / 60)} jam
+                            {day.destinations.length} destinasi • ~
+                            {Math.round(totalDuration / 60)} jam
                         </p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <span className="text-sm font-bold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20 px-3 py-1 rounded-lg">
-                        Rp {totalTickets.toLocaleString('id-ID')}
+                        Rp {totalTickets.toLocaleString("id-ID")}
                     </span>
-                    <div className={`p-2 rounded-full transition-all duration-300 ${isExpanded ? 'bg-gray-100 dark:bg-gray-700 rotate-180' : 'bg-transparent'}`}>
-                        <ChevronDownIcon className="w-5 h-5 text-gray-500" aria-hidden="true" />
+                    <div
+                        className={`p-2 rounded-full transition-all duration-300 ${isExpanded ? "bg-gray-100 dark:bg-gray-700 rotate-180" : "bg-transparent"}`}
+                    >
+                        <ChevronDownIcon
+                            className="w-5 h-5 text-gray-500"
+                            aria-hidden="true"
+                        />
                     </div>
                 </div>
             </button>
 
             {/* Day Content */}
-            <div className={`transition-all duration-300 ease-in-out border-t border-gray-100 dark:border-gray-700/50 ${isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 hidden'
-                }`}>
+            <div
+                id={dayContentId}
+                className={`transition-all duration-300 ease-in-out border-t border-gray-100 dark:border-gray-700/50 ${
+                    isExpanded
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 -translate-y-4 hidden"
+                }`}
+            >
                 <div className="px-5 pb-5 pt-3">
                     {/* Regenerate Day Button */}
                     <div className="flex justify-end mb-4">
@@ -229,7 +287,7 @@ function DaySection({
                             onDragEnd={handleDragEnd}
                         >
                             <SortableContext
-                                items={day.destinations.map(d => d.id)}
+                                items={day.destinations.map((d) => d.id)}
                                 strategy={verticalListSortingStrategy}
                             >
                                 <div className="space-y-3">
@@ -249,8 +307,12 @@ function DaySection({
                     ) : (
                         <div className="text-center py-12 glass-card rounded-xl border-dashed border-2 border-gray-200 dark:border-gray-700">
                             <MapPinIcon className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-                            <p className="font-medium text-gray-900 dark:text-white">Tidak ada destinasi</p>
-                            <p className="text-sm text-gray-500">Destinasi untuk hari ini kosong</p>
+                            <p className="font-medium text-gray-900 dark:text-white">
+                                Tidak ada destinasi
+                            </p>
+                            <p className="text-sm text-gray-500">
+                                Destinasi untuk hari ini kosong
+                            </p>
                         </div>
                     )}
                 </div>
@@ -267,7 +329,7 @@ export default function GeneratedItinerary({
     days = [],
     onDaysChange,
     fallbackUsed = false,
-    fallbackMessage = '',
+    fallbackMessage = "",
     completeBudget = {},
     preferences = {},
     cityId,
@@ -276,15 +338,17 @@ export default function GeneratedItinerary({
     onRegenerateDay,
     isLoading = false,
 }) {
-    const [expandedDays, setExpandedDays] = useState(() => days.map(d => d.day));
+    const [expandedDays, setExpandedDays] = useState(() =>
+        days.map((d) => d.day),
+    );
     const [detailDestination, setDetailDestination] = useState(null);
     const [replaceDestination, setReplaceDestination] = useState(null);
 
     const toggleDay = (dayNum) => {
-        setExpandedDays(prev =>
+        setExpandedDays((prev) =>
             prev.includes(dayNum)
-                ? prev.filter(d => d !== dayNum)
-                : [...prev, dayNum]
+                ? prev.filter((d) => d !== dayNum)
+                : [...prev, dayNum],
         );
     };
 
@@ -297,18 +361,20 @@ export default function GeneratedItinerary({
     };
 
     const handleRemove = (destination) => {
-        const newDays = days.map(day => ({
+        const newDays = days.map((day) => ({
             ...day,
-            destinations: day.destinations.filter(d => d.id !== destination.id)
+            destinations: day.destinations.filter(
+                (d) => d.id !== destination.id,
+            ),
         }));
         onDaysChange(newDays);
     };
 
     const handleReorder = (dayNum, newDestinations) => {
-        const newDays = days.map(day =>
+        const newDays = days.map((day) =>
             day.day === dayNum
                 ? { ...day, destinations: newDestinations }
-                : day
+                : day,
         );
         onDaysChange(newDays);
     };
@@ -316,11 +382,11 @@ export default function GeneratedItinerary({
     const handleReplaceConfirm = (newDestination) => {
         if (!replaceDestination) return;
 
-        const newDays = days.map(day => ({
+        const newDays = days.map((day) => ({
             ...day,
-            destinations: day.destinations.map(d =>
-                d.id === replaceDestination.id ? newDestination : d
-            )
+            destinations: day.destinations.map((d) =>
+                d.id === replaceDestination.id ? newDestination : d,
+            ),
         }));
         onDaysChange(newDays);
         setReplaceDestination(null);
@@ -335,9 +401,12 @@ export default function GeneratedItinerary({
                         <MapPinIcon className="w-8 h-8 text-teal-600 animate-pulse" />
                     </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Sedang Merancang Perjalanan...</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Sedang Merancang Perjalanan...
+                </h3>
                 <p className="text-gray-500 dark:text-gray-400 max-w-sm">
-                    AI kami sedang memilih destinasi terbaik yang sesuai dengan preferensi Anda.
+                    AI kami sedang memilih destinasi terbaik yang sesuai dengan
+                    preferensi Anda.
                 </p>
             </div>
         );
@@ -349,15 +418,21 @@ export default function GeneratedItinerary({
                 <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
                     <MapPinIcon className="w-12 h-12 text-gray-300 dark:text-gray-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Belum Ada Itinerary</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Belum Ada Itinerary
+                </h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-6">
-                    Mulai dengan menekan tombol generate untuk melihat rekomendasi perjalanan.
+                    Mulai dengan menekan tombol generate untuk melihat
+                    rekomendasi perjalanan.
                 </p>
             </div>
         );
     }
 
-    const totalDestinations = days.reduce((sum, d) => sum + d.destinations.length, 0);
+    const totalDestinations = days.reduce(
+        (sum, d) => sum + d.destinations.length,
+        0,
+    );
 
     return (
         <div className="space-y-8 animate-fade-in">
@@ -373,7 +448,8 @@ export default function GeneratedItinerary({
                         </span>
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">
-                        Ditemukan {totalDestinations} destinasi menarikk untuk {days.length} hari perjalanan Anda
+                        Ditemukan {totalDestinations} destinasi menarikk untuk{" "}
+                        {days.length} hari perjalanan Anda
                     </p>
                 </div>
                 <button
@@ -392,15 +468,19 @@ export default function GeneratedItinerary({
                         <ExclamationTriangleIcon className="w-6 h-6" />
                     </div>
                     <div>
-                        <h4 className="font-bold text-amber-900 text-sm">Penyesuaian Otomatis</h4>
-                        <p className="text-sm text-amber-800/80 mt-1 leading-relaxed">{fallbackMessage}</p>
+                        <h4 className="font-bold text-amber-900 text-sm">
+                            Penyesuaian Otomatis
+                        </h4>
+                        <p className="text-sm text-amber-800/80 mt-1 leading-relaxed">
+                            {fallbackMessage}
+                        </p>
                     </div>
                 </div>
             )}
 
             {/* Days List */}
             <div className="space-y-6">
-                {days.map(day => (
+                {days.map((day) => (
                     <DaySection
                         key={day.day}
                         day={day}
@@ -430,7 +510,7 @@ export default function GeneratedItinerary({
                     destination={replaceDestination}
                     cityId={cityId}
                     categories={categories}
-                    priority={preferences?.priority || 'balanced'}
+                    priority={preferences?.priority || "balanced"}
                     soloMode={preferences?.solo_mode || false}
                     onConfirm={handleReplaceConfirm}
                     onClose={() => setReplaceDestination(null)}
