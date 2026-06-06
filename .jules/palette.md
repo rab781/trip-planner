@@ -4,3 +4,6 @@
 ## 2024-05-23 - Accessibility for Absolute Positioned Floating Action Buttons
 **Learning:** Absolute positioned floating action buttons (FABs) that act as toggles (like the chatbot toggle) require explicit state and target mapping (`aria-expanded` and `aria-controls`) to be properly understood by screen readers, along with visible focus styles for keyboard navigation.
 **Action:** Always include `aria-expanded`, `aria-controls`, and visible focus rings (e.g., `focus:outline-none focus:ring-2`) on absolute positioned FABs or icon-only controls in the design system.
+## 2026-06-06 - [Label in Name (WCAG 2.5.3) for Buttons with Visible Text]
+**Learning:** Adding `aria-label` to buttons that already have visible text (like "Reset") can cause a WCAG 2.5.3 (Label in Name) violation if the `aria-label` text does not include the visible text. This breaks voice recognition software where users might say "Click Reset" but the accessible name is completely different (e.g., "Hapus filter").
+**Action:** Do not add `aria-label` to buttons that already have descriptive visible text. The visible text itself serves as the accessible name. Reserve `aria-label` exclusively for icon-only buttons or when the visible text is ambiguous without context.
