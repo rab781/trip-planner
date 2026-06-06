@@ -139,7 +139,7 @@ export default function MapWithSidebar({
                                 onClick={clearFilters}
                                 className="flex items-center gap-1 px-2 py-1.5 text-xs text-gray-500 hover:text-gray-700"
                             >
-                                <XMarkIcon className="w-4 h-4" />
+                                <XMarkIcon className="w-4 h-4" aria-hidden="true" />
                                 Reset
                             </button>
                         )}

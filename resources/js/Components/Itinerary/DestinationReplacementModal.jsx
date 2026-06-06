@@ -176,9 +176,10 @@ export default function DestinationReplacementModal({
                                     </div>
                                     <button
                                         onClick={onClose}
+                                        aria-label="Tutup modal penggantian destinasi"
                                         className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90"
                                     >
-                                        <XMarkIcon className="w-6 h-6" />
+                                        <XMarkIcon className="w-6 h-6" aria-hidden="true" />
                                     </button>
                                 </div>
 
