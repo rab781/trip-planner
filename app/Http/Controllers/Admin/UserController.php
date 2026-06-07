@@ -66,7 +66,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::with(['itineraries' => function ($query) {
-            $query->with('city')
+            $query->with(['city', 'itineraryItems', 'itineraryLodgings']) // ⚡ Bolt: Eager load relationships used by estimated_budget append to prevent N+1 queries during JSON serialization
                 ->withCount('itineraryItems')
                 ->orderBy('created_at', 'desc')
                 ->limit(5);
