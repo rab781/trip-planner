@@ -28,3 +28,8 @@
 **Vulnerability:** Admin pages (Users, Destinations, Categories, Zones) were using `dangerouslySetInnerHTML={{ __html: link.label }}` to render Laravel's default pagination links. This exposed the application to potential XSS if user input or un-sanitized data somehow influenced the pagination label.
 **Learning:** Laravel's paginator often returns HTML entities (like `&laquo;` for `«`) which tempts developers to use `dangerouslySetInnerHTML` in React instead of safe replacement.
 **Prevention:** Avoid `dangerouslySetInnerHTML` for basic text entities. Use safe string replacement instead: `{link.label.replace(/&laquo;/g, '«').replace(/&raquo;/g, '»')}`.
+
+## 2024-05-28 - Information Disclosure in AI Chat Logs
+**Vulnerability:** The `ChatController` logged the raw `$response->body()`, `$response->headers()`, and full exception stack traces (`$e->getTraceAsString()`) when the external Chutes AI API failed or encountered an exception.
+**Learning:** External API integrations, especially those involving AI/LLM models, can return sensitive payload data, API keys within headers, or internal system paths within exception traces. Logging these unrestrictedly violates the "fail securely" principle.
+**Prevention:** Always sanitize data before passing it to logging facilities. For API errors, log only structural indicators (e.g., array keys or data types) rather than full payloads. Avoid using `getTraceAsString()` in production logs; instead, rely on the core exception message or controlled context to diagnose issues without leaking internal system architecture.
