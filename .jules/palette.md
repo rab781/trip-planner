@@ -4,3 +4,6 @@
 ## 2024-05-23 - Accessibility for Absolute Positioned Floating Action Buttons
 **Learning:** Absolute positioned floating action buttons (FABs) that act as toggles (like the chatbot toggle) require explicit state and target mapping (`aria-expanded` and `aria-controls`) to be properly understood by screen readers, along with visible focus styles for keyboard navigation.
 **Action:** Always include `aria-expanded`, `aria-controls`, and visible focus rings (e.g., `focus:outline-none focus:ring-2`) on absolute positioned FABs or icon-only controls in the design system.
+## 2026-06-13 - Add aria-label to Back button in Itinerary Create
+**Learning:** The application uses Indonesian predominantly. We should keep ARIA labels localized to the user language. The back button used `window.history.back()` and had only an icon.
+**Action:** Always verify if an icon-only button needs an `aria-label`, and use the contextually appropriate Indonesian term (e.g., 'Kembali' for 'Back').

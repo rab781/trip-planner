@@ -267,6 +267,7 @@ export default function Create({ cities = [], zones = [], categories = [], desti
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => window.history.back()}
+                                aria-label="Kembali"
                                 className="p-2.5 glass-card hover:bg-white/50 dark:hover:bg-gray-800/50 rounded-full transition-all hover-lift text-gray-700 dark:text-gray-200"
                             >
                                 <ArrowLeftIcon className="w-5 h-5" />
