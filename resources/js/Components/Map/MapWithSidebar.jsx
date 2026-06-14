@@ -121,6 +121,8 @@ export default function MapWithSidebar({
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setShowFilters(!showFilters)}
+                            aria-expanded={showFilters}
+                            aria-controls="filter-options-panel"
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                                 showFilters || hasActiveFilters
                                     ? 'bg-button/10 text-button'
@@ -137,6 +139,7 @@ export default function MapWithSidebar({
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
+                                aria-label="Reset semua filter"
                                 className="flex items-center gap-1 px-2 py-1.5 text-xs text-gray-500 hover:text-gray-700"
                             >
                                 <XMarkIcon className="w-4 h-4" />
@@ -151,7 +154,7 @@ export default function MapWithSidebar({
 
                     {/* Filter Options */}
                     {showFilters && (
-                        <div className="grid grid-cols-2 gap-2 pt-2">
+                        <div id="filter-options-panel" className="grid grid-cols-2 gap-2 pt-2">
                             <select
                                 value={selectedZone || ''}
                                 onChange={(e) => setSelectedZone(e.target.value ? Number(e.target.value) : null)}
