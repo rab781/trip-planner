@@ -4,13 +4,14 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { ThemeToggle } from '@/Components/UI/ThemeToggle';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useId } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+    const mobileMenuId = useId();
 
     return (
         <div className="min-h-screen bg-background dark:bg-background-dark transition-colors duration-300">
@@ -94,6 +95,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                         (previousState) => !previousState,
                                     )
                                 }
+                                aria-expanded={showingNavigationDropdown}
+                                aria-controls={mobileMenuId}
+                                aria-label={showingNavigationDropdown ? "Tutup menu navigasi" : "Buka menu navigasi"}
                                 className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-300 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-white focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-gray-500 focus:outline-none"
                             >
                                 <svg
@@ -131,6 +135,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
 
                 <div
+                    id={mobileMenuId}
                     className={
                         (showingNavigationDropdown ? 'block' : 'hidden') +
                         ' sm:hidden glass'

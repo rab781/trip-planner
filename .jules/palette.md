@@ -8,3 +8,7 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+
+## 2026-06-16 - Dropdown and Mobile Menu Accessibility
+**Learning:** Found that generic dropdown components (`Dropdown.jsx`) and mobile navigation toggles (`AuthenticatedLayout.jsx`) were missing WAI-ARIA disclosure patterns. Screen readers could not determine the state of the menus or what content they controlled.
+**Action:** When creating reusable components like Dropdowns or toggling navigation menus, always utilize `useId()` to establish a relationship between the trigger (`aria-controls`) and the content (`id`), and maintain the current state with `aria-expanded`.
