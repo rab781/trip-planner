@@ -11,7 +11,22 @@ class DestinationController extends Controller
     //Get /api/destinations
     public function index()
     {
-        $Destinations = Destination::all();
+        // ⚡ Bolt: Cache destination index to prevent querying entire destinations table on every API request
+        $Destinations = \Illuminate\Support\Facades\Cache::remember('api_destinations_index', now()->addMinutes(15), function() {
+            return Destination::all();
+        });
+
+        if ($Destinations->isEmpty()) {
+            return response()->json(
+                [
+                    'data' => [],
+                    'message' => 'No Destinations found',
+                    'status' => 200,
+                ],
+                200
+            );
+        }
+
         return response()->json(
             [
                 'data' => $Destinations,
@@ -19,17 +34,6 @@ class DestinationController extends Controller
                 'status' => 200,
             ]
         );
-
-        if (!$Destinations) {
-            return response()->json(
-                [
-                    'data' => null,
-                    'message' => 'No Destinations found',
-                    'status' => 404,
-                ],
-                404
-            );
-        }
     }
     // Get /api/destinations/{id}
     public function show($id)

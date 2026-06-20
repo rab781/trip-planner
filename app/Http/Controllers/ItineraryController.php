@@ -10,6 +10,7 @@ use App\Models\Destination;
 use Illuminate\Http\Request;
 use App\Services\ItineraryService;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Cache;
 
 class ItineraryController extends Controller
 {
@@ -51,7 +52,8 @@ class ItineraryController extends Controller
         $cities = City::all();
         $zones = Zone::with('city')->get();
         $categories = Category::all();
-        $destinations = Destination::with(['zone', 'category', 'ticketVariants'])
+        // ⚡ Bolt: Cache destination lists for Inertia props to avoid querying heavy static data on every page load
+        $destinations = Cache::remember('destinations_with_variants', now()->addMinutes(15), fn () => Destination::with(['zone', 'category', 'ticketVariants'])
             ->get()
             ->map(function ($destination) {
                 return [
@@ -67,7 +69,7 @@ class ItineraryController extends Controller
                     'ticket_variants' => $destination->ticketVariants,
                     'min_price' => $destination->ticketVariants->min('price') ?? 0,
                 ];
-            });
+            }));
 
         return Inertia::render('Itinerary/Create', [
             'cities' => $cities,
@@ -129,7 +131,8 @@ class ItineraryController extends Controller
         $cities = City::all();
         $zones = Zone::with('city')->get();
         $categories = Category::all();
-        $destinations = Destination::with(['zone', 'category', 'ticketVariants'])
+        // ⚡ Bolt: Cache destination lists for Inertia props to avoid querying heavy static data on every page load
+        $destinations = Cache::remember('destinations_with_variants', now()->addMinutes(15), fn () => Destination::with(['zone', 'category', 'ticketVariants'])
             ->get()
             ->map(function ($destination) {
                 return [
@@ -145,7 +148,7 @@ class ItineraryController extends Controller
                     'ticket_variants' => $destination->ticketVariants,
                     'min_price' => $destination->ticketVariants->min('price') ?? 0,
                 ];
-            });
+            }));
 
         // Group items by day
         $itemsByDay = $itinerary->itineraryItems
