@@ -77,7 +77,8 @@ export default function MapWithSidebar({
             <div className="lg:hidden flex bg-secondary rounded-xl p-1">
                 <button
                     onClick={() => setMobileView('map')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
+                    aria-pressed={mobileView === 'map'}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-button focus:outline-none ${
                         mobileView === 'map'
                             ? 'bg-main text-button shadow-sm'
                             : 'text-paragraph hover:text-headline'
@@ -88,7 +89,8 @@ export default function MapWithSidebar({
                 </button>
                 <button
                     onClick={() => setMobileView('list')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
+                    aria-pressed={mobileView === 'list'}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-button focus:outline-none ${
                         mobileView === 'list'
                             ? 'bg-main text-button shadow-sm'
                             : 'text-paragraph hover:text-headline'
