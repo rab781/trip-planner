@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Itinerary;
 use App\Models\Destination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Services\ItineraryService;
 use Inertia\Inertia;
 
@@ -48,26 +49,38 @@ class ItineraryController extends Controller
      */
     public function create(Request $request)
     {
-        $cities = City::all();
-        $zones = Zone::with('city')->get();
-        $categories = Category::all();
-        $destinations = Destination::with(['zone', 'category', 'ticketVariants'])
-            ->get()
-            ->map(function ($destination) {
-                return [
-                    'id' => $destination->id,
-                    'name' => $destination->name,
-                    'description' => $destination->description,
-                    'latitude' => $destination->latitude,
-                    'longitude' => $destination->longitude,
-                    'avg_duration_minutes' => $destination->avg_duration_minutes,
-                    'thumbnail' => $destination->thumbnail,
-                    'zone' => $destination->zone,
-                    'category' => $destination->category,
-                    'ticket_variants' => $destination->ticketVariants,
-                    'min_price' => $destination->ticketVariants->min('price') ?? 0,
-                ];
-            });
+        // ⚡ Bolt: Cache reference datasets for 15 minutes to prevent heavy DB queries and serialization on every page load
+        $cities = Cache::remember('reference_cities', 900, function () {
+            return City::all();
+        });
+
+        $zones = Cache::remember('reference_zones', 900, function () {
+            return Zone::with('city')->get();
+        });
+
+        $categories = Cache::remember('reference_categories', 900, function () {
+            return Category::all();
+        });
+
+        $destinations = Cache::remember('reference_destinations', 900, function () {
+            return Destination::with(['zone', 'category', 'ticketVariants'])
+                ->get()
+                ->map(function ($destination) {
+                    return [
+                        'id' => $destination->id,
+                        'name' => $destination->name,
+                        'description' => $destination->description,
+                        'latitude' => $destination->latitude,
+                        'longitude' => $destination->longitude,
+                        'avg_duration_minutes' => $destination->avg_duration_minutes,
+                        'thumbnail' => $destination->thumbnail,
+                        'zone' => $destination->zone,
+                        'category' => $destination->category,
+                        'ticket_variants' => $destination->ticketVariants,
+                        'min_price' => $destination->ticketVariants->min('price') ?? 0,
+                    ];
+                });
+        });
 
         return Inertia::render('Itinerary/Create', [
             'cities' => $cities,
@@ -126,26 +139,38 @@ class ItineraryController extends Controller
             ])
             ->findOrFail($id);
 
-        $cities = City::all();
-        $zones = Zone::with('city')->get();
-        $categories = Category::all();
-        $destinations = Destination::with(['zone', 'category', 'ticketVariants'])
-            ->get()
-            ->map(function ($destination) {
-                return [
-                    'id' => $destination->id,
-                    'name' => $destination->name,
-                    'description' => $destination->description,
-                    'latitude' => $destination->latitude,
-                    'longitude' => $destination->longitude,
-                    'avg_duration_minutes' => $destination->avg_duration_minutes,
-                    'thumbnail' => $destination->thumbnail,
-                    'zone' => $destination->zone,
-                    'category' => $destination->category,
-                    'ticket_variants' => $destination->ticketVariants,
-                    'min_price' => $destination->ticketVariants->min('price') ?? 0,
-                ];
-            });
+        // ⚡ Bolt: Cache reference datasets for 15 minutes to prevent heavy DB queries and serialization on every page load
+        $cities = Cache::remember('reference_cities', 900, function () {
+            return City::all();
+        });
+
+        $zones = Cache::remember('reference_zones', 900, function () {
+            return Zone::with('city')->get();
+        });
+
+        $categories = Cache::remember('reference_categories', 900, function () {
+            return Category::all();
+        });
+
+        $destinations = Cache::remember('reference_destinations', 900, function () {
+            return Destination::with(['zone', 'category', 'ticketVariants'])
+                ->get()
+                ->map(function ($destination) {
+                    return [
+                        'id' => $destination->id,
+                        'name' => $destination->name,
+                        'description' => $destination->description,
+                        'latitude' => $destination->latitude,
+                        'longitude' => $destination->longitude,
+                        'avg_duration_minutes' => $destination->avg_duration_minutes,
+                        'thumbnail' => $destination->thumbnail,
+                        'zone' => $destination->zone,
+                        'category' => $destination->category,
+                        'ticket_variants' => $destination->ticketVariants,
+                        'min_price' => $destination->ticketVariants->min('price') ?? 0,
+                    ];
+                });
+        });
 
         // Group items by day
         $itemsByDay = $itinerary->itineraryItems

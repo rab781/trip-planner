@@ -22,3 +22,7 @@
 ## 2026-05-19 - N+1 Queries Triggered by API JSON Serialization and Appends
 **Learning:** In Laravel, defining a computed attribute in the `$appends` array of a model (e.g. `estimated_budget` on `Itinerary`) forces the accessor to execute whenever the model is serialized (like returning a JSON response). If that accessor relies on relationships (like `itineraryLodgings`), those relationships must be explicitly included in the `with()` array of the controller query fetching the collection. Failing to do so triggers an N+1 lazy-loading query for every model serialized in the response.
 **Action:** When a model utilizes `$appends` that access relationships, ensure all controllers returning collections of that model via API responses eagerly load those exact relationships using `with(...)`.
+
+## 2026-06-23 - Caching Serialization Bottlenecks
+**Learning:** Returning fully eager-loaded Eloquent collections and transforming them inside an Inertia response controller (like in `ItineraryController@create` and `edit`) can cause severe JSON serialization and database overhead on every page load for relatively static reference datasets (like `Destination` with nested `TicketVariant`).
+**Action:** Wrap these heavy reference datasets in `Cache::remember` with a short TTL (e.g., 15 minutes) inside the controller methods to significantly improve frontend render times and reduce database connections without risking severe data staleness.
