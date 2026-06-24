@@ -1,5 +1,5 @@
 import { MapPinIcon, ClockIcon, TicketIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useState, useId } from 'react';
 
 /**
  * ItineraryCard Component - Timeline card for destinations
@@ -20,6 +20,7 @@ export default function ItineraryCard({
     onRemove = null,
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const optionalTicketsId = useId();
     const destination = item.destination;
 
     // Zone colors - softer pastels
@@ -124,6 +125,7 @@ export default function ItineraryCard({
                                             <button
                                                 onClick={() => setIsExpanded(!isExpanded)}
                                                 aria-expanded={isExpanded}
+                                                aria-controls={optionalTicketsId}
                                                 aria-label={isExpanded ? 'Tutup opsi tiket tambahan' : `Lihat ${optionalTickets.length} opsi tiket tambahan`}
                                                 className="flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 px-2 py-1 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800"
                                             >
@@ -136,7 +138,7 @@ export default function ItineraryCard({
 
                                 {/* Optional Tickets - Expanded */}
                                 {isExpanded && optionalTickets.length > 0 && (
-                                    <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700/50 space-y-2">
+                                    <div id={optionalTicketsId} className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700/50 space-y-2">
                                         <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tiket Tambahan</p>
                                         {optionalTickets.map(ticket => (
                                             <div
