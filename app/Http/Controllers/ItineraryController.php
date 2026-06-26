@@ -51,23 +51,26 @@ class ItineraryController extends Controller
         $cities = City::all();
         $zones = Zone::with('city')->get();
         $categories = Category::all();
-        $destinations = Destination::with(['zone', 'category', 'ticketVariants'])
-            ->get()
-            ->map(function ($destination) {
-                return [
-                    'id' => $destination->id,
-                    'name' => $destination->name,
-                    'description' => $destination->description,
-                    'latitude' => $destination->latitude,
-                    'longitude' => $destination->longitude,
-                    'avg_duration_minutes' => $destination->avg_duration_minutes,
-                    'thumbnail' => $destination->thumbnail,
-                    'zone' => $destination->zone,
-                    'category' => $destination->category,
-                    'ticket_variants' => $destination->ticketVariants,
-                    'min_price' => $destination->ticketVariants->min('price') ?? 0,
-                ];
-            });
+        // ⚡ Bolt: Cache destination transformations for 15 minutes to reduce DB load on form rendering
+        $destinations = \Illuminate\Support\Facades\Cache::remember('destinations_for_itinerary_form', 900, function () {
+            return Destination::with(['zone', 'category', 'ticketVariants'])
+                ->get()
+                ->map(function ($destination) {
+                    return [
+                        'id' => $destination->id,
+                        'name' => $destination->name,
+                        'description' => $destination->description,
+                        'latitude' => $destination->latitude,
+                        'longitude' => $destination->longitude,
+                        'avg_duration_minutes' => $destination->avg_duration_minutes,
+                        'thumbnail' => $destination->thumbnail,
+                        'zone' => $destination->zone,
+                        'category' => $destination->category,
+                        'ticket_variants' => $destination->ticketVariants,
+                        'min_price' => $destination->ticketVariants->min('price') ?? 0,
+                    ];
+                });
+        });
 
         return Inertia::render('Itinerary/Create', [
             'cities' => $cities,
@@ -129,23 +132,26 @@ class ItineraryController extends Controller
         $cities = City::all();
         $zones = Zone::with('city')->get();
         $categories = Category::all();
-        $destinations = Destination::with(['zone', 'category', 'ticketVariants'])
-            ->get()
-            ->map(function ($destination) {
-                return [
-                    'id' => $destination->id,
-                    'name' => $destination->name,
-                    'description' => $destination->description,
-                    'latitude' => $destination->latitude,
-                    'longitude' => $destination->longitude,
-                    'avg_duration_minutes' => $destination->avg_duration_minutes,
-                    'thumbnail' => $destination->thumbnail,
-                    'zone' => $destination->zone,
-                    'category' => $destination->category,
-                    'ticket_variants' => $destination->ticketVariants,
-                    'min_price' => $destination->ticketVariants->min('price') ?? 0,
-                ];
-            });
+        // ⚡ Bolt: Cache destination transformations for 15 minutes to reduce DB load on form rendering
+        $destinations = \Illuminate\Support\Facades\Cache::remember('destinations_for_itinerary_form', 900, function () {
+            return Destination::with(['zone', 'category', 'ticketVariants'])
+                ->get()
+                ->map(function ($destination) {
+                    return [
+                        'id' => $destination->id,
+                        'name' => $destination->name,
+                        'description' => $destination->description,
+                        'latitude' => $destination->latitude,
+                        'longitude' => $destination->longitude,
+                        'avg_duration_minutes' => $destination->avg_duration_minutes,
+                        'thumbnail' => $destination->thumbnail,
+                        'zone' => $destination->zone,
+                        'category' => $destination->category,
+                        'ticket_variants' => $destination->ticketVariants,
+                        'min_price' => $destination->ticketVariants->min('price') ?? 0,
+                    ];
+                });
+        });
 
         // Group items by day
         $itemsByDay = $itinerary->itineraryItems

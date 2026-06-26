@@ -22,3 +22,6 @@
 ## 2026-05-19 - N+1 Queries Triggered by API JSON Serialization and Appends
 **Learning:** In Laravel, defining a computed attribute in the `$appends` array of a model (e.g. `estimated_budget` on `Itinerary`) forces the accessor to execute whenever the model is serialized (like returning a JSON response). If that accessor relies on relationships (like `itineraryLodgings`), those relationships must be explicitly included in the `with()` array of the controller query fetching the collection. Failing to do so triggers an N+1 lazy-loading query for every model serialized in the response.
 **Action:** When a model utilizes `$appends` that access relationships, ensure all controllers returning collections of that model via API responses eagerly load those exact relationships using `with(...)`.
+## 2024-05-30 - Caching Inertia Props
+**Learning:** In Laravel/Inertia applications, large reference datasets (like `Destination` lists with relationships) passed directly to `Inertia::render()` create significant database load on every render. Because they don't change often, they are excellent candidates for micro-caching.
+**Action:** When passing large reference collections to Inertia views, wrap the Eloquent query and map transformations in `Cache::remember()` to skip database calls and JSON mapping on repeated form loads.
