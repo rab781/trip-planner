@@ -12,7 +12,9 @@ class ChatController extends Controller
     {
         $request->validate([
             'message' => 'required|string|max:1000',
-            'conversation_history' => 'nullable|array'
+            'conversation_history' => 'nullable|array',
+            'conversation_history.*.sender' => 'required|string|max:255',
+            'conversation_history.*.text' => 'required|string|max:1000',
         ]);
 
         $userMessage = $request->input('message');
@@ -179,7 +181,9 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
     {
         $request->validate([
             'message' => 'required|string|max:1000',
-            'conversation_history' => 'nullable|array'
+            'conversation_history' => 'nullable|array',
+            'conversation_history.*.sender' => 'required|string|max:255',
+            'conversation_history.*.text' => 'required|string|max:1000',
         ]);
 
         $userMessage = $request->input('message');
