@@ -8,3 +8,6 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+## 2026-07-04 - [WAI-ARIA Disclosure Pattern for Iterated Components]
+**Learning:** When implementing accessibility for collapsible components rendered in a list or loop (like the `DaySection` in the itinerary builder), using static IDs causes DOM collisions. The WAI-ARIA disclosure pattern (`aria-expanded` and `aria-controls`) is broken if `aria-controls` points to non-unique IDs.
+**Action:** Always use the React `useId()` hook to generate unique IDs for the content panel and link it to the toggle button via `aria-controls` whenever applying accessibility attributes to iterated accordion-style components.
