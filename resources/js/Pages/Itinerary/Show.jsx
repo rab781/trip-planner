@@ -180,7 +180,8 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                     <div className="lg:hidden flex bg-white/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl p-1 mb-6">
                         <button
                             onClick={() => setMobileView('list')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${mobileView === 'list'
+                            aria-pressed={mobileView === 'list'}
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-bold transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${mobileView === 'list'
                                 ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30'
                                 : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'
                                 }`}
@@ -190,7 +191,8 @@ export default function Show({ itinerary, itemsByDay = {}, budget = {} }) {
                         </button>
                         <button
                             onClick={() => setMobileView('map')}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${mobileView === 'map'
+                            aria-pressed={mobileView === 'map'}
+                            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-bold transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${mobileView === 'map'
                                 ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30'
                                 : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'
                                 }`}
