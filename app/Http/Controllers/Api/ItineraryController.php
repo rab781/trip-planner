@@ -221,10 +221,11 @@ class ItineraryController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Itinerary creation failed', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'data' => null,
-                'message' => 'Itinerary creation failed: ' . $e->getMessage(),
+                'message' => 'Itinerary creation failed. Please try again later.',
                 'status' => 500,
             ], 500);
         }
@@ -435,9 +436,10 @@ class ItineraryController extends Controller
                 'message' => 'Items synced successfully',
             ]);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to sync items', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to sync items: ' . $e->getMessage(),
+                'message' => 'Failed to sync items. Please try again later.',
             ], 500);
         }
     }
@@ -560,9 +562,10 @@ class ItineraryController extends Controller
                 'message' => 'Itinerary generated successfully',
             ]);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to generate itinerary', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to generate itinerary: ' . $e->getMessage(),
+                'message' => 'Failed to generate itinerary. Please try again later.',
             ], 500);
         }
     }
@@ -611,9 +614,10 @@ class ItineraryController extends Controller
                 'message' => 'Day regenerated successfully',
             ]);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to regenerate day', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to regenerate day: ' . $e->getMessage(),
+                'message' => 'Failed to regenerate day. Please try again later.',
             ], 500);
         }
     }
@@ -649,9 +653,10 @@ class ItineraryController extends Controller
                 'message' => 'Replacement suggestions retrieved',
             ]);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to get suggestions', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get suggestions: ' . $e->getMessage(),
+                'message' => 'Failed to get suggestions. Please try again later.',
             ], 500);
         }
     }
