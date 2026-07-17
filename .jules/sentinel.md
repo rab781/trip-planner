@@ -33,3 +33,8 @@
 **Vulnerability:** The `ChatController` recorded full HTTP response bodies, headers, exception stack traces, and complete JSON encoded data in its logs when the Chutes AI API failed or returned unexpected payloads. This exposed potentially sensitive data or internal application states directly into the log files.
 **Learning:** Over-logging context in error handling is a common pitfall that turns standard error logs into an attractive target for attackers looking to harvest internal structure or data payload information. Data such as API response headers, and especially raw JSON dumps, may inadvertently include proprietary configuration parameters or internal API tokens.
 **Prevention:** Sanitize logging context by extracting only necessary fields. Instead of logging complete `$response->body()`, limit the context strictly to the `$response->status()`. Instead of logging a full `json_encode($data)`, map out top-level structure via `is_array($data) ? array_keys($data) : gettype($data)`. Similarly, omit `$e->getTraceAsString()` in contexts that will dump back down to production logs, logging instead just the `$e->getMessage()`.
+
+## 2025-05-24 - [HIGH] Missing rate limiting on Resource Intensive AI endpoints
+**Vulnerability:** The AI-powered itinerary generation routes (`/itineraries/generate`, `/regenerate-day`, `/suggest-replacement`) lacked rate limiting. This exposes the application to resource exhaustion and Denial of Wallet (DoW) attacks.
+**Learning:** Resource-intensive endpoints, especially those integrating with third-party LLM providers, must always be protected with rate limiting to prevent abuse.
+**Prevention:** Always use Laravel's `throttle` middleware (e.g., `throttle:5,1`) on any new resource-intensive endpoints.
