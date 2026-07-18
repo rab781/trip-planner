@@ -176,9 +176,10 @@ export default function DestinationReplacementModal({
                                     </div>
                                     <button
                                         onClick={onClose}
-                                        className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90"
+                                        aria-label="Tutup modal penggantian destinasi"
+                                        className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                                     >
-                                        <XMarkIcon className="w-6 h-6" />
+                                        <XMarkIcon className="w-6 h-6" aria-hidden="true" />
                                     </button>
                                 </div>
 
@@ -415,7 +416,7 @@ export default function DestinationReplacementModal({
                                 <div className="px-6 py-4 bg-gray-50/80 dark:bg-gray-800/80 border-t border-gray-100 dark:border-gray-700 flex justify-end">
                                     <button
                                         onClick={onClose}
-                                        className="px-6 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm"
+                                        className="px-6 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                                     >
                                         Batal
                                     </button>
