@@ -47,9 +47,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/itineraries/{id}/sync-items', [ItineraryController::class, 'syncItems']);
 
     // AI-powered itinerary generation
-    Route::post('/itineraries/generate', [ItineraryController::class, 'generate']);
-    Route::post('/itineraries/regenerate-day', [ItineraryController::class, 'regenerateDay']);
-    Route::post('/itineraries/suggest-replacement', [ItineraryController::class, 'suggestReplacement']);
+    Route::middleware(['throttle:5,1'])->group(function () {
+        Route::post('/itineraries/generate', [ItineraryController::class, 'generate']);
+        Route::post('/itineraries/regenerate-day', [ItineraryController::class, 'regenerateDay']);
+        Route::post('/itineraries/suggest-replacement', [ItineraryController::class, 'suggestReplacement']);
+    });
 });
 
 // ========================================
