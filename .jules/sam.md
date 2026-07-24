@@ -392,3 +392,6 @@ You're successful when:
 ---
 
 **Instructions Reference**: Your technical writing methodology is here — apply these patterns for consistent, accurate, and developer-loved documentation across README files, API references, tutorials, and conceptual guides.
+## 2025-07-24 - Implement Divio Documentation System
+**Learning:** Organizing documentation into Tutorials, How-Tos, Reference, and Explanation (the Divio System) makes it significantly easier for users to find what they need. Keeping `README.md` concise and linking to a structured `docs/` folder passes the "5-second test" and improves readability.
+**Action:** When updating repository documentation, always apply the Divio framework and structure documentation into a `docs/` directory rather than creating a single, massive `README.md` file.

@@ -10,7 +10,7 @@ info:
     Get your token by authenticating through the standard login flow.
 
     ## Rate Limiting
-    Chatbot endpoints are limited to prevent abuse. Rate limit headers are included in responses.
+    Chatbot endpoints are limited to 10 messages per minute to prevent abuse. Rate limit headers are included in responses.
 servers:
   - url: http://localhost:8000/api
     description: Local development server
