@@ -61,13 +61,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function ()
     Route::get('/stats', [DashboardController::class, 'stats']);
 
     // Manage Destinations
-    Route::apiResource('destinations', AdminDestinationController::class);
+    Route::apiResource('destinations', \App\Http\Controllers\Admin\DestinationController::class);
 
     // Manage Users
-    Route::get('/users', [AdminUserController::class, 'index']);
-    Route::patch('/users/{id}/role', [AdminUserController::class, 'updateRole']);
+    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index']);
+    Route::patch('/users/{id}/role', [\App\Http\Controllers\Admin\UserController::class, 'updateRole']);
 
     // Manage Categories/Zones
-    Route::apiResource('categories', AdminCategoryController::class);
-    Route::apiResource('zones', AdminZoneController::class);
+    Route::apiResource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    Route::apiResource('zones', \App\Http\Controllers\Admin\ZoneController::class);
 });
