@@ -8,3 +8,6 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+## 2026-07-28 - Modal Button Accessibility
+**Learning:** Interactive elements inside modals (like close icons and cancel buttons) frequently lack keyboard focus rings and `aria-label` attributes in this codebase, hindering keyboard navigation and screen readers.
+**Action:** Always explicitly add `aria-label`, `aria-hidden="true"` on the decorative icon, and `focus:ring-2` focus state classes to all interactive modal elements to ensure accessibility compliance.
