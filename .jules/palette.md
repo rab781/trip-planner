@@ -8,3 +8,6 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+## 2026-07-22 - [Modal Close and Cancel Button Accessibility]
+**Learning:** Found that the "XMarkIcon" close button and the "Batal" cancel button in `DestinationReplacementModal.jsx` lacked screen reader context (`aria-label`) and visible keyboard focus rings.
+**Action:** Always add `aria-label` (and `aria-hidden="true"` to the icon itself) to icon-only buttons, and ensure all interactive buttons in modals have proper focus states (e.g., `focus:outline-none focus:ring-2 focus:ring-offset-2`).
