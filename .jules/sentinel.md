@@ -33,3 +33,8 @@
 **Vulnerability:** The `ChatController` recorded full HTTP response bodies, headers, exception stack traces, and complete JSON encoded data in its logs when the Chutes AI API failed or returned unexpected payloads. This exposed potentially sensitive data or internal application states directly into the log files.
 **Learning:** Over-logging context in error handling is a common pitfall that turns standard error logs into an attractive target for attackers looking to harvest internal structure or data payload information. Data such as API response headers, and especially raw JSON dumps, may inadvertently include proprietary configuration parameters or internal API tokens.
 **Prevention:** Sanitize logging context by extracting only necessary fields. Instead of logging complete `$response->body()`, limit the context strictly to the `$response->status()`. Instead of logging a full `json_encode($data)`, map out top-level structure via `is_array($data) ? array_keys($data) : gettype($data)`. Similarly, omit `$e->getTraceAsString()` in contexts that will dump back down to production logs, logging instead just the `$e->getMessage()`.
+
+## 2024-08-12 - Missing Rate Limit on AI Endpoints
+**Vulnerability:** AI-powered itinerary generation endpoints (`/itineraries/generate`, `/regenerate-day`, `/suggest-replacement`) were lacking rate limiting.
+**Learning:** These endpoints are resource-intensive (LLM calls) and must be protected from Denial of Wallet (DoW) attacks or resource exhaustion.
+**Prevention:** Always apply rate limiting middleware (e.g., `throttle`) to API routes that trigger expensive third-party service calls or complex computations.
