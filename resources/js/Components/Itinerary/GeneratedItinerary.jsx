@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { useDraggable, useDroppable, DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -154,6 +154,7 @@ function DaySection({
     onRemove,
     onReorder
 }) {
+    const contentId = useId();
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
@@ -182,6 +183,7 @@ function DaySection({
             <button
                 onClick={onToggle}
                 aria-expanded={isExpanded}
+                aria-controls={contentId}
                 className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/40 dark:hover:bg-gray-800/40 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-inset"
             >
                 <div className="flex items-center gap-4">
@@ -207,8 +209,11 @@ function DaySection({
             </button>
 
             {/* Day Content */}
-            <div className={`transition-all duration-300 ease-in-out border-t border-gray-100 dark:border-gray-700/50 ${isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 hidden'
-                }`}>
+            <div
+                id={contentId}
+                className={`transition-all duration-300 ease-in-out border-t border-gray-100 dark:border-gray-700/50 ${isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 hidden'
+                }`}
+            >
                 <div className="px-5 pb-5 pt-3">
                     {/* Regenerate Day Button */}
                     <div className="flex justify-end mb-4">
