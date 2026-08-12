@@ -8,3 +8,6 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+## 2024-07-19 - Itinerary Drag Handle Keyboard Accessibility
+**Learning:** Drag handles (like sortable list buttons) require explicit `role="button"`, `tabIndex={0}`, and `aria-label` attributes to be properly announced and navigable by screen readers. Furthermore, interactive elements must have visible focus states (e.g. `focus:ring-2`) to support keyboard navigation.
+**Action:** Always ensure drag handles and custom interactive elements have proper `role`, `tabIndex`, descriptive `aria-label`s, and visible `focus` states.
