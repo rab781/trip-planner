@@ -77,6 +77,7 @@ export default function MapWithSidebar({
             <div className="lg:hidden flex bg-secondary rounded-xl p-1">
                 <button
                     onClick={() => setMobileView('map')}
+                    aria-pressed={mobileView === 'map'}
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
                         mobileView === 'map'
                             ? 'bg-main text-button shadow-sm'
@@ -88,6 +89,7 @@ export default function MapWithSidebar({
                 </button>
                 <button
                     onClick={() => setMobileView('list')}
+                    aria-pressed={mobileView === 'list'}
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors ${
                         mobileView === 'list'
                             ? 'bg-main text-button shadow-sm'
