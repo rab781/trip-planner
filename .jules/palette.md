@@ -8,3 +8,6 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+## 2024-06-24 - Missing aria-controls on Expandable Sections
+**Learning:** Collapsible sections like "Tiket Tambahan" in `ItineraryCard.jsx` often lack `aria-controls` bindings to their target containers, despite having `aria-expanded` and semantic roles. This is a common pattern when components are built rapidly without explicit accessibility reviews. Using React's `useId()` hook provides a robust, collision-free way to link these elements.
+**Action:** When creating or reviewing components with expandable/collapsible content (accordions, dropdowns, optional detail sections), ensure that both `aria-expanded` on the trigger and `aria-controls` pointing to the conditionally rendered container's ID are present.
