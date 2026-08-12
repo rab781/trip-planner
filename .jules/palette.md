@@ -8,3 +8,6 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+## 2024-07-17 - WAI-ARIA Disclosure Pattern
+**Learning:** Collapsible components in lists require useId() for aria-controls to prevent DOM collisions.
+**Action:** Always link toggle buttons and content panels using useId() when iterating components.
