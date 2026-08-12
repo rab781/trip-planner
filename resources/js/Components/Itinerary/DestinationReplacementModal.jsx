@@ -176,9 +176,10 @@ export default function DestinationReplacementModal({
                                     </div>
                                     <button
                                         onClick={onClose}
-                                        className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90"
+                                    aria-label="Tutup modal penggantian destinasi"
+                                    className="p-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all hover:rotate-90 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-900"
                                     >
-                                        <XMarkIcon className="w-6 h-6" />
+                                    <XMarkIcon className="w-6 h-6" aria-hidden="true" />
                                     </button>
                                 </div>
 
@@ -267,7 +268,7 @@ export default function DestinationReplacementModal({
                                                         <button
                                                             key={dest.id}
                                                             onClick={() => handleSelect(dest)}
-                                                            className="w-full p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-teal-300 dark:hover:border-teal-700 hover:shadow-md rounded-xl text-left transition-all group"
+                                                        className="w-full p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-teal-300 dark:hover:border-teal-700 hover:shadow-md rounded-xl text-left transition-all group focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent dark:focus:ring-teal-400"
                                                         >
                                                             <div className="flex items-start gap-4">
                                                                 <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0 relative">
@@ -369,7 +370,7 @@ export default function DestinationReplacementModal({
                                                                 <button
                                                                     key={dest.id}
                                                                     onClick={() => handleSelect(dest)}
-                                                                    className="w-full p-4 bg-gradient-to-br from-purple-50/50 to-indigo-50/50 dark:from-purple-900/10 dark:to-indigo-900/10 border border-purple-100 dark:border-purple-800/30 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md rounded-xl text-left transition-all group relative overflow-hidden"
+                                                                className="w-full p-4 bg-gradient-to-br from-purple-50/50 to-indigo-50/50 dark:from-purple-900/10 dark:to-indigo-900/10 border border-purple-100 dark:border-purple-800/30 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md rounded-xl text-left transition-all group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:focus:ring-purple-400"
                                                                 >
                                                                     <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500/5 to-indigo-500/5 rounded-full -mr-8 -mt-8 pointer-events-none"></div>
 
@@ -415,7 +416,7 @@ export default function DestinationReplacementModal({
                                 <div className="px-6 py-4 bg-gray-50/80 dark:bg-gray-800/80 border-t border-gray-100 dark:border-gray-700 flex justify-end">
                                     <button
                                         onClick={onClose}
-                                        className="px-6 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm"
+                                        className="px-6 py-2.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 dark:focus:ring-offset-gray-900"
                                     >
                                         Batal
                                     </button>
