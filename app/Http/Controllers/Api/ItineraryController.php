@@ -17,8 +17,8 @@ class ItineraryController extends Controller
     public function index(Request $request)
     {
         $itineraries = Itinerary::where('user_id', $request->user()->id)
-            // ⚡ Bolt: Eager load itineraryLodgings to prevent N+1 queries caused by getEstimatedBudgetAttribute during JSON serialization
-            ->with(['city', 'itineraryItems.destination', 'itineraryLodgings'])
+            // ⚡ Bolt: Eager load itineraryLodgings and itineraryItemDetails to prevent N+1 queries caused by getEstimatedBudgetAttribute during JSON serialization
+            ->with(['city', 'itineraryItems.destination', 'itineraryItems.itineraryItemDetails', 'itineraryLodgings'])
             ->orderBy('created_at', 'desc')
             ->get();
 
