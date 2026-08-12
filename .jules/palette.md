@@ -8,3 +8,7 @@
 ## 2026-06-14 - Dynamic Filter Panel Accessibility
 **Learning:** Discovered that dynamic toggle panels (like the filter sidebar on the Map page) were missing critical ARIA attributes to communicate their state and target area to screen readers.
 **Action:** Always add `aria-expanded={isOpen}` and `aria-controls="[panel-id]"` to the toggle button, and `id="[panel-id]"` to the dynamically rendered panel container.
+
+## 2026-07-15 - State Indication for Segmented Controls
+**Learning:** Found that visual-only state indication on view toggle buttons (like switching between 'Peta' and 'Daftar' views) leaves screen reader users unaware of which view is currently active.
+**Action:** Always include the `aria-pressed={condition}` attribute on toggle buttons that rely on visual styling to indicate an active or selected state, ensuring the state is correctly conveyed to assistive technologies.
