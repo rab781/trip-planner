@@ -12,3 +12,6 @@
 ## 2026-04-10 - Screen Reader Redundancy in Icon-Only Buttons
 **Learning:** Icon-only buttons with nested SVG icons (like Heroicons) often cause screen readers to announce both the `aria-label` on the button AND attempt to read the SVG contents, creating noisy, redundant announcements. Additionally, input fields lacking a visible label or `id`/`htmlFor` association are completely inaccessible without an explicit `aria-label`.
 **Action:** When implementing icon-only buttons, always add `aria-hidden="true"` directly to the `<svg>` or icon component to hide it from the accessibility tree, while ensuring the parent `<button>` has a descriptive `aria-label`. Always provide an `aria-label` for standalone inputs like chat text boxes.
+## 2026-07-09 - aria-pressed on toggle buttons
+**Learning:** Toggle buttons that use visual styles (like background colors or shadows) to indicate their active state do not automatically convey this information to screen readers.
+**Action:** Always add `aria-pressed={condition}` to view toggle buttons (e.g., Map vs List views) to ensure their active state is explicitly communicated to assistive technologies.
