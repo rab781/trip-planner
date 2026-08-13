@@ -38,3 +38,8 @@
 **Vulnerability:** AI-powered itinerary generation endpoints (`/itineraries/generate`, `/regenerate-day`, `/suggest-replacement`) were lacking rate limiting.
 **Learning:** These endpoints are resource-intensive (LLM calls) and must be protected from Denial of Wallet (DoW) attacks or resource exhaustion.
 **Prevention:** Always apply rate limiting middleware (e.g., `throttle`) to API routes that trigger expensive third-party service calls or complex computations.
+
+## 2025-05-18 - Added Security Headers
+**Vulnerability:** Missing security headers (X-Frame-Options, X-Content-Type-Options, etc.)
+**Learning:** The application was missing basic defense-in-depth security headers which could expose it to clickjacking and MIME sniffing.
+**Prevention:** Always register a global SecurityHeaders middleware in `bootstrap/app.php` to secure all responses.
