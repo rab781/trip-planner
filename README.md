@@ -110,8 +110,10 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
     "city_id": 1,
     "start_date": "2025-06-01",
     "end_date": "2025-06-03",
-    "categories": ["sightseeing", "food", "nightlife"],
-    "destination_ids": [1, 4, 7, 12],
+    "categories": [1, 2, 3],
+    "transportation_preference": "MOTOR",
+    "priority": "balanced",
+    "pace": "normal",
     "total_pax_count": 2
   }'
 ```

@@ -392,3 +392,7 @@ You're successful when:
 ---
 
 **Instructions Reference**: Your technical writing methodology is here — apply these patterns for consistent, accurate, and developer-loved documentation across README files, API references, tutorials, and conceptual guides.
+
+## 2025-06-01 - Accurate OpenAPI Docs Keep the Reviewer Happy
+**Learning:** When generating API documentation or example responses, adhere strictly to the Groundedness Rule by avoiding hallucinated fields. Ensure all properties in example requests, responses, and error formats exactly match the schemas defined in the project's OpenAPI specification and validation logic.
+**Action:** Always verify required request payload parameters and data types directly against the controller's validation logic when generating accurate documentation, tutorials, or UI payloads to prevent out-of-sync API specs.
