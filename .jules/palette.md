@@ -12,3 +12,6 @@
 ## 2024-05-24 - WAI-ARIA Disclosure Pattern for List Components
 **Learning:** In list-rendered or looping React components (like `DaySection` or itinerary cards), manual ID assignments can cause DOM collisions, breaking screen reader associations for `aria-controls`.
 **Action:** Always use the `useId()` hook to generate unique IDs dynamically when implementing the WAI-ARIA disclosure pattern inside loops or reusable components.
+## 2025-02-20 - Adding Accessibility Focus States to Interactive Elements
+**Learning:** Icon-only modal close buttons (e.g., those using XMarkIcon) frequently lack descriptive ARIA labels, aria-hidden tags on the SVG, and clear keyboard focus rings.
+**Action:** Always systematically verify and add aria-label, focus:ring states (matching the component's theme, like teal-500), and aria-hidden="true" to decorative SVG icons within interactive elements.
