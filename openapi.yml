@@ -214,7 +214,7 @@ paths:
                     type: string
                     example: "Bali is great! I suggest you visit Ubud, Kuta, and Seminyak."
         '429':
-          $ref: '#/components/responses/RateLimitExceeded'
+          $ref: '#/components/responses/ChatbotRateLimitExceeded'
   /chat/stream:
     post:
       summary: Interact with the AI Chatbot using stream
@@ -240,7 +240,7 @@ paths:
               schema:
                 type: string
         '429':
-          $ref: '#/components/responses/RateLimitExceeded'
+          $ref: '#/components/responses/ChatbotRateLimitExceeded'
   /itineraries:
     get:
       summary: List itineraries
@@ -1146,20 +1146,33 @@ components:
           type: string
           format: date
           example: "2025-06-03"
-        categories:
-          type: array
-          items:
-            type: string
-          example: ["sightseeing", "food", "nightlife"]
-        destination_ids:
-          type: array
-          items:
-            type: integer
-          example: [1, 4, 7, 12]
         total_pax_count:
           type: integer
           example: 2
-      required: [city_id, start_date, end_date, categories, destination_ids, total_pax_count]
+        transportation_preference:
+          type: string
+          enum: [MOTOR, CAR]
+          example: "MOTOR"
+        categories:
+          type: array
+          items:
+            type: integer
+          example: [1, 2, 3]
+        priority:
+          type: string
+          enum: [balanced, budget, popular, rating]
+          example: "balanced"
+        pace:
+          type: string
+          enum: [relaxed, normal, packed]
+          example: "normal"
+        budget_per_day:
+          type: integer
+          example: 500000
+        solo_mode:
+          type: boolean
+          example: false
+      required: [city_id, start_date, end_date, total_pax_count, transportation_preference, categories, priority, pace]
     CreateDestinationRequest:
       type: object
       properties:
@@ -1284,3 +1297,19 @@ components:
               message:
                 type: string
                 example: "Too Many Attempts."
+    ChatbotRateLimitExceeded:
+      description: Chatbot rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Terlalu banyak pesan. Silakan tunggu 45 detik sebelum mengirim pesan lagi. ⏳"
+              retry_after:
+                type: integer
+                example: 45
