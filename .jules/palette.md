@@ -12,3 +12,6 @@
 ## 2024-05-24 - WAI-ARIA Disclosure Pattern for List Components
 **Learning:** In list-rendered or looping React components (like `DaySection` or itinerary cards), manual ID assignments can cause DOM collisions, breaking screen reader associations for `aria-controls`.
 **Action:** Always use the `useId()` hook to generate unique IDs dynamically when implementing the WAI-ARIA disclosure pattern inside loops or reusable components.
+## 2026-08-19 - Accessible Form Close Button
+**Learning:** The close button in modals often relies solely on an icon (like `XMarkIcon`) which lacks context for screen readers and visible focus indicators for keyboard navigation. A generic WAI-ARIA pattern needs to be applied here.
+**Action:** Add `aria-label` with descriptive text, visible focus rings (`focus:outline-none focus:ring-2`), and `aria-hidden="true"` to inner icon elements to improve accessibility.
