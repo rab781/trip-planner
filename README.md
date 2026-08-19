@@ -110,9 +110,12 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
     "city_id": 1,
     "start_date": "2025-06-01",
     "end_date": "2025-06-03",
-    "categories": ["sightseeing", "food", "nightlife"],
-    "destination_ids": [1, 4, 7, 12],
-    "total_pax_count": 2
+    "total_pax_count": 2,
+    "transportation_preference": "MOTOR",
+    "categories": [1, 2],
+    "priority": "balanced",
+    "pace": "normal",
+    "solo_mode": false
   }'
 ```
 *Note: The system requires explicit SSL verification for cURL requests in production environments.*
