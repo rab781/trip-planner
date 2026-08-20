@@ -214,7 +214,7 @@ paths:
                     type: string
                     example: "Bali is great! I suggest you visit Ubud, Kuta, and Seminyak."
         '429':
-          $ref: '#/components/responses/RateLimitExceeded'
+          $ref: '#/components/responses/ChatbotRateLimitExceeded'
   /chat/stream:
     post:
       summary: Interact with the AI Chatbot using stream
@@ -240,7 +240,7 @@ paths:
               schema:
                 type: string
         '429':
-          $ref: '#/components/responses/RateLimitExceeded'
+          $ref: '#/components/responses/ChatbotRateLimitExceeded'
   /itineraries:
     get:
       summary: List itineraries
@@ -1269,18 +1269,19 @@ components:
               message:
                 type: string
                 example: "No query results for model."
-    RateLimitExceeded:
-      description: Rate limit exceeded
-      headers:
-        Retry-After:
-          description: Seconds until rate limit resets
-          schema:
-            type: integer
+    ChatbotRateLimitExceeded:
+      description: Chatbot rate limit exceeded (10 messages per minute)
       content:
         application/json:
           schema:
             type: object
             properties:
+              success:
+                type: boolean
+                example: false
               message:
                 type: string
-                example: "Too Many Attempts."
+                example: "Terlalu banyak pesan. Silakan tunggu 45 detik sebelum mengirim pesan lagi. ⏳"
+              retry_after:
+                type: integer
+                example: 45
