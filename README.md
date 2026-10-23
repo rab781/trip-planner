@@ -121,6 +121,14 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
 
 The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. See the complete and authoritative API specification in [openapi.yml](./openapi.yml).
 
+## Documentation
+
+See the [docs/](docs/) directory for detailed documentation based on the Divio system:
+- **Tutorials**: Step-by-step guides for beginners.
+- **How-Tos**: Task-oriented guides (e.g., generating itineraries).
+- **Reference**: Detailed API and technical references.
+- **Explanation**: Conceptual overview of the architecture.
+
 ## Contributing
 
 We welcome contributions! Please review our coding standards:
