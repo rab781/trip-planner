@@ -77,14 +77,15 @@ pnpm run dev > /dev/null 2>&1 &
 The system provides a robust JSON API for managing itineraries. Once authenticated via Laravel Sanctum, you interact with the endpoints using a Bearer token.
 
 ```javascript
-// Example: Fetch all cities
-const response = await fetch('http://localhost:8000/api/cities', {
+// Example: Fetch user itineraries
+const response = await fetch('http://localhost:8000/api/itineraries', {
     headers: {
         'Accept': 'application/json',
+        'Authorization': 'Bearer YOUR_SANCTUM_TOKEN'
     }
 });
-const cities = await response.json();
-console.log(cities);
+const itineraries = await response.json();
+console.log(itineraries);
 ```
 
 ### Configuration
