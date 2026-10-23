@@ -6,13 +6,15 @@
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.0-red.svg)](https://laravel.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Why This Exists
+## Overview
 
 Planning a multi-destination trip often involves countless tabs, manual distance calculations, and frustrating spreadsheet budget estimates. This system solves that pain by automatically sorting destinations by proximity to minimize travel time, generating realistic budget breakdowns, and offering AI-driven route suggestions—so you spend less time planning and more time traveling.
 
-## Quick Start
+## Tutorials
 
-You can get the application running locally in under five minutes.
+### Quick Start
+
+In this tutorial, you get the application running locally in under five minutes.
 
 ```bash
 # Clone the repository
@@ -38,41 +40,63 @@ php artisan serve > /dev/null 2>&1 &
 pnpm run dev > /dev/null 2>&1 &
 ```
 
-## Installation
+## How-To Guides
+
+### Installation
 
 **Prerequisites**: PHP 8.3+, Composer 2.9.5+, Node.js (with `pnpm`), and SQLite.
 
-1. **Clone the project** to your local machine.
-2. **Install backend dependencies** using Composer:
+1. You clone the project to your local machine.
+2. You install backend dependencies using Composer:
    ```bash
    composer install
    ```
-3. **Configure your environment**:
+3. You configure your environment:
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
-4. **Configure Chutes AI**:
+4. You configure Chutes AI:
    Open your `.env` file and add your Chutes API token to enable the AI chatbot functionality:
    ```env
    CHUTES_API_TOKEN=your_actual_token_here
    ```
-5. **Set up the database**:
+5. You set up the database:
    By default, the application uses SQLite. Ensure `database/database.sqlite` exists or let Laravel create it during migration:
    ```bash
    touch database/database.sqlite
    php artisan migrate --force
    ```
-6. **Install frontend dependencies**:
+6. You install frontend dependencies:
    This project strictly uses `pnpm` for frontend package management.
    ```bash
    pnpm install
    pnpm run build
    ```
 
-## Usage
+### Generate an AI Itinerary
 
-### Basic Example: Accessing the API
+You generate optimized daily itineraries by passing destination IDs to the AI generator endpoint.
+
+```bash
+curl -X POST http://localhost:8000/api/itineraries/generate \
+  -H "Authorization: Bearer YOUR_SANCTUM_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "city_id": 1,
+    "start_date": "2025-06-01",
+    "end_date": "2025-06-03",
+    "categories": ["sightseeing", "food", "nightlife"],
+    "destination_ids": [1, 4, 7, 12],
+    "total_pax_count": 2
+  }'
+```
+*Note: The system requires explicit SSL verification for cURL requests in production environments.*
+
+## Reference
+
+### API Usage Example
 
 The system provides a robust JSON API for managing itineraries. Once authenticated via Laravel Sanctum, you interact with the endpoints using a Bearer token.
 
@@ -97,29 +121,13 @@ Key environment variables in your `.env` file govern system behavior:
 | `CHUTES_API_TOKEN` | `string` | `null` | Required token for AI chatbot and itinerary generation features. |
 | `VITE_APP_NAME` | `string` | `Laravel` | The application name exposed to the Vite frontend. |
 
-### Advanced Usage: AI Itinerary Generation
-
-You generate optimized daily itineraries by passing destination IDs to the AI generator endpoint. The system automatically groups destinations by zone, sorts them using a nearest-neighbor algorithm, and calculates estimated transport costs based on the pax count.
-
-```bash
-curl -X POST http://localhost:8000/api/itineraries/generate \
-  -H "Authorization: Bearer YOUR_SANCTUM_TOKEN" \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -d '{
-    "city_id": 1,
-    "start_date": "2025-06-01",
-    "end_date": "2025-06-03",
-    "categories": ["sightseeing", "food", "nightlife"],
-    "destination_ids": [1, 4, 7, 12],
-    "total_pax_count": 2
-  }'
-```
-*Note: The system requires explicit SSL verification for cURL requests in production environments.*
-
-## API Reference
+### API Reference
 
 The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. See the complete and authoritative API specification in [openapi.yml](./openapi.yml).
+
+## Explanation
+
+The AI itinerary generation system automatically groups destinations by zone, sorts them using a nearest-neighbor algorithm, and calculates estimated transport costs based on the pax count.
 
 ## Contributing
 
