@@ -117,6 +117,14 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
 ```
 *Note: The system requires explicit SSL verification for cURL requests in production environments.*
 
+## Documentation
+
+Our documentation is organized following the Divio Documentation System:
+- **[Tutorials](./docs/tutorials)**: Learning-oriented step-by-step guides (e.g., [Generate an AI Itinerary](./docs/tutorials/generate-ai-itinerary.md)).
+- **[How-Tos](./docs/how-tos)**: Task-oriented guides.
+- **[Reference](./docs/reference)**: Information-oriented technical references, such as the [Chatbot API Reference](./docs/reference/chatbot-api.md).
+- **[Explanation](./docs/explanation)**: Understanding-oriented background context.
+
 ## API Reference
 
 The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. See the complete and authoritative API specification in [openapi.yml](./openapi.yml).
