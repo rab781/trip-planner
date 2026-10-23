@@ -117,9 +117,14 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
 ```
 *Note: The system requires explicit SSL verification for cURL requests in production environments.*
 
-## API Reference
+## Documentation
 
-The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. See the complete and authoritative API specification in [openapi.yml](./openapi.yml).
+Our documentation follows the [Divio Documentation System](https://documentation.divio.com/) and is split into four parts:
+
+- **[Tutorials](./docs/tutorials/getting-started.md)**: Step-by-step guides for beginners (e.g., getting started).
+- **[How-To Guides](./docs/how-to/generate-itineraries.md)**: Task-oriented guides for specific use cases.
+- **[Reference](./docs/reference/api-reference.md)**: Comprehensive API endpoints, including rate limits and schemas (or see [openapi.yml](./openapi.yml)).
+- **[Explanation](./docs/explanation/architecture.md)**: Deep dives into the system architecture and design decisions.
 
 ## Contributing
 
