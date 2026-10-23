@@ -19,24 +19,37 @@ You can get the application running locally in under five minutes.
 git clone https://github.com/rab781/trip-planner.git
 cd trip-planner
 
-# Install PHP dependencies
+# Install dependencies
 composer install
+pnpm install
 
 # Set up environment
 cp .env.example .env
 php artisan key:generate
 
-# Prepare the database
-php artisan migrate --force
-
-# Install frontend dependencies and build assets
-pnpm install
+# Build frontend assets
 pnpm run build
+
+# Configure AI Token in .env
+# CHUTES_API_TOKEN=your_actual_token_here
+
+# Prepare the database
+touch database/database.sqlite
+php artisan migrate --force
 
 # Start the development servers
 php artisan serve > /dev/null 2>&1 &
 pnpm run dev > /dev/null 2>&1 &
 ```
+
+## Documentation
+
+We use the Divio Documentation System. You can find full documentation in the `docs/` directory:
+
+- **[Tutorials](docs/tutorials/)**: Step-by-step guides for learning (e.g., generating your first itinerary).
+- **[How-To Guides](docs/how-to/)**: Goal-oriented guides (e.g., authenticating via API).
+- **[Reference](docs/reference/)**: Technical descriptions and API specs.
+- **[Explanation](docs/explanation/)**: Conceptual discussions on AI algorithms and proximity sorting.
 
 ## Installation
 
@@ -119,12 +132,12 @@ curl -X POST http://localhost:8000/api/itineraries/generate \
 
 ## API Reference
 
-The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. See the complete and authoritative API specification in [openapi.yml](./openapi.yml).
+The application exposes several RESTful endpoints. Public endpoints do not require authentication, while protected endpoints require a Sanctum Bearer token. See the complete and authoritative API specification in [openapi.yml](./openapi.yml) or read the [Chatbot API Reference](docs/reference/chatbot-api.md).
 
 ## Contributing
 
 We welcome contributions! Please review our coding standards:
-- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `npm run build`) before creating a PR.
+- Always run `php artisan test` and verify the frontend builds successfully (for example, by running `pnpm run build`) before creating a PR.
 - Add comments explaining any performance optimizations.
 - Ensure all new API routes have corresponding documentation updates.
 
