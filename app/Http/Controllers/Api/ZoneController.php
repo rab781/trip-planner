@@ -20,16 +20,6 @@ class ZoneController extends Controller
             ]
         );
 
-        if (!$Zones) {
-            return response()->json(
-                [
-                    'data' => null,
-                    'message' => 'No Zones found',
-                    'status' => 404,
-                ],
-                404
-            );
-        }
     }
 
     // Get /api/zones/{id}
