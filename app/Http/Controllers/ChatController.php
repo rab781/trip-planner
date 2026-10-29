@@ -260,7 +260,7 @@ PENTING: Jangan panjang lebar. Langsung jawab inti pertanyaan. JANGAN gunakan ta
         $cleaned = preg_replace('/\n{3,}/', "\n\n", $cleaned);
 
         // Fix bullet points formatting - ensure consistent spacing
-        $cleaned = preg_replace('/^[\s]*[-·▪︎▸►]\s*/m', '• ', $cleaned);
+        $cleaned = preg_replace('/^[\s]*[-·▪▸►*•]\x{FE0E}?\s*/mu', '• ', $cleaned);
 
         // Fix numbered lists - ensure consistent format
         $cleaned = preg_replace('/^[\s]*(\d+)[\.\)]\s*/m', '$1. ', $cleaned);
